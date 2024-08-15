@@ -1,0 +1,40 @@
+/*index page*/
+@media (max-width: 1200px) {
+    .manu_area ul li {padding: 8px 5px;}
+    .manu_area ul li a {font-size: 17px;}
+
+}
+@media (max-width: 992px) {
+    .manu_area ul li a {font-size: 16px;}
+    .search_icon {margin-top: 6px;}
+    .mobile_logo{display: block;}
+    
+}
+@media (max-width: 909px) {
+
+    .manu_area ul li a {font-size: 13px;}
+    .mobile_logo{display: block;}
+}
+@media (max-width: 766px) {
+    .mobile_manu {display: block;}
+    .top_header {display: none;}
+    .manu_area {display: none;}
+    .header_ripple {display: none;}
+    .mobile_logo Img {
+        width: 100%;
+        padding-top: 3px;
+    }
+    
+    .topBar, .header_logo_area {
+        display: none;
+    }
+
+    .mobile_logo{display: block; width: 60px;}
+    .contact_details {
+        margin-top: 30px;
+        width: 100%;
+        margin-left: 0%;
+    }
+
+
+}

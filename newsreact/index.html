@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Vite + React</title>
+
+    <link rel="stylesheet" href="/src/assets/frontend/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/src/assets/frontend/css/animate.min.css" />
+    <link rel="stylesheet" href="/src/assets/frontend/css/font-all.min.css" />
+    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
+    <link rel="stylesheet" href="/src/assets/frontend/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/src/assets/frontend/css/mainstyles.css" rel="stylesheet">
+    <link rel="stylesheet" href="/src/assets/frontend/css/responsive.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    
+    <script src="/src/assets/frontend/js/jquery-3.7.0.min.js" crossorigin="anonymous"></script>
+    <script src="/src/assets/frontend/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="/src/assets/admin/js/scripts.js"></script>
+    <script src="/src/assets/admin/js/tinymce.min.js"></script>
+    <script type="module" src="/src/main.jsx"></script>
+    <script src="/src/assets/frontend/js/font-all.min.js"></script>
+   <script src="/src/assets/frontend/js/easing.min.js"></script>
+   <script src="/src/assets/frontend/js/owl.carousel.min.js"></script>
+   <script src="/src/assets/frontend/js/custom.js"></script>
+<script>
+  window.Laravel = {
+    csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+  };
+</script>
+  </body>
+</html>
