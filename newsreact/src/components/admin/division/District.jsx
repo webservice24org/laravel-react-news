@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button, Card, Table, Modal, Form } from 'react-bootstrap';
 import axios from '/axiosConfig';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import $ from 'jquery';
+import 'datatables.net-bs5';
+import 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css';
 
 function District() {
   const [districts, setDistricts] = useState([]);
@@ -10,11 +13,68 @@ function District() {
   const [showModal, setShowModal] = useState(false);
   const [currentDistrict, setCurrentDistrict] = useState({ id: null, division_id: '', district_name: '' });
   const [isEditing, setIsEditing] = useState(false);
+  const tableRef = useRef(null);
 
   useEffect(() => {
     fetchDistricts();
     fetchDivisions();
   }, []);
+
+  useEffect(() => {
+    // Cleanup previous DataTable instance if any
+    if ($.fn.DataTable.isDataTable(tableRef.current)) {
+      $(tableRef.current).DataTable().destroy();
+    }
+
+    // Initialize DataTable after districts data is set
+    if (districts.length > 0) {
+      $(tableRef.current).DataTable({
+        data: districts.map((district, index) => [
+          index + 1,
+          divisions.find(division => division.id === district.division_id)?.division_name || 'N/A',
+          district.district_name,
+          district.id // for actions
+        ]),
+        columns: [
+          { title: "SL" },
+          { title: "Division Name" },
+          { title: "District Name" },
+          {
+            title: "Actions",
+            orderable: false,
+            render: function (data, type, row) {
+              return `
+                <button class="btn btn-primary me-1 edit-btn" data-id="${row[3]}">Edit</button>
+                <button class="btn btn-danger delete-btn" data-id="${row[3]}">Delete</button>
+              `;
+            }
+          }
+        ],
+        responsive: true
+      });
+
+      // Attach event listeners for edit and delete buttons
+      $(tableRef.current).on('click', '.edit-btn', function () {
+        const id = $(this).data('id');
+        const district = districts.find(d => d.id === id);
+        if (district) {
+          handleEdit(district);
+        }
+      });
+
+      $(tableRef.current).on('click', '.delete-btn', function () {
+        const id = $(this).data('id');
+        handleDelete(id);
+      });
+    }
+
+    // Cleanup DataTable on component unmount
+    return () => {
+      if ($.fn.DataTable.isDataTable(tableRef.current)) {
+        $(tableRef.current).DataTable().clear().destroy();
+      }
+    };
+  }, [districts, divisions]);
 
   const fetchDistricts = (divisionId = '') => {
     let url = '/api/districts/';
@@ -24,32 +84,28 @@ function District() {
 
     axios.get(url)
       .then((response) => {
-        console.log('Fetched Districts:', response.data); // Debugging log
         if (Array.isArray(response.data.data)) {
           setDistricts(response.data.data);
         } else {
-          toast.error('Unexpected response structure:', response.data);
+          toast.error('Unexpected response structure');
         }
       })
       .catch((error) => {
-        console.error('Error fetching Districts:', error); // Debugging log
-        toast.error('Error fetching Districts:', error);
+        toast.error('Error fetching Districts');
       });
   };
 
   const fetchDivisions = () => {
     axios.get('/api/divisions/')
       .then((response) => {
-        console.log('Fetched Divisions:', response.data); // Debugging log
         if (Array.isArray(response.data.data)) {
           setDivisions(response.data.data);
         } else {
-          toast.error('Unexpected response structure:', response.data);
+          toast.error('Unexpected response structure');
         }
       })
       .catch((error) => {
-        console.error('Error fetching Divisions:', error); // Debugging log
-        toast.error('Error fetching Divisions:', error);
+        toast.error('Error fetching Divisions');
       });
   };
 
@@ -72,13 +128,12 @@ function District() {
         division_id: currentDistrict.division_id,
         district_name: currentDistrict.district_name
       })
-        .then((response) => {
+        .then(() => {
           toast.success('District updated successfully');
           fetchDistricts();
           handleCloseModal();
         })
-        .catch((error) => {
-          console.error('Error updating district:', error); // Debugging log
+        .catch(() => {
           toast.error('Error updating district');
         });
     } else {
@@ -86,13 +141,12 @@ function District() {
         division_id: currentDistrict.division_id,
         district_name: currentDistrict.district_name
       })
-        .then((response) => {
+        .then(() => {
           toast.success('District created successfully');
           fetchDistricts();
           handleCloseModal();
         })
-        .catch((error) => {
-          console.error('Error creating district:', error); // Debugging log
+        .catch(() => {
           toast.error('Error creating district');
         });
     }
@@ -120,8 +174,7 @@ function District() {
             toast.success('District deleted successfully');
             fetchDistricts();
           })
-          .catch((error) => {
-            console.error('Error deleting district:', error); // Debugging log
+          .catch(() => {
             toast.error('Error deleting district');
           });
       }
@@ -136,7 +189,7 @@ function District() {
           <Button className='float-end' onClick={handleShowModal}>Add New District</Button>
         </Card.Header>
         <Card.Body>
-          <Table striped bordered hover>
+          <Table striped bordered hover responsive ref={tableRef}>
             <thead>
               <tr>
                 <th style={{ width: '5%' }}>SL</th>
@@ -150,7 +203,7 @@ function District() {
                 districts.map((district, index) => (
                   <tr key={district.id}>
                     <td>{index + 1}</td>
-                    <td>{divisions.find(division => division.id === district.division_id)?.division_name}</td>
+                    <td>{divisions.find(division => division.id === district.division_id)?.division_name || 'N/A'}</td>
                     <td>{district.district_name}</td>
                     <td className='text-center'>
                       <Button className='btn btn-primary me-1' onClick={() => handleEdit(district)}>Edit</Button>

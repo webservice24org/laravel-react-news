@@ -1,18 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button, Card, Table, Modal, Form } from 'react-bootstrap';
 import axios from '/axiosConfig';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import $ from 'jquery';
+import 'datatables.net-bs5';
+import 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css';
 
 function CategoryManagement() {
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [categoryData, setCategoryData] = useState({ id: '', category_name: '', description: '' });
+  const tableRef = useRef(null);
 
   useEffect(() => {
     fetchCategories();
+    return () => {
+      if ($.fn.DataTable.isDataTable(tableRef.current)) {
+        $(tableRef.current).DataTable().destroy(true);
+      }
+    };
   }, []);
+
+  useEffect(() => {
+    if (categories.length > 0) {
+      $(tableRef.current).DataTable({
+        data: categories,
+        columns: [
+          { data: null, title: 'SL', render: (data, type, row, meta) => meta.row + 1 },
+          { data: 'category_name', title: 'Category Name' },
+          { data: 'description', title: 'Description' },
+          {
+            data: null,
+            title: 'Actions',
+            render: (data, type, row) => `
+              <button class="btn btn-primary me-1 edit-btn">Edit</button>
+              <button class="btn btn-danger delete-btn">Delete</button>
+            `,
+          },
+        ],
+        destroy: true,
+      });
+
+      $(tableRef.current).on('click', '.edit-btn', function () {
+        const data = $(tableRef.current).DataTable().row($(this).parents('tr')).data();
+        handleShowModal(data, true);
+      });
+
+      $(tableRef.current).on('click', '.delete-btn', function () {
+        const data = $(tableRef.current).DataTable().row($(this).parents('tr')).data();
+        handleDeleteCategory(data.id);
+      });
+    }
+  }, [categories]);
 
   const fetchCategories = () => {
     axios.get('/api/categories/')
@@ -89,7 +130,7 @@ function CategoryManagement() {
           <Button className='float-end' onClick={() => handleShowModal()}>Add New Category</Button>
         </Card.Header>
         <Card.Body>
-          <Table striped bordered hover>
+          <Table striped bordered hover ref={tableRef}>
             <thead>
               <tr>
                 <th style={{ width: '5%' }}>SL</th>
@@ -99,17 +140,7 @@ function CategoryManagement() {
               </tr>
             </thead>
             <tbody>
-              {categories.map((category, index) => (
-                <tr key={category.id}>
-                  <td>{index + 1}</td>
-                  <td>{category.category_name}</td>
-                  <td>{category.description}</td>
-                  <td className='text-center'>
-                    <Button className='btn btn-primary me-1' onClick={() => handleShowModal(category, true)}>Edit</Button>
-                    <Button className='btn btn-danger' onClick={() => handleDeleteCategory(category.id)}>Delete</Button>
-                  </td>
-                </tr>
-              ))}
+              {/* DataTables will populate this */}
             </tbody>
           </Table>
         </Card.Body>
@@ -120,30 +151,29 @@ function CategoryManagement() {
           <Modal.Title>{isEdit ? 'Edit Category' : 'Add Category'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Form>
-          <Form.Group className='mb-3'>
-            <Form.Label>Category Name</Form.Label>
-            <Form.Control
-              type='text'
-              placeholder='Enter category name'
-              name='category_name'
-              value={categoryData.category_name}
-              onChange={handleInputChange}
-            />
-          </Form.Group>
-          <Form.Group className='mb-3'>
-            <Form.Label>Description (Optional)</Form.Label>
-            <Form.Control
-              as='textarea'
-              rows={3} // Optional: Specifies the number of visible text lines
-              placeholder='Enter description'
-              name='description'
-              value={categoryData.description}
-              onChange={handleInputChange}
-            />
-          </Form.Group>
-        </Form>
-
+          <Form>
+            <Form.Group className='mb-3'>
+              <Form.Label>Category Name</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter category name'
+                name='category_name'
+                value={categoryData.category_name}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Description (Optional)</Form.Label>
+              <Form.Control
+                as='textarea'
+                rows={3} // Optional: Specifies the number of visible text lines
+                placeholder='Enter description'
+                name='description'
+                value={categoryData.description}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+          </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant='secondary' onClick={handleCloseModal}>

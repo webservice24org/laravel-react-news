@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button, Card, Table, Modal, Form } from 'react-bootstrap';
 import axios from '/axiosConfig';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import $ from 'jquery';
+import 'datatables.net-bs5';
+import 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css';
 
 function SubCategoryManagement() {
   const [subCategories, setSubCategories] = useState([]);
@@ -10,11 +13,70 @@ function SubCategoryManagement() {
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [subCategoryData, setSubCategoryData] = useState({ id: '', category_id: '', sub_category_name: '', description: '' });
+  const tableRef = useRef(null);
 
   useEffect(() => {
     fetchSubCategories();
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    // Cleanup previous DataTable instance if any
+    if ($.fn.DataTable.isDataTable(tableRef.current)) {
+      $(tableRef.current).DataTable().destroy();
+    }
+
+    // Initialize DataTable after subCategories data is set
+    if (subCategories.length > 0) {
+      $(tableRef.current).DataTable({
+        data: subCategories.map((subCategory, index) => [
+          index + 1,
+          categories.find(category => category.id === subCategory.category_id)?.category_name || 'N/A',
+          subCategory.sub_category_name,
+          subCategory.description,
+          subCategory.id // for actions
+        ]),
+        columns: [
+          { title: "SL" },
+          { title: "Category" },
+          { title: "Sub-Category Name" },
+          { title: "Description" },
+          {
+            title: "Actions",
+            orderable: false,
+            render: function (data, type, row) {
+              return `
+                <button class="btn btn-primary me-1 edit-btn" data-id="${row[4]}">Edit</button>
+                <button class="btn btn-danger delete-btn" data-id="${row[4]}">Delete</button>
+              `;
+            }
+          }
+        ],
+        responsive: true
+      });
+
+      // Attach event listeners for edit and delete buttons
+      $(tableRef.current).on('click', '.edit-btn', function () {
+        const id = $(this).data('id');
+        const subCategory = subCategories.find(sc => sc.id === id);
+        if (subCategory) {
+          handleShowModal(subCategory, true);
+        }
+      });
+
+      $(tableRef.current).on('click', '.delete-btn', function () {
+        const id = $(this).data('id');
+        handleDeleteSubCategory(id);
+      });
+    }
+
+    // Cleanup DataTable on component unmount
+    return () => {
+      if ($.fn.DataTable.isDataTable(tableRef.current)) {
+        $(tableRef.current).DataTable().clear().destroy();
+      }
+    };
+  }, [subCategories, categories]);
 
   const fetchSubCategories = (categoryId = '') => {
     let url = '/api/sub-categories/';
@@ -32,7 +94,6 @@ function SubCategoryManagement() {
         }
       })
       .catch((error) => {
-        console.error('Error fetching Sub-Categories:', error); // Debugging log
         toast.error('Error fetching Sub-Categories');
       });
   };
@@ -112,7 +173,7 @@ function SubCategoryManagement() {
           <Button className='float-end' onClick={() => handleShowModal()}>Add New Sub-Category</Button>
         </Card.Header>
         <Card.Body>
-          <Table striped bordered hover>
+          <Table striped bordered hover responsive ref={tableRef}>
             <thead>
               <tr>
                 <th style={{ width: '5%' }}>SL</th>
@@ -172,7 +233,6 @@ function SubCategoryManagement() {
               <Form.Label>Sub-Category Name</Form.Label>
               <Form.Control
                 type='text'
-                placeholder='Enter sub-category name'
                 name='sub_category_name'
                 value={subCategoryData.sub_category_name}
                 onChange={handleInputChange}
@@ -183,7 +243,6 @@ function SubCategoryManagement() {
               <Form.Control
                 as='textarea'
                 rows={3}
-                placeholder='Enter description'
                 name='description'
                 value={subCategoryData.description}
                 onChange={handleInputChange}
@@ -192,11 +251,9 @@ function SubCategoryManagement() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant='secondary' onClick={handleCloseModal}>
-            Close
-          </Button>
+          <Button variant='secondary' onClick={handleCloseModal}>Close</Button>
           <Button variant='primary' onClick={handleSaveSubCategory}>
-            {isEdit ? 'Update' : 'Save'}
+            {isEdit ? 'Save Changes' : 'Save Sub-Category'}
           </Button>
         </Modal.Footer>
       </Modal>

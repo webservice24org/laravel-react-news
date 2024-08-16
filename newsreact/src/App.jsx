@@ -19,27 +19,32 @@ import PostForm from './components/admin/posts/PostForm';
 
 import MainLayout from './layouts/frontend/MainLayout';
 import Home from './components/frontend/Home';
-
-
+import PrivateRoute from './components/PrivateRoute'; 
 
 const router = createBrowserRouter([
   {
     path: "/admin",
-    element: <MasterLayout />,
+    element: <PrivateRoute />, 
     children: [
-      { path: "dashboard", element: <Dashboard /> },
-      { path: "profile", element: <Profile /> },
-      { path: "role", element: <AuthRole /> },
-      { path: "permission", element: <UserPermissions /> },
-      { path: "users", element: <Users /> },
-      { path: "division", element: <Division /> },
-      { path: "district", element: <District /> },
-      { path: "categories", element: <Category /> },
-      { path: "sub-categories", element: <SubCategory /> },
-      { path: "tags", element: <Tags /> },
-      { path: "posts", element: <PostList /> },
-      { path: "posts/create", element: <PostForm /> },
-      { path: "posts/edit/:postId", element: <PostForm /> },
+      {
+        path: "/admin",
+        element: <MasterLayout />,
+        children: [
+          { path: "", element: <Dashboard /> },
+          { path: "profile", element: <Profile /> },
+          { path: "role", element: <AuthRole /> },
+          { path: "permission", element: <UserPermissions /> },
+          { path: "users", element: <Users /> },
+          { path: "division", element: <Division /> },
+          { path: "district", element: <District /> },
+          { path: "categories", element: <Category /> },
+          { path: "sub-categories", element: <SubCategory /> },
+          { path: "tags", element: <Tags /> },
+          { path: "posts", element: <PostList /> },
+          { path: "posts/create", element: <PostForm /> },
+          { path: "posts/edit/:postId", element: <PostForm /> },
+        ],
+      },
     ],
   },
   {
@@ -47,8 +52,6 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
-      
-
     ],
   },
 ]);

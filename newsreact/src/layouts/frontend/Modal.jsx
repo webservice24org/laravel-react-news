@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from '/axiosConfig'; 
+import axios from '/axiosConfig'; // Using the axios instance you configured
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,16 +14,19 @@ const Modal = () => {
     try {
       const response = await axios.post('/api/auth/login', { email, password });
 
-      if (response.data.success) {
+      if (response.data.message === "Login successful") {
         toast.success('Login successful');
-        navigate('/admin/dashboard');
+        localStorage.setItem('token', response.data.access_token);
+        const loginModal = document.getElementById('loginModal');
+        const modal = bootstrap.Modal.getInstance(loginModal);
+        modal.hide();
+        navigate('/admin/');
+
       } else {
-        console.error('Login error:', error);
         toast.error('Invalid credentials');
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      toast.error('An error occurred during login');
+    } catch (err) { 
+      toast.error('An error occurred during login', err);
     }
   };
 
