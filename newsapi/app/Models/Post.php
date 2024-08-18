@@ -25,6 +25,8 @@ class Post extends Model
         'view_count',
         'user_id',
         'news_source',
+        'isLead',
+        'videoLink',
     ];
 
     public function category()

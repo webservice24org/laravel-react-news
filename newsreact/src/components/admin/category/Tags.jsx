@@ -1,18 +1,72 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button, Card, Table, Modal, Form } from 'react-bootstrap';
 import axios from '/axiosConfig';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import $ from 'jquery';
+import 'datatables.net-bs5';
+import 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css';
 
 function TagManagement() {
   const [tags, setTags] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [tagData, setTagData] = useState({ id: '', tag_name: '' });
+  const tableRef = useRef(null);
 
   useEffect(() => {
     fetchTags();
   }, []);
+
+  useEffect(() => {
+    if ($.fn.DataTable.isDataTable(tableRef.current)) {
+      $(tableRef.current).DataTable().destroy();
+    }
+
+    if (tags.length > 0) {
+      $(tableRef.current).DataTable({
+        data: tags.map((tag, index) => [
+          index + 1,
+          tag.tag_name,
+          tag.id
+        ]),
+        columns: [
+          { title: "SL" },
+          { title: "Tag Name" },
+          {
+            title: "Actions",
+            orderable: false,
+            render: function (data, type, row) {
+              return `
+                <button class="btn btn-primary me-1 edit-btn" data-id="${row[2]}">Edit</button>
+                <button class="btn btn-danger delete-btn" data-id="${row[2]}">Delete</button>
+              `;
+            }
+          }
+        ],
+        responsive: true
+      });
+
+      $(tableRef.current).on('click', '.edit-btn', function () {
+        const id = $(this).data('id');
+        const tag = tags.find(t => t.id === id);
+        if (tag) {
+          handleShowModal(tag, true);
+        }
+      });
+
+      $(tableRef.current).on('click', '.delete-btn', function () {
+        const id = $(this).data('id');
+        handleDeleteTag(id);
+      });
+    }
+
+    return () => {
+      if ($.fn.DataTable.isDataTable(tableRef.current)) {
+        $(tableRef.current).DataTable().clear().destroy();
+      }
+    };
+  }, [tags]);
 
   const fetchTags = () => {
     axios.get('/api/tags/')
@@ -27,6 +81,7 @@ function TagManagement() {
       })
       .catch((error) => {
         console.error('Error fetching tags:', error);
+        toast.error('Error fetching tags');
       });
   };
 
@@ -89,7 +144,7 @@ function TagManagement() {
           <Button className='float-end' onClick={() => handleShowModal()}>Add New Tag</Button>
         </Card.Header>
         <Card.Body>
-          <Table striped bordered hover>
+          <Table striped bordered hover responsive ref={tableRef}>
             <thead>
               <tr>
                 <th style={{ width: '5%' }}>SL</th>
@@ -98,16 +153,7 @@ function TagManagement() {
               </tr>
             </thead>
             <tbody>
-              {tags.map((tag, index) => (
-                <tr key={tag.id}>
-                  <td>{index + 1}</td>
-                  <td>{tag.tag_name}</td>
-                  <td className='text-center'>
-                    <Button className='btn btn-primary me-1' onClick={() => handleShowModal(tag, true)}>Edit</Button>
-                    <Button className='btn btn-danger' onClick={() => handleDeleteTag(tag.id)}>Delete</Button>
-                  </td>
-                </tr>
-              ))}
+              {/* DataTables will handle rendering */}
             </tbody>
           </Table>
         </Card.Body>

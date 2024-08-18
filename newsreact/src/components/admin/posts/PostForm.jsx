@@ -11,25 +11,29 @@ function PostForm() {
   const navigate = useNavigate();
 
   const [postData, setPostData] = useState({
-    post_upper_title: '',
+    post_upper_title: null,
     post_title: '',
-    post_sub_title: '',
+    post_sub_title: null,
     post_details: '',
     post_slug: '',
     seo_title: '',
     seo_descp: '',
     reporter_name: '',
-    division_id: '',
-    district_id: '',
-    category_id: '',
+    division_id: null, 
+    district_id: null,
+    category_id: '', 
     post_thumbnail: '',
     thumbnail_caption: '',
     thumbnail_alt: '',
     news_source: '',
-    user_id: '',
+    user_id: null, 
+    videoLink: '',
+    isLead: false,
     sub_category_ids: [],
     tags: [] 
-  });
+});
+
+
 
   
   const [divisions, setDivisions] = useState([]);
@@ -233,34 +237,36 @@ function PostForm() {
     e.preventDefault();
   
     const formData = new FormData();
-    
     postData.tags.forEach(tag => formData.append('tags[]', tag.tag_name));
   
     Object.keys(postData).forEach(key => {
-      if (Array.isArray(postData[key])) {
-        postData[key].forEach(item => formData.append(key + '[]', item)); 
-      } else if (key !== 'tags') { 
-        formData.append(key, postData[key]);
-      }
+        if (Array.isArray(postData[key])) {
+            postData[key].forEach(item => formData.append(`${key}[]`, item));
+        } else if (postData[key] !== undefined && postData[key] !== null) {
+            formData.append(key, postData[key]);
+        } else {
+            formData.append(key, ''); 
+        }
     });
 
     formData.append('old_post_thumbnail', postData.post_thumbnail || '');
-  
+
     try {
-      const requestMethod = postId ? axios.post : axios.post;
-      const url = postId ? `/api/update/${postId}` : '/api/posts';
+        const requestMethod = postId ? axios.post : axios.post;
+        const url = postId ? `/api/update/${postId}` : '/api/posts';
       
-      await requestMethod(url, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+        await requestMethod(url, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
       
-      toast.success(`Post ${postId ? 'updated' : 'created'} successfully.`);
-      navigate('/admin/posts');
+        toast.success(`Post ${postId ? 'updated' : 'created'} successfully.`);
+        navigate('/admin/posts');
     } catch (error) {
-      console.error('Error saving post:', error.response?.data || error.message);
-      toast.error('Failed to save post.');
+        console.error('Error saving post:', error.response?.data || error.message);
+        toast.error('Failed to save post.');
     }
-  };
+};
+
 
 
   return (
@@ -451,14 +457,33 @@ function PostForm() {
                     ))}
                   </div>
                 </Form.Group>
-               
+
+                <Form.Group className='mb-3'>
+                <Form.Label>Video Link <small className='text-danger'>(optional)</small></Form.Label>
+                <Form.Control
+                  type='url'
+                  placeholder='Enter video link'
+                  name='videoLink'
+                  value={postData.videoLink}
+                  onChange={handleInputChange}
+                />
+              </Form.Group>
+
               </div>
             </div>
           </div>
           <div className='col-md-3 col-sm-12'>
             <div className='card shadow bg-white rounded'>
               <div className='card-body'>
-                
+              <Form.Group className='mb-3'>
+                <Form.Check 
+                  type='checkbox' 
+                  label='Is Lead Article'
+                  name='isLead'
+                  checked={postData.isLead}
+                  onChange={(e) => setPostData({ ...postData, isLead: e.target.checked })}
+                />
+              </Form.Group>
                 <Form.Group className='mb-3'>
                   <Form.Label>Reporter Name <small className='text-danger'>(optional)</small></Form.Label>
                   <Form.Control

@@ -1,105 +1,154 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button, Table } from 'react-bootstrap';
+import axios from '/axiosConfig'; 
 import { useNavigate } from 'react-router-dom';
-import axios from '/axiosConfig';
-import axiosInstance from '/axiosConfig';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-
+import $ from 'jquery'; // Import jQuery
+import 'datatables.net-bs5'; // Import DataTables
+import 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css'; // Import DataTables CSS
 
 function PostList() {
-  const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const tableRef = useRef(null);
 
   useEffect(() => {
     fetchPosts();
   }, []);
 
+  useEffect(() => {
+    // Initialize DataTable after posts data is set
+    if (posts.length > 0) {
+      // Cleanup previous DataTable instance if any
+      if ($.fn.DataTable.isDataTable(tableRef.current)) {
+        $(tableRef.current).DataTable().clear().destroy();
+      }
+
+      // Initialize DataTable
+      $(tableRef.current).DataTable({
+        data: posts.map((post, index) => [
+          index + 1,
+          post.post_title,
+          post.reporter_name,
+          `<img 
+            src="${axios.defaults.baseURL}storage/post/${post.post_thumbnail}" 
+            alt="Post Thumbnail" 
+            style="width: 100px; height: auto;" 
+            onerror="this.src='/path/to/default-image.jpg';" 
+          />`,
+          post.id // for actions
+        ]),
+        columns: [
+          { title: "SL" },
+          { title: "Title" },
+          { title: "Reporter" },
+          { title: "Thumbnail" },
+          {
+            title: "Actions",
+            orderable: false,
+            render: function (data, type, row) {
+              return `
+                <button class="btn btn-primary me-1 edit-btn" data-id="${row[4]}">Edit</button>
+                <button class="btn btn-danger delete-btn" data-id="${row[4]}">Delete</button>
+              `;
+            }
+          }
+        ],
+        responsive: true
+      });
+
+      // Attach event listeners for edit and delete buttons
+      $(tableRef.current).on('click', '.edit-btn', function () {
+        const id = $(this).data('id');
+        handleEdit(id);
+      });
+
+      $(tableRef.current).on('click', '.delete-btn', function () {
+        const id = $(this).data('id');
+        handleDelete(id);
+      });
+    }
+
+    // Cleanup DataTable on component unmount
+    return () => {
+      if ($.fn.DataTable.isDataTable(tableRef.current)) {
+        $(tableRef.current).DataTable().clear().destroy();
+      }
+    };
+  }, [posts]);
+
   const fetchPosts = () => {
-    axios.get('/api/post-list')
+    axios.get('/api/posts/')
       .then((response) => {
-        setPosts(response.data.data || response.data);
+        if (Array.isArray(response.data.data)) {
+          setPosts(response.data.data);
+        } else {
+          toast.error('Unexpected response structure');
+        }
+        setIsLoading(false);
       })
-      .catch((error) => {
-        console.error('Error fetching posts:', error);
+      .catch(() => {
+        toast.error('Error fetching posts');
+        setIsLoading(false);
       });
   };
-  
 
-  const handleEditPost = (postId) => {
-    navigate(`/admin/posts/edit/${postId}`);
+  const handleEdit = (id) => {
+    navigate(`/admin/posts/edit/${id}`); 
+    console.log('Edit post with ID:', id);
   };
-  
 
-  const handleDeletePost = (postId) => {
-  
-    if (!postId) {
-      toast.error('Failed to delete post. Invalid post ID.');
-      return;
-    }
-  
-    const url = `/api/posts/${postId}`;
-    
+  const handleDelete = (id) => {
     Swal.fire({
       title: 'Are you sure?',
-      text: 'You won\'t be able to revert this!',
+      text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-    }).then(async (result) => {
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
       if (result.isConfirmed) {
-        try {
-          await axios.delete(url);
-          toast.success('Post deleted successfully.');
-          fetchPosts();
-        } catch (error) {
-          toast.error('Failed to delete post.');
-        }
+        axios.delete(`/api/posts/${id}`)
+          .then(() => {
+            toast.success('Post deleted successfully');
+            fetchPosts();
+          })
+          .catch(() => {
+            toast.error('Error deleting post');
+          });
       }
     });
   };
-  
-  
 
   return (
     <div className='mt-3'>
-      <Button className='mb-3' onClick={() => navigate('/admin/posts/create')}>
+      <Button className='mb-3' onClick={() => console.log('Add New Post')}>
         Add New Post
       </Button>
-      <Table striped bordered hover>
+      <Table striped bordered hover responsive ref={tableRef}>
         <thead>
           <tr>
             <th style={{ width: '5%' }}>SL</th>
             <th style={{ width: '30%' }}>Title</th>
-            <th style={{ width: '25%' }}>Thumbnail</th>
             <th style={{ width: '20%' }}>Reporter</th>
-            <th style={{ width: '20%' }} className='text-center'>Actions</th>
+            <th style={{ width: '20%' }}>Thumbnail</th>
+            <th style={{ width: '25%' }} className='text-center'>Actions</th>
           </tr>
         </thead>
         <tbody>
-  {posts.map((post, index) => (
-    <tr key={post.id}>
-      <td>{index + 1}</td>
-      <td>{post.post_title}</td>
-      <td>
-        <img 
-          src={`${axiosInstance.defaults.baseURL}storage/post/${post.post_thumbnail}`} 
-          alt="Post Thumbnail" 
-          style={{ width: '100px', height: 'auto' }} 
-          onError={(e) => { e.target.src = '/path/to/default-image.jpg'; }} 
-        />
-      </td>
-      <td>{post.reporter_name}</td>
-      <td className='text-center'>
-      <Button className='btn btn-primary me-1' onClick={() => handleEditPost(post.id)}>
-            Edit
-          </Button>
-        <Button className='btn btn-danger' onClick={() => handleDeletePost(post.id)}>Delete</Button>
-      </td>
-    </tr>
-  ))}
-</tbody>
-
+          {isLoading ? (
+            <tr>
+              <td colSpan="5" className="text-center">Loading...</td>
+            </tr>
+          ) : posts.length === 0 ? (
+            <tr>
+              <td colSpan="5" className="text-center">No posts found.</td>
+            </tr>
+          ) : null}
+        </tbody>
       </Table>
     </div>
   );

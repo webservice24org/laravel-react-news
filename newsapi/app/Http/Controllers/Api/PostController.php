@@ -32,6 +32,11 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        $input = $request->all();
+        $input['isLead'] = $request->has('isLead') ? false : true;
+
+        $request->merge($input);
+
         $request->validate([
             'post_title' => 'required|string|max:255',
             'post_details' => 'required|string',
@@ -42,15 +47,19 @@ class PostController extends Controller
             'post_slug' => 'nullable|string|max:255|unique:posts,post_slug',
             'sub_category_ids' => 'nullable|array',
             'tags' => 'nullable|array',
-            'tags.*' => 'string', 
+            'tags.*' => 'string',
             'seo_title' => 'nullable|string',
             'seo_descp' => 'nullable|string',
             'post_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg',
             'thumbnail_alt' => 'nullable|string|max:255|unique:posts,thumbnail_alt',
+            'isLead' => 'nullable|boolean',
+            'videoLink' => 'nullable|url'
         ]);
 
         $input = $request->except(['sub_category_ids', 'tags', 'category_id', 'seo_title', 'seo_descp']);
-
+        $input['division_id'] = $request->input('division_id') ? intval($request->input('division_id')) : null;
+        $input['district_id'] = $request->input('district_id') ? intval($request->input('district_id')) : null;
+        $input['user_id'] = $request->input('user_id') ? intval($request->input('user_id')) : null;
         if ($request->hasFile('post_thumbnail')) {
             $file = $request->file('post_thumbnail');
             $filename = time() . '.' . $file->getClientOriginalExtension();
@@ -127,49 +136,33 @@ class PostController extends Controller
 
     public function updatePost(Request $request, $id)
     {
-        $request->validate([
-            'post_title' => 'required|string|max:255',
-            'post_details' => 'required|string',
-            'category_id' => 'required|integer|exists:categories,id',
-            'user_id' => 'nullable|integer|exists:users,id',
-            'division_id' => 'nullable|integer|exists:divisions,id',
-            'district_id' => 'nullable|integer|exists:districts,id',
-            'post_slug' => 'nullable|string|max:255|unique:posts,post_slug,' . $id,
-            'sub_category_ids' => 'nullable|array',
-            'sub_category_ids.*' => 'integer|exists:sub_categories,id',
-            'tags' => 'nullable|array',
-            'tags.*' => 'string',
-            'seo_title' => 'nullable|string',
-            'seo_descp' => 'nullable|string',
-            
-        ]);
-
         $post = Post::findOrFail($id);
         $input = $request->except(['sub_category_ids', 'tags', 'category_id', 'seo_title', 'seo_descp']);
+        $input['division_id'] = $request->input('division_id') !== null ? $request->input('division_id') : null;
+        $input['district_id'] = $request->input('district_id') !== null ? $request->input('district_id') : null;
+        $input['user_id'] = $request->input('user_id') !== null ? $request->input('user_id') : null;
+
+        $input['isLead'] = $request->has('isLead') ? true : false;
 
         if ($request->hasFile('post_thumbnail')) {
-            $request->validate([
-                'post_thumbnail' => 'image|mimes:jpeg,png,jpg|max:2048',
-            ]);
-        
             $file = $request->file('post_thumbnail');
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/post', $filename);
-        
+
             if ($post->post_thumbnail && Storage::exists('public/post/' . $post->post_thumbnail)) {
                 $oldThumbnailPath = storage_path('app/public/post/' . $post->post_thumbnail);
-                
+
                 if (file_exists($oldThumbnailPath)) {
                     unlink($oldThumbnailPath);
                 }
             }
-        
+
             $input['post_thumbnail'] = $filename;
         } else {
             $input['post_thumbnail'] = $request->input('old_post_thumbnail');
         }
-        
-        $input['post_slug'] = !empty($input['post_slug']) 
+
+        $input['post_slug'] = !empty($input['post_slug'])
             ? preg_replace('/\s+/u', '-', trim($input['post_slug']))
             : preg_replace('/\s+/u', '-', trim($request->input('post_title')));
 
@@ -178,14 +171,10 @@ class PostController extends Controller
             $post->fill($input);
             $post->save();
 
-            if ($request->has('category_id')) {
-                PostCategory::updateOrCreate(
-                    ['post_id' => $post->id],
-                    ['category_id' => $request->category_id]
-                );
-            } else {
-                throw new \Exception('Category ID is required.');
-            }
+            PostCategory::updateOrCreate(
+                ['post_id' => $post->id],
+                ['category_id' => $request->category_id]
+            );
 
             if ($request->has('sub_category_ids')) {
                 PostSubcategory::where('post_id', $post->id)->delete();
@@ -200,14 +189,14 @@ class PostController extends Controller
             if ($request->has('tags')) {
                 $tags = $request->input('tags');
                 $tagIds = [];
-                
+
                 foreach ($tags as $tagName) {
                     if (is_string($tagName)) {
                         $tag = Tag::firstOrCreate(['tag_name' => $tagName]);
                         $tagIds[] = $tag->id;
                     }
                 }
-                
+
                 $post->tags()->sync($tagIds);
             }
 
@@ -226,6 +215,7 @@ class PostController extends Controller
             return response()->json(['success' => false, 'message' => 'Post update failed. ' . $e->getMessage()], 500);
         }
     }
+
 
 
     public function destroy($id)
