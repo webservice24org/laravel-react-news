@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PermissionController;
 use App\Http\Controllers\Auth\RoleController;
+use App\Http\Controllers\Api\FrontEndDisplayController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,14 @@ Route::post('/update/{id}', [PostController::class, 'updatePost']);
 Route::get('/post-list', [PostController::class, 'postList']);
 
 Route::apiResource('/tags', TagController::class);
+
+
+// Api for front end display posts
+
+
+Route::get('/lead-post', [FrontEndDisplayController::class, 'getLeadPost']);
+Route::get('/lead-posts', [FrontEndDisplayController::class, 'getLeadPostsExceptLatest']);
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();

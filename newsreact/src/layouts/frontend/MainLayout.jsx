@@ -1,19 +1,23 @@
-
+// src/layouts/frontend/MainLayout.jsx
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
+import SinglePostHeader from './SinglePostHeader'; // Import new header
 import Footer from './Footer';
 import Modal from './Modal';
 
-const MainLayout = ({ children }) => {
+const MainLayout = () => {
+  const location = useLocation();
+  const isSinglePost = location.pathname.startsWith('/post/');
+
   return (
     <div>
       <header>
-        <Header />
+        {isSinglePost ? <SinglePostHeader /> : <Header />}
       </header>
       <main className='frontLayout'>
         <div className="container-fluid px-4">
-              <Outlet />
+          <Outlet />
         </div>
       </main>
       <footer>

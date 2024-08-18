@@ -19,6 +19,7 @@ import PostForm from './components/admin/posts/PostForm';
 
 import MainLayout from './layouts/frontend/MainLayout';
 import Home from './components/frontend/Home';
+import SinglePost from './components/frontend/SinglePost';
 import PrivateRoute from './components/PrivateRoute'; 
 
 const router = createBrowserRouter([
@@ -52,6 +53,7 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "/post/:postId", element: <SinglePost /> }, // Route for single post view
     ],
   },
 ]);

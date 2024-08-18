@@ -476,13 +476,13 @@ function PostForm() {
             <div className='card shadow bg-white rounded'>
               <div className='card-body'>
               <Form.Group className='mb-3'>
-                <Form.Check 
+              <Form.Check 
                   type='checkbox' 
                   label='Is Lead Article'
                   name='isLead'
                   checked={postData.isLead}
                   onChange={(e) => setPostData({ ...postData, isLead: e.target.checked })}
-                />
+              />
               </Form.Group>
                 <Form.Group className='mb-3'>
                   <Form.Label>Reporter Name <small className='text-danger'>(optional)</small></Form.Label>

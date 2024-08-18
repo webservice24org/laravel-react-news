@@ -4,9 +4,9 @@ import axios from '/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-import $ from 'jquery'; // Import jQuery
-import 'datatables.net-bs5'; // Import DataTables
-import 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css'; // Import DataTables CSS
+import $ from 'jquery'; 
+import 'datatables.net-bs5'; 
+import 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css'; 
 
 function PostList() {
   const navigate = useNavigate();
@@ -19,14 +19,10 @@ function PostList() {
   }, []);
 
   useEffect(() => {
-    // Initialize DataTable after posts data is set
     if (posts.length > 0) {
-      // Cleanup previous DataTable instance if any
       if ($.fn.DataTable.isDataTable(tableRef.current)) {
         $(tableRef.current).DataTable().clear().destroy();
       }
-
-      // Initialize DataTable
       $(tableRef.current).DataTable({
         data: posts.map((post, index) => [
           index + 1,
@@ -38,7 +34,7 @@ function PostList() {
             style="width: 100px; height: auto;" 
             onerror="this.src='/path/to/default-image.jpg';" 
           />`,
-          post.id // for actions
+          post.id 
         ]),
         columns: [
           { title: "SL" },
@@ -59,7 +55,6 @@ function PostList() {
         responsive: true
       });
 
-      // Attach event listeners for edit and delete buttons
       $(tableRef.current).on('click', '.edit-btn', function () {
         const id = $(this).data('id');
         handleEdit(id);
@@ -71,7 +66,6 @@ function PostList() {
       });
     }
 
-    // Cleanup DataTable on component unmount
     return () => {
       if ($.fn.DataTable.isDataTable(tableRef.current)) {
         $(tableRef.current).DataTable().clear().destroy();
@@ -125,7 +119,7 @@ function PostList() {
 
   return (
     <div className='mt-3'>
-      <Button className='mb-3' onClick={() => console.log('Add New Post')}>
+      <Button className='mb-3' onClick={() => navigate('/admin/posts/create')}>
         Add New Post
       </Button>
       <Table striped bordered hover responsive ref={tableRef}>
