@@ -50,4 +50,23 @@ class CategoryController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Category deleted successfully.']);
     }
+
+    public function getCategoryWithSubCategories($categoryId)
+    {
+
+        $category = Category::with('subCategories')
+            ->find($categoryId);
+
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
+        $response = [
+            'categoryName' => $category->category_name,
+            'subCategories' => $category->subCategories->pluck('sub_category_name')
+        ];
+
+        return response()->json($response);
+    }
+
 }

@@ -54,7 +54,9 @@ Route::apiResource('/tags', TagController::class);
 Route::get('/lead-post', [FrontEndDisplayController::class, 'getLeadPost']);
 Route::get('/lead-posts', [FrontEndDisplayController::class, 'getLeadPostsExceptLatest']);
 
+Route::get('/posts/category/{categoryId}', [FrontEndDisplayController::class, 'getPostsByCategory']);
 
+Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getCategoryWithSubCategories']);
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');

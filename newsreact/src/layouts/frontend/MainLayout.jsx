@@ -8,12 +8,14 @@ import Modal from './Modal';
 
 const MainLayout = () => {
   const location = useLocation();
-  const isSinglePost = location.pathname.startsWith('/post/');
+  
+  // Check if the current path is for a single post or a category post
+  const isSinglePostOrCategory = location.pathname.startsWith('/post/') || location.pathname.startsWith('/category/');
 
   return (
     <div>
       <header>
-        {isSinglePost ? <SinglePostHeader /> : <Header />}
+        {isSinglePostOrCategory ? <SinglePostHeader /> : <Header />}
       </header>
       <main className='frontLayout'>
         <div className="container-fluid px-4">

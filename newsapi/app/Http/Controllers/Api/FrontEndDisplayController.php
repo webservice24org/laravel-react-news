@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -48,7 +49,7 @@ class FrontEndDisplayController extends Controller
             $posts = Post::where('isLead', true)
                 ->where('id', '<>', $latestLeadPostId)
                 ->select('id', 'post_title', 'post_details', 'post_thumbnail')
-                ->without('category', 'subcategories', 'tags', 'seo') // Disable eager loading
+                ->without('category', 'subcategories', 'tags', 'seo') 
                 ->latest()
                 ->take(6)
                 ->get();
@@ -67,6 +68,19 @@ class FrontEndDisplayController extends Controller
     }
 
 
+    public function getPostsByCategory($categoryId)
+{
+    $category = Category::with('posts')->find($categoryId);
+
+    if (!$category) {
+        return response()->json(['message' => 'Category not found'], 404);
+    }
+
+    return response()->json([
+        'categoryName' => $category->category_name, // Correct property name
+        'posts' => $category->posts,
+    ]);
+}
 
 
 

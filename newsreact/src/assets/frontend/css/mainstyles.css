@@ -906,7 +906,7 @@ span.footerTitleBorder{
 	display: inline-block;
 }
 .single_bredcumb ul li span {
-	padding-left: 5px;
+	padding-right: 5px;
 	color: red;
 }
 .single_news_title {
@@ -916,9 +916,7 @@ span.footerTitleBorder{
 	background: #f4f1f1;
 	padding: 8px;
 }
-.single_bredcumb ul li:last-child span {
-	display: none;
-}
+
 .single_bredcumb ul li a {
 	font-weight: bold;
 }

@@ -34,6 +34,10 @@ class Post extends Model
         return $this->hasOne(PostCategory::class, 'post_id');
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'post_categories', 'post_id', 'category_id');
+    }
     public function subcategories()
     {
         return $this->belongsToMany(SubCategory::class, 'post_subcategories', 'post_id', 'sub_category_id');
