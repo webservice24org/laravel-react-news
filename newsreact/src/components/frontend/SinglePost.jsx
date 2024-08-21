@@ -1,9 +1,9 @@
-// src/components/frontend/SinglePost.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axiosInstance from '/axiosConfig'; 
 import { toast } from 'react-toastify';
 import LatestPopuler from "./LatestPopuler";
+import formatDate from '/formatDate';
 
 const SinglePost = () => {
   const { postId } = useParams();
@@ -46,12 +46,28 @@ const SinglePost = () => {
                     <span className="bredcumb_devider"><i className="fa-solid fa-angles-right"></i></span>
                   </li>
                   {post && post.category && (
-                    <li>
-                      <Link to={`/category/${post.category.category_id}/posts`}>{post.category.category_id}</Link>
+                    <>
+                      <li>
+                        <Link to={`/category/${post.category.id}/posts`}>{post.category.category_name}</Link>
+                        <span className="bredcumb_devider"><i className="fa-solid fa-angles-right"></i></span>
+                      </li>
+                      {post.subcategories && post.subcategories.length > 0 && (
+                        <li>
+                          {post.subcategories.map((subcategory) => (
+                            <>
+                            <Link
+                              key={subcategory.id}
+                              to={`/category/${post.category.id}/subcategory/${subcategory.id}/posts`}
+                            >
+                              {subcategory.sub_category_name}
+                            </Link>
+                            <span className="bredcumb_devider"><i className="fa-solid fa-angles-right"></i></span>
+                            </>
+                          ))}
+                        </li>
+                      )}
 
-                      <span className="bredcumb_devider"><i className="fa-solid fa-angles-right"></i></span>
-                    </li>
-                    
+                    </>
                   )}
                   <li>
                     <span className="bredcumb_title">{post.post_title}</span>
@@ -73,7 +89,7 @@ const SinglePost = () => {
                   </div>
                   <div className="news_author">
                     <div className="row">
-                      <div className="col-md-6 col-sm-12">
+                      <div className="col-md-8 col-sm-12">
                         <div className="author_img">
                           <img src="" alt="" />
                         </div>
@@ -81,10 +97,14 @@ const SinglePost = () => {
                           <a href="#">Desk Reporter</a>
                         </div>
                         <div className="news_date">
-                          <p><a href="#">প্রকাশঃ <span><i className="fa-solid fa-calendar-days"></i></span> ২৩ মে, ২০২৩</a> <span>||</span> <a href="#"> আপডেটেডঃ ২৪ মে, ২০২৩</a></p>
+                          <p>
+                            <a href="#">প্রকাশঃ <span><i className="fa-solid fa-calendar-days"></i></span> {formatDate(post.created_at)}</a> 
+                            <span>||</span> 
+                            <a href="#"> আপডেটঃ {formatDate(post.updated_at)}</a>
+                          </p>
                         </div>
                       </div>
-                      <div className="col-md-6 col-sm-12">
+                      <div className="col-md-4 col-sm-12">
                         <div className="social_share_buttons text-end">
                           <ul>
                             <li><span>Share Now</span></li>
@@ -99,7 +119,7 @@ const SinglePost = () => {
                   </div>
                   <div className="single_news_article">
                     <div className="img_box">
-                      <img src={`${baseURL}storage/post/${post.post_thumbnail}`} alt={post.post_title} />
+                      <img className="rounded img-fluid w-100" src={`${baseURL}storage/post/${post.post_thumbnail}`} alt={post.post_title} />
                     </div>
                     <div className="news_post">
                       <div dangerouslySetInnerHTML={{ __html: post.post_details }} />

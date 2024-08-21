@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\PostSubcategory;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 
 class FrontEndDisplayController extends Controller
@@ -69,19 +71,43 @@ class FrontEndDisplayController extends Controller
 
 
     public function getPostsByCategory($categoryId)
-{
-    $category = Category::with('posts')->find($categoryId);
+    {
+        $category = Category::with('posts')->find($categoryId);
 
-    if (!$category) {
-        return response()->json(['message' => 'Category not found'], 404);
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+
+        return response()->json([
+            'categoryName' => $category->category_name, 
+            'posts' => $category->posts,
+        ]);
     }
 
-    return response()->json([
-        'categoryName' => $category->category_name, // Correct property name
-        'posts' => $category->posts,
-    ]);
-}
+    public function getPostsBySubCategories($categoryId, $subcatId)
+    {
+        $subCategory = SubCategory::where('category_id', $categoryId)
+                        ->where('id', $subcatId)
+                        ->firstOrFail(['id', 'sub_category_name']);
+        
+        $postIds = PostSubcategory::where('sub_category_id', $subcatId)->pluck('post_id');
+        $posts = Post::whereIn('id', $postIds)->get();
 
+        $categoryName = Category::findOrFail($categoryId)->category_name;
+
+        return response()->json([
+            'status' => 'success',
+            'category' => [
+                'id' => $categoryId,
+                'name' => $categoryName,
+            ],
+            'subCategory' => [
+                'id' => $subCategory->id,
+                'name' => $subCategory->sub_category_name,
+            ],
+            'posts' => $posts,
+        ]);
+    }
 
 
 }

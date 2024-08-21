@@ -22,6 +22,7 @@ import Home from './components/frontend/Home';
 import SinglePost from './components/frontend/SinglePost';
 import CategoryPost from './components/frontend/CategoryPost';
 import PrivateRoute from './components/PrivateRoute'; 
+import SubCategoryPost from './components/frontend/SubCategoryPost';
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,7 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/post/:postId", element: <SinglePost /> }, 
       { path: "/category/:categoryId/posts", element: <CategoryPost /> }, 
+      { path: "/category/:categoryId/subcategory/:subcatId/posts", element: <SubCategoryPost /> }, 
     ],
   },
 ]);

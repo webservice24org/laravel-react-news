@@ -1,8 +1,9 @@
+//categoryPost.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from '/axiosConfig';
-import axiosInstance from '/axiosConfig'; 
+import { Link, useParams } from 'react-router-dom';
+import axiosInstance from '/axiosConfig';
 import LatestPopuler from './LatestPopuler';
+import formatDate from '/formatDate';
 
 const CategoryPost = () => {
     const { categoryId } = useParams();
@@ -15,7 +16,7 @@ const CategoryPost = () => {
     const baseURL = axiosInstance.defaults.baseURL;
 
     useEffect(() => {
-        axios.get(`/api/posts/category/${categoryId}`)
+        axiosInstance.get(`/api/posts/category/${categoryId}`)
           .then(response => {
             setCategoryName(response.data.categoryName);
             const allPosts = response.data.posts;
@@ -29,10 +30,8 @@ const CategoryPost = () => {
             console.error('Error fetching posts:', error);
           });
 
-        
-        axios.get(`/api/categories/${categoryId}/subcategories`)
+        axiosInstance.get(`/api/categories/${categoryId}/subcategories`)
           .then(response => {
-            setCategoryName(response.data.categoryName);  
             setSubCategories(response.data.subCategories);
           })
           .catch(error => {
@@ -61,16 +60,19 @@ const CategoryPost = () => {
                     <div className="col-sm-12">
                         <div className="single_bredcumb">
                             <ul>
-                                <li><a href="#"><i className="fa-solid fa-house"></i></a> <span className="bredcumb_devider"><i className="fa-solid fa-angles-right"></i></span></li>
-                                <li><a href="#">{categoryName}</a><span className="bredcumb_devider"><i className="fa-solid fa-angles-right"></i></span></li>
-                                {subCategories.map((subCategory, index) => (
-                                    <li key={index}>
-                                        <a href="#">{subCategory}</a>
-                                        {index !== subCategories.length - 1 && (
-                                            <span className="bredcumb_devider"><i className="fa-solid fa-grip-lines-vertical ps-1"></i></span>
-                                        )}
-                                    </li>
-                                ))}
+                                <li><a href="/"><i className="fa-solid fa-house"></i></a> <span className="bredcumb_devider"><i className="fa-solid fa-angles-right"></i></span></li>
+                                <li><Link to={`/category/${categoryId}/posts`}>{categoryName}</Link><span className="bredcumb_devider"><i className="fa-solid fa-angles-right"></i></span></li>
+                                { 
+                                    subCategories.map((subCategory, index) => (
+                                        <li key={index}>
+                                            <Link to={`/category/${categoryId}/subcategory/${subCategory.id}/posts`}>{subCategory.name}</Link>
+                                            {index !== subCategories.length - 1 && (
+                                                <span className="bredcumb_devider"><i className="fa-solid fa-grip-lines-vertical ps-1"></i></span>
+                                            )}
+                                        </li>
+                                    ))
+                                }
+
                             </ul>
                         </div>
                     </div> 
@@ -117,10 +119,15 @@ const CategoryPost = () => {
                                             <img className="img-fluid" src={`${baseURL}storage/post/${post.post_thumbnail}`} alt={post.post_title} />
                                             <h2>{post.post_title}</h2>
                                             <p>
-                                                <a href={`/post/${post.id}`}>প্রকাশঃ <span><i className="fa-solid fa-calendar-days"></i></span> {post.created_at}</a> 
-                                                <span><i className="fa-solid fa-grip-lines-vertical"></i></span> 
-                                                <a href={`/post/${post.id}`}> আপডেটেডঃ {post.updated_at}</a>
+                                                <a href={`/post/${post.id}`}>
+                                                    প্রকাশঃ <span><i className="fa-solid fa-calendar-days"></i></span> {formatDate(post.created_at)}
+                                                </a> 
+                                                <br />
+                                                <a href={`/post/${post.id}`}>
+                                                    আপডেটঃ <span><i className="fa-solid fa-calendar-days"></i></span> {formatDate(post.updated_at)}
+                                                </a>
                                             </p>
+ 
                                             </div>
                                         </div>
                                         </a>
@@ -155,7 +162,7 @@ const CategoryPost = () => {
                         </div>
                     </div>
                     <div className="col-md-4 col-sm-12">
-                        <LatestPopuler />
+                    <LatestPopuler />
                     </div>
                 </div>
             </div>

@@ -126,12 +126,24 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::with(['category', 'subcategories', 'tags', 'seo'])->find($id);
+        $post = Post::with([
+            'category' => function($query) {
+                $query->join('categories', 'post_categories.category_id', '=', 'categories.id')
+                      ->select('categories.id', 'categories.category_name', 'post_categories.post_id');
+            },
+            'subcategories',
+            'tags',
+            'seo'
+        ])->find($id);
+    
         if (!$post) {
             return response()->json(['success' => false, 'message' => 'Post not found.'], 404);
         }
+    
         return response()->json(['success' => true, 'data' => $post, 'message' => 'Post retrieved successfully.']);
     }
+    
+
     
 
     public function updatePost(Request $request, $id)

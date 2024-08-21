@@ -38,7 +38,7 @@ class Post extends Model
     {
         return $this->belongsToMany(Category::class, 'post_categories', 'post_id', 'category_id');
     }
-    public function subcategories()
+    public function subCategories()
     {
         return $this->belongsToMany(SubCategory::class, 'post_subcategories', 'post_id', 'sub_category_id');
     }

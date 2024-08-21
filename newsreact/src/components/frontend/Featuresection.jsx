@@ -36,18 +36,18 @@ const Featuresection = () => {
                   <div className="col-md-4 col-sm-12" key={index}>
                     <div className="single_feature_news card">
                       <div className="img_box">
-                        <a href="#">
+                      <Link to={`/post/${post.id}`}>
                         <img 
                             className="img-fluid" 
                             src={`${baseURL}storage/post/${post.post_thumbnail}`} 
                             alt={post.post_title} 
                           />
-                        </a>
+                        </Link>
                       </div>
                       <div className="card-body">
-                        <a href="#">
+                        <Link to={`/post/${post.id}`}>
                           <h2>{post.post_title}</h2>
-                        </a>
+                        </Link>
                         <p>{getExcerpt(post.post_details)}</p>
                         <Link to={`/post/${post.id}`} className="btn btn-success read_more">
                             বিস্তারিত পড়ুন

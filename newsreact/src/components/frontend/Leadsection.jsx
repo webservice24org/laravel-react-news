@@ -36,7 +36,7 @@ const Leadsection = () => {
             ) : post ? (
               <div className="col-md-12 col-sm-12">
                 <div className="lead_title design2">
-                  <a href="#">
+                  <a href={`/post/${post.id}`}>
                     <h2>{post.post_title}</h2>
                   </a>
                   <p className="news_exerpt">
