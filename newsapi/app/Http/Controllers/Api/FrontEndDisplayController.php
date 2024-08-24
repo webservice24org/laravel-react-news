@@ -109,5 +109,30 @@ class FrontEndDisplayController extends Controller
         ]);
     }
 
+    public function getPostsByIndividualCategory(Request $request)
+{
+    $categoryName = $request->query('category');
+
+    $posts = Post::whereHas('categories', function ($query) use ($categoryName) {
+        $query->where('category_name', $categoryName);
+    })->get();
+
+    return response()->json(['data' => $posts]);
+}
+
+public function getPostsByIndividualSubCategory(Request $request)
+{
+    $subCategoryName = $request->query('subcategory');
+
+    $posts = Post::whereHas('subcategories', function ($query) use ($subCategoryName) {
+        $query->where('sub_category_name', $subCategoryName);
+    })->orderBy('created_at', 'desc') // Order by created_at in descending order
+      ->get();
+
+    return response()->json(['data' => $posts]);
+}
+
+
+
 
 }

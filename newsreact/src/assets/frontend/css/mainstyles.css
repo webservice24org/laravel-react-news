@@ -276,12 +276,11 @@ img.topNewsImg {
 
 .single_feature_news {
   margin-bottom: 25px;
-  min-height: 502px;
   box-shadow: 0 0 14px #ccc;
 }
 .single_feature_news .img_box img {
   width: 100% !important;
-  height: 300px;
+  height: 230px;
 }
   
   .section-title {
@@ -1198,4 +1197,8 @@ section.feature_news.design2 .single_feature_news.card {
 section.photo_gallery .top_news a h2 {
   font-size: 17px;
   margin-top: 5px;
+}
+img.imgSize {
+  width: 223px;
+  height: 150px;
 }
