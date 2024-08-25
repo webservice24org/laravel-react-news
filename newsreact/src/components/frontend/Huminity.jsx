@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '/axiosConfig';
+import { Link } from 'react-router-dom';
 
 const Huminity = () => {
   const [posts, setPosts] = useState([]);
@@ -9,7 +10,6 @@ const Huminity = () => {
     const fetchPosts = async () => {
       try {
         const response = await axiosInstance.get('api/posts-by-category?category=মানবিক');
-        // Get the last 5 posts
         const lastFivePosts = response.data.data.slice(-5).reverse();
         setPosts(lastFivePosts);
       } catch (error) {
@@ -23,9 +23,11 @@ const Huminity = () => {
   return (
     <div className="category_box">
       <div className="box_title">
-        <a href="category.html">
-          <h2>মানবিক</h2>
-        </a>
+      {posts.length > 0 && (
+          <Link to={`/category/${posts[0].category.category_id}/posts`}>
+            <h2>মানবিক</h2>
+          </Link>
+        )}
       </div>
       <div className="box_content">
         <div className="box_news_items">

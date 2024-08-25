@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '/axiosConfig';
+import { Link } from 'react-router-dom';
 import Huminity from './Huminity';
 
 const National = () => {
@@ -19,7 +20,6 @@ const National = () => {
     fetchPosts();
   }, []);
 
-
   const lastPost = posts.length > 0 ? posts[posts.length - 1] : null;
   const smallPosts = posts.slice(0, posts.length - 1);
 
@@ -34,9 +34,14 @@ const National = () => {
         <div className="row">
           <div className="col-md-9 col-sm-12">
             <div className="category_title">
-              <a href="category.html">
-                <h2>জাতীয়</h2>
-              </a>
+              {posts.length > 0 && posts[0].subcategories.length > 0 && (
+                <Link
+                  to={`/category/${posts[0].category.category_id}/subcategory/${posts[0].subcategories[0].id}/posts`}
+                >
+                  <h2>জাতীয়</h2>
+                </Link>
+              )}
+
             </div>
             <div className="category_news">
               <div className="row">
@@ -45,7 +50,7 @@ const National = () => {
                     <div className="category_broad_news">
                       <div className="img_box">
                         <a href={`/post/${lastPost.id}`}>
-                        <img 
+                          <img 
                             className="img-fluid" 
                             src={`${baseURL}storage/post/${lastPost.post_thumbnail}`} 
                             alt={lastPost.post_title} 
@@ -81,11 +86,11 @@ const National = () => {
                         <div className="category_small_items">
                           <div className="sub_lead_img">
                             <a href={`/post/${post.id}`}>
-                            <img 
-                            className="imgSize" 
-                            src={`${baseURL}storage/post/${post.post_thumbnail}`} 
-                            alt={post.post_title} 
-                          />
+                              <img 
+                                className="imgSize" 
+                                src={`${baseURL}storage/post/${post.post_thumbnail}`} 
+                                alt={post.post_title} 
+                              />
                             </a>
                           </div>
                           <div className="sub_lead_title">

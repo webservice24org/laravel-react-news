@@ -56,6 +56,7 @@ Route::get('/posts/category/{categoryId}', [FrontEndDisplayController::class, 'g
 Route::get('/posts/category/{categoryId}/subcategory/{subcatId}', [FrontEndDisplayController::class, 'getPostsBySubCategories']);
 Route::get('/posts-by-category', [FrontEndDisplayController::class, 'getPostsByIndividualCategory']);
 Route::get('/posts-by-subcategory', [FrontEndDisplayController::class, 'getPostsByIndividualSubCategory']);
+
 Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getCategoryWithSubCategories']);
 
 
