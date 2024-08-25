@@ -34,6 +34,7 @@ function PostList() {
             style="width: 100px; height: auto;" 
             onerror="this.src='/path/to/default-image.jpg';" 
           />`,
+          post.category.category_name, 
           post.id 
         ]),
         columns: [
@@ -41,13 +42,14 @@ function PostList() {
           { title: "Title" },
           { title: "Reporter" },
           { title: "Thumbnail" },
+          { title: "Category" },
           {
             title: "Actions",
             orderable: false,
             render: function (data, type, row) {
               return `
-                <button class="btn btn-primary me-1 edit-btn" data-id="${row[4]}">Edit</button>
-                <button class="btn btn-danger delete-btn" data-id="${row[4]}">Delete</button>
+                <button class="btn btn-primary me-1 edit-btn" data-id="${row[5]}">Edit</button>
+                <button class="btn btn-danger delete-btn" data-id="${row[5]}">Delete</button>
               `;
             }
           }
@@ -128,7 +130,8 @@ function PostList() {
             <th style={{ width: '5%' }}>SL</th>
             <th style={{ width: '30%' }}>Title</th>
             <th style={{ width: '20%' }}>Reporter</th>
-            <th style={{ width: '20%' }}>Thumbnail</th>
+            <th style={{ width: '10%' }}>Thumbnail</th>
+            <th style={{ width: '10%' }}>Category</th>
             <th style={{ width: '25%' }} className='text-center'>Actions</th>
           </tr>
         </thead>

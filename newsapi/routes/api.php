@@ -43,7 +43,7 @@ Route::apiResource('/sub-categories', SubCategoryController::class);
 Route::apiResource('/posts', PostController::class);
 Route::post('/update/{id}', [PostController::class, 'updatePost']);
 
-Route::get('/post-list', [PostController::class, 'postList']);
+//Route::get('/post-list', [PostController::class, 'postList']);
 
 Route::apiResource('/tags', TagController::class);
 

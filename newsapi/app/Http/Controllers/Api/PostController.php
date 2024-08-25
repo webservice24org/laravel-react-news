@@ -20,14 +20,29 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
-        return response()->json(['success' => true, 'data' => $posts, 'message' => 'Posts retrieved successfully.']);
+        $posts = Post::with([
+            'category' => function($query) {
+                $query->join('categories', 'post_categories.category_id', '=', 'categories.id')
+                      ->select('categories.id', 'categories.category_name', 'post_categories.post_id');
+            },
+            'subcategories',
+            'tags',
+            'seo'
+        ])->orderBy('created_at', 'desc')->get();
+    
+        if (!$posts) {
+            return response()->json(['success' => false, 'message' => 'Post not found.'], 404);
+        }
+    
+        return response()->json(['success' => true, 'data' => $posts, 'message' => 'Post retrieved successfully.']);
     }
+
+    /*
     public function postList()
     {
         $posts = Post::select('id','post_title', 'post_thumbnail', 'reporter_name')->get();
         return response()->json(['success' => true, 'data' => $posts, 'message' => 'Posts retrieved successfully.']);
-    }
+    }*/
 
 
     public function store(Request $request)

@@ -1,101 +1,65 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axiosInstance from '/axiosConfig';
 
 const Huminity = () => {
-    return (
-        <div className="category_box">
-        <div className="box_title">
-          <a href="category.html">
-            <h2>মানবিক</h2>
-          </a>
-        </div>
-        <div className="box_content">
-          <div className="box_news_items">
-            <div className="box_news_single_item">
+  const [posts, setPosts] = useState([]);
+  const baseURL = axiosInstance.defaults.baseURL;
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axiosInstance.get('api/posts-by-category?category=মানবিক');
+        // Get the last 5 posts
+        const lastFivePosts = response.data.data.slice(-5).reverse();
+        setPosts(lastFivePosts);
+      } catch (error) {
+        setPosts([]);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  return (
+    <div className="category_box">
+      <div className="box_title">
+        <a href="category.html">
+          <h2>মানবিক</h2>
+        </a>
+      </div>
+      <div className="box_content">
+        <div className="box_news_items">
+          
+          {posts.map((post) => (
+            <div key={post.id} className="box_news_single_item">
               <div className="box_news_img">
                 <img
                   className="img-fluid"
-                  src="/src/assets/frontend/img/yemen_1.webp"
-                  alt="news title"
+                  src={`${baseURL}storage/post/${post.post_thumbnail}`} // Use `post.post_thumbnail`
+                  alt={post.post_title}
                 />
               </div>
               <div className="box_news_title">
-                <a href="#">
-                  <h2>সৌদি জোট-হুতি যুদ্ধে বিপন্ন মানবতা</h2>
+                <a href={`/post/${post.id}`}>
+                  <h2>{post.post_title}</h2>
                 </a>
               </div>
             </div>
-            <div className="box_news_single_item">
-              <div className="box_news_img">
-                <img
-                  className="img-fluid"
-                  src="/src/assets/frontend/img/kamal-1-20240726093238.jpg"
-                  alt="news title"
-                />
-              </div>
-              <div className="box_news_title">
-                <a href="#">
-                  <h2>স্ত্রীর শোকে ২০ বছর ধরে শিকলবন্দি কামাল</h2>
-                </a>
-              </div>
-            </div>
-            <div className="box_news_single_item">
-              <div className="box_news_img">
-                <img
-                  className="img-fluid"
-                  src="/src/assets/frontend/img/axresdefault.webp"
-                  alt="news title"
-                />
-              </div>
-              <div className="box_news_title">
-                <a href="#">
-                  <h2>
-                    পেশাদারি না মানবতা, কোনটার দাবি সাংবাদিকের কাছে বড়
-                  </h2>
-                </a>
-              </div>
-            </div>
-            <div className="box_news_single_item">
-              <div className="box_news_img">
-                <img
-                  className="img-fluid"
-                  src="/src/assets/frontend/img/eadb8056e4ca.webp"
-                  alt="news title"
-                />
-              </div>
-              <div className="box_news_title">
-                <a href="#">
-                  <h2>অসহায় মানুষের পাশে 'আইপিডিসি মানবতা'</h2>
-                </a>
-              </div>
-            </div>
-            <div className="box_news_single_item">
-              <div className="box_news_img">
-                <img
-                  className="img-fluid"
-                  src="/src/assets/frontend/img/gpoet.webp"
-                  alt="news title"
-                />
-              </div>
-              <div className="box_news_title">
-                <a href="#">
-                  <h2>ধ্বংসস্তূপের নিচে মানবতা কাঁদছে</h2>
-                </a>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-        <div className="box_advertise mt-3">
-          <a href="#">
-            <img
-              className="img-fluid"
-              src="/src/assets/frontend/img/Digital_advertising_sign.width-880.webp"
-              alt="advertise title"
-            />
-          </a>
+          ))}
+          
         </div>
       </div>
-    );
-  };
-  
-  export default Huminity;
+      <div className="box_advertise mt-3">
+        <a href="#">
+          <img
+            className="img-fluid"
+            src="/src/assets/frontend/img/Digital_advertising_sign.width-880.webp"
+            alt="advertise title"
+          />
+        </a>
+      </div>
+    </div>
+  );
+};
+
+export default Huminity;

@@ -123,7 +123,7 @@ function PostForm() {
         ...data,
         seo_title: data.seo?.seo_title || '',
         seo_descp: data.seo?.seo_descp || '',
-        category_id: data.category?.category_id || '',
+        category_id: data.category?.id || '',
         sub_category_ids: data.subcategories?.map(sub => sub.id) || []
       });
     } catch (error) {
