@@ -1,50 +1,78 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axiosInstance from '/axiosConfig';
+import { Link } from 'react-router-dom';
+
+
 const Law = () => {
+  const [posts, setPosts] = useState([]);
+  const baseURL = axiosInstance.defaults.baseURL;
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axiosInstance.get('api/posts-by-category?category=আইন-আদালত');
+        setPosts(response.data.data);
+      } catch (error) {
+        setPosts([]);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  const lastPost = posts.length > 0 ? posts[0] : null;
+  const nextPosts = posts.length > 1 ? posts.slice(1, 3) : [];
+
+  const getExcerpt = (details) => {
+    const strippedDetails = details.replace(/<\/?p>/g, '');
+    return strippedDetails.split(' ').slice(0, 16).join(' ') + '...';
+  };
+
     return (
     <div class="category_box">
                             
         <div class="box_title">
-            <a href="category.html"><h2>আইন-আদালত</h2></a>
+            {posts.length > 0 && (
+                <Link to={`/category/${posts[0].category.category_id}/posts`}>
+                    <h2>আইন-আদালত</h2>
+                </Link>
+            )}
         </div>
         <div class="box_content">
-            <div class="top_news">
-                <div class="img_box">
-                    <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/Asean.webp" alt="news title" /></a>
+            {lastPost && (
+                <div class="top_news">
+                    <div class="img_box">
+                        <a href={`/post/${lastPost.id}`}>
+                            <img 
+                                className="img-fluid" 
+                                src={`${baseURL}storage/post/${lastPost.post_thumbnail}`} 
+                                alt={lastPost.post_title} 
+                            />
+                        </a>
+                    </div>
+                    <a href={`/post/${lastPost.id}`}>
+                        <h2 class="mt-1">{lastPost.post_title}</h2>
+                    </a>
                 </div>
-                <a href="single.html"><h2 class="mt-1">বিএনপিপন্থী ছয় আইনজীবীর বিরুদ্ধে আদালত অবমাননার বিষয়ে শুনানি ১ আগস্ট
-
-                </h2></a>
-            </div>
+            )}
             <div class="box_news_items">
-                
-                <div class="box_news_single_item">
+            {nextPosts.map((post, index) => (
+                <div class="box_news_single_item"  key={index}>
                     <div class="box_news_img">
-                        <img class="img-fluid" src="/src/assets/frontend/img/untitled_6.webp" alt="news title" />
+                        <a href={`/post/${post.id}`}>
+                            <img 
+                                className="img-fluid" 
+                                src={`${baseURL}storage/post/${post.post_thumbnail}`} 
+                                alt={post.post_title} 
+                            />
+                        </a>
                     </div>
                     <div class="box_news_title">
-                        <a href="#"><h2>আন্দোলনকারীদের ওপর গুলি না চালাতে নির্দেশনা চেয়ে রিট
-                        </h2></a>
-                    </div>
-                </div>
-                <div class="box_news_single_item">
-                    <div class="box_news_img">
-                        <img class="img-fluid" src="/src/assets/frontend/img/Younu_Court.webp" alt="news title" />
-                    </div>
-                    <div class="box_news_title">
-                        <a href="#"><h2>আদালত থেকে লোহার খাঁচা তুলে নেওয়া উচিত: ড. ইউনূস
-                        </h2></a>
-                    </div>
-                </div>
-                <div class="box_news_single_item">
-                    <div class="box_news_img">
-                        <img class="img-fluid" src="/src/assets/frontend/img/02.JPG.webp" alt="news title" />
-                    </div>
-                    <div class="box_news_title">
-                        <a href="#"><h2>কোটা নিয়ে আদালত যেভাবে নির্দেশনা দেবেন, সরকার সেভাবেই কাজ করবে: গণপূর্তমন্ত্রী
-                        </h2></a>
+                        <a href={`/post/${post.id}`}><h2>{post.post_title}</h2></a>
                     </div>
                 </div>
                 
+            ))}
             </div>
         </div>
     </div>

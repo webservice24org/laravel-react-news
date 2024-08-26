@@ -20,8 +20,8 @@ const National = () => {
     fetchPosts();
   }, []);
 
-  const lastPost = posts.length > 0 ? posts[posts.length - 1] : null;
-  const smallPosts = posts.slice(0, posts.length - 1);
+  const lastPost = posts.length > 0 ? posts[0] : null;
+  const smallPosts = posts.length > 1 ? posts.slice(1, 4) : [];
 
   const getExcerpt = (details) => {
     const strippedDetails = details.replace(/<\/?p>/g, '');
@@ -82,7 +82,7 @@ const National = () => {
                 <div className="col-md-6 col-sm-12">
                   <div className="row">
                     {smallPosts.slice(0, 6).map((post, index) => (
-                      <div key={post.id} className="col-md-6 col-sm-12 mb-4">
+                      <div key={index} className="col-md-6 col-sm-12 mb-4">
                         <div className="category_small_items">
                           <div className="sub_lead_img">
                             <a href={`/post/${post.id}`}>

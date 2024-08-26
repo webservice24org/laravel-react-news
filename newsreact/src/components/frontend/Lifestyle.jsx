@@ -1,59 +1,54 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import axiosInstance from '/axiosConfig';
 
 const Lifestyle = () => {
-  return (
+  const [posts, setPosts] = useState([]);
+  const baseURL = axiosInstance.defaults.baseURL;
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axiosInstance.get('api/posts-by-subcategory?subcategory=লাইফস্টাইল');
+        const lastFivePosts = response.data.data.slice(-5).reverse();
+        setPosts(lastFivePosts);
+      } catch (error) {
+        setPosts([]);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+    return (
         <div className="category_box">
             <div className="box_title">
-                <a href="category.html"><h2>লাইফস্টাইল</h2></a>
+            {posts.length > 0 && posts[0].subcategories.length > 0 && (
+                <Link
+                    to={`/category/${posts[0].category.category_id}/subcategory/${posts[0].subcategories[0].id}/posts`}
+                >
+                    <h2>লাইফস্টাইল</h2>
+                </Link>
+                )}
             </div>
             <div className="box_content">
                 <div className="box_news_items">
-                    <div className="box_news_single_item">
-                        <div className="box_news_img">
-                            <img className="img-fluid" src="/src/assets/frontend/img/e6ad59ba.jpg" alt="news title" />
+                    {posts.map((post) => (
+                        <div key={post.id} className="box_news_single_item">
+                            <div className="box_news_img">
+                                <img
+                                className="img-fluid"
+                                src={`${baseURL}storage/post/${post.post_thumbnail}`}
+                                alt={post.post_title}
+                                />
+                            </div>
+                            <div className="box_news_title">
+                                <Link to={`/post/${post.id}`}>
+                                <h2>{post.post_title}</h2>
+                                </Link>
+                            </div>
                         </div>
-                        <div className="box_news_title">
-                            <a href="#"><h2>প্রতিদিন সকালে ছয়টি কাঠবাদাম খেলে এই উপকারগুলো মিলবে
-                            </h2></a>
-                        </div>
-                    </div>
-                    <div className="box_news_single_item">
-                        <div className="box_news_img">
-                            <img className="img-fluid" src="/src/assets/frontend/img/f25cddda0.jpg" alt="news title" />
-                        </div>
-                        <div className="box_news_title">
-                            <a href="#"><h2>একঝাঁক উদ্যোক্তার পণ্য নিয়ে ‘হাটকাহন’
-                            </h2></a>
-                        </div>
-                    </div>
-                    <div className="box_news_single_item">
-                        <div className="box_news_img">
-                            <img className="img-fluid" src="/src/assets/frontend/img/june_20.jpg" alt="news title" />
-                        </div>
-                        <div className="box_news_title">
-                            <a href="#"><h2>হট চকলেট সম্পর্কে কিছু তথ্য
-                            </h2></a>
-                        </div>
-                    </div>
-                    <div className="box_news_single_item">
-                        <div className="box_news_img">
-                            <img className="img-fluid" src="/src/assets/frontend/img/64374d9.jpg" alt="news title" />
-                        </div>
-                        <div className="box_news_title">
-                            <a href="#"><h2>মানসিক চাপ কমাতে কী করবেন?
-                            </h2></a>
-                        </div>
-                    </div>
-                    <div className="box_news_single_item">
-                        <div className="box_news_img">
-                            <img className="img-fluid" src="/src/assets/frontend/img/d69414.jpg" alt="news title" />
-                        </div>
-                        <div className="box_news_title">
-                            <a href="#"><h2>এবার আলোচনায় নীতা আম্বানির বাজুবন্ধ
-                            </h2></a>
-                        </div>
-                    </div>
+                    ))}
+                    
                 </div>
             </div>
         </div>

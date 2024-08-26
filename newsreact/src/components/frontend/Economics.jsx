@@ -1,75 +1,98 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axiosInstance from '/axiosConfig';
+import { Link } from 'react-router-dom';
+import Huminity from './Huminity';
+
 const LatestPopuler = () => {
+  const [posts, setPosts] = useState([]);
+  const baseURL = axiosInstance.defaults.baseURL;
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axiosInstance.get('api/posts-by-subcategory?subcategory=অর্থনীতি');
+        setPosts(response.data.data);
+      } catch (error) {
+        setPosts([]);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  const lastPost = posts.length > 0 ? posts[0] : null;
+  const smallPosts = posts.length > 1 ? posts.slice(1, 4) : [];
+
+  const getExcerpt = (details) => {
+    const strippedDetails = details.replace(/<\/?p>/g, '');
+    return strippedDetails.split(' ').slice(0, 16).join(' ') + '...';
+  };
+
+
     return (
         <section class="category_news_section_two">
             <div class="section_wrapper">
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="category_title">
-                            <a href="category.html"><h2>অর্থনীতি</h2></a>
+                            {posts.length > 0 && posts[0].subcategories.length > 0 && (
+                                <Link
+                                to={`/category/${posts[0].category.category_id}/subcategory/${posts[0].subcategories[0].id}/posts`}
+                                >
+                                <h2>অর্থনীতি</h2>
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </div>
                 <div class="row">
+                    
                     <div class="col-md-6 col-sm-12">
-                        <div class="category_broad_news">
-                            <div class="img_box">
-                                <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/sabji-20240726120233.jpg"  alt="news title" /></a>
+                        {lastPost && (
+                            <div class="category_broad_news">
+                                <div class="img_box">
+                                    <a href={`/post/${lastPost.id}`}>
+                                        <img 
+                                            className="img-fluid" 
+                                            src={`${baseURL}storage/post/${lastPost.post_thumbnail}`} 
+                                            alt={lastPost.post_title} 
+                                        />
+                                    </a>
+                                </div>
+                                <div class="category_content">
+                                <a href={`/post/${lastPost.id}`}>
+                                    <h2>{lastPost.post_title}</h2>
+                                </a>
+                                <p>{getExcerpt(lastPost.post_details)}</p> 
+                                    <a href={`/post/${lastPost.id}`} class="btn btn-success read_more">বিস্তারিত পড়ুন</a>
+                                </div>
                             </div>
-                            <div class="category_content">
-                                <a href="single.html"><h2>সবজির বাজারে উত্তাপ কিছুটা কমেছে
-
-                                </h2></a>
-                                <p>কোটা সংস্কার আন্দোলনের ফলে গত কয়েক দিনের সহিংস ঘটনায় দেশের বাজারে পণ্যের সাপ্লাই চেইন  প্রায় ভেঙে পড়েছিল। এতে রাজধানীর কাঁচাবাজারগুলোতে পণ্যের ঘাটতি দেখা দেয়। ফলে বাড়তে থাকে দাম। বর্তমানে রাজধানীর সঙ্গে সারা দেশের পণ্য সরবরাহ সচল হতে শুরু করেছে। এতে সবজির বাজারে উত্তাপ কিছুটা কমেছে। ...</p>
-                                <a href="#" class="btn btn-success read_more">বিস্তারিত পড়ুন</a>
-                            </div>
-                        </div>
+                        )}
                     </div>
+
                     <div class="col-md-6 col-sm-12">
                         <div class="two_colum_box">
                             <div class="row">
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="two_colum_news_item">
-                                        <div class="img_box">
-                                            <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/bbank-20240724165442.jpg" alt="news title" /></a>
-                                        </div>
-                                        <div class="category_content">
-                                            <a href="single.html"><h2>চেক ক্লিয়ারিংয়ের নতুন সময়সূচি প্রকাশ</h2></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="two_colum_news_item">
-                                        <div class="img_box">
-                                            <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/acc-202405230346471-20240728205733.jpg" alt="news title" /></a>
-                                        </div>
-                                        <div class="category_content">
-                                            <a href="single.html"><h2>ঋণের নামে জনতা ব্যাংক থেকে ২৫১ কোটি টাকা লোপাট
-                                            </h2></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="two_colum_news_item">
-                                        <div class="img_box">
-                                            <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/economy.webp" alt="news title" /></a>
-                                        </div>
-                                        <div class="category_content">
-                                            <a href="single.html"><h2>স্বচ্ছতার সঙ্গে বাজেট বাস্তবায়নে প্রধানমন্ত্রীর নির্দেশ
-                                            </h2></a>
+                                {smallPosts.map((post, index) => (
+                                    <div class="col-md-6 col-sm-12" key={index}>
+                                        <div class="two_colum_news_item">
+                                            <div class="img_box">
+                                                <a href={`/post/${post.id}`}>
+                                                    <img 
+                                                        className="img-fluid" 
+                                                        src={`${baseURL}storage/post/${post.post_thumbnail}`} 
+                                                        alt={post.post_title} 
+                                                    />
+                                                </a>
+                                            </div>
+                                            <div class="category_content">
+                                                <a href={`/post/${post.id}`}>
+                                                    <h2>{post.post_title}</h2>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="two_colum_news_item">
-                                        <div class="img_box">
-                                            <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/news1.jpg" alt="news title" /></a>
-                                        </div>
-                                        <div class="category_content">
-                                            <a href="single.html"><h2>ঘূর্ণিঝড়ে ক্ষতিগ্রস্ত রোহিঙ্গাদের জরুরি ত্রাণসহায়তা প্রয়োজন: জাতিসংঘ</h2></a>
-                                        </div>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                     </div>

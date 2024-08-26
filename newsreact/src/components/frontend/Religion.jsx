@@ -1,58 +1,53 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import axiosInstance from '/axiosConfig';
 
 const Religion = () => {
+  const [posts, setPosts] = useState([]);
+  const baseURL = axiosInstance.defaults.baseURL;
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axiosInstance.get('api/posts-by-category?category=ধর্ম');
+        const lastFivePosts = response.data.data.slice(-5).reverse();
+        setPosts(lastFivePosts);
+      } catch (error) {
+        setPosts([]);
+      }
+    };
+
+    fetchPosts();
+  }, []);
   return (
 <div className="category_box">
         <div className="box_title">
-            <a href="category.html"><h2>ধর্ম</h2></a>
+            {posts.length > 0 && (
+                <Link to={`/category/${posts[0].category.category_id}/posts`}>
+                    <h2>ধর্ম</h2>
+                </Link>
+            )}
         </div>
         <div className="box_content">
             <div className="box_news_items">
-                <div className="box_news_single_item">
+                
+                {posts.map((post) => (
+                <div key={post.id} className="box_news_single_item">
                     <div className="box_news_img">
-                        <img className="img-fluid" src="/src/assets/frontend/img/3_.webp" alt="news title" />
+                        <img
+                        className="img-fluid"
+                        src={`${baseURL}storage/post/${post.post_thumbnail}`}
+                        alt={post.post_title}
+                        />
                     </div>
                     <div className="box_news_title">
-                        <a href="#"><h2>সাহাবির কোরআন তিলাওয়াতে মুগ্ধ হন ফেরেশতারা
-                        </h2></a>
+                        <Link to={`/post/${post.id}`}>
+                        <h2>{post.post_title}</h2>
+                        </Link>
                     </div>
                 </div>
-                <div className="box_news_single_item">
-                    <div className="box_news_img">
-                        <img className="img-fluid" src="/src/assets/frontend/img/53.webp" alt="news title" />
-                    </div>
-                    <div className="box_news_title">
-                        <a href="#"><h2>গোপনে নফল আদায় করা উত্তম
-                        </h2></a>
-                    </div>
-                </div>
-                <div className="box_news_single_item">
-                    <div className="box_news_img">
-                        <img className="img-fluid" src="/src/assets/frontend/img/8_20_17.webp" alt="news title" />
-                    </div>
-                    <div className="box_news_title">
-                        <a href="#"><h2>বিনয়ের সঙ্গে সমালোচনা নেওয়ার একটি ঘটনা
-                        </h2></a>
-                    </div>
-                </div>
-                <div className="box_news_single_item">
-                    <div className="box_news_img">
-                        <img className="img-fluid" src="/src/assets/frontend/img/4f7b0.webp" alt="news title" />
-                    </div>
-                    <div className="box_news_title">
-                        <a href="#"><h2>নামাজে দরুদ পড়ার নিয়ম
-                        </h2></a>
-                    </div>
-                </div>
-                <div className="box_news_single_item">
-                    <div className="box_news_img">
-                        <img className="img-fluid" src="/src/assets/frontend/img/3_.webp" alt="news title" />
-                    </div>
-                    <div className="box_news_title">
-                        <a href="#"><h2>সাহাবির কোরআন তিলাওয়াতে মুগ্ধ হন ফেরেশতারা</h2></a>
-                    </div>
-                </div>
+            ))}
+                
             </div>
         </div>
     </div>

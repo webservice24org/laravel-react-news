@@ -1,61 +1,58 @@
-const Jobs = () => {
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import axiosInstance from '/axiosConfig';
+
+const Lifestyle = () => {
+  const [posts, setPosts] = useState([]);
+  const baseURL = axiosInstance.defaults.baseURL;
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axiosInstance.get('api/posts-by-subcategory?subcategory=জবস');
+        const lastFivePosts = response.data.data.slice(-5).reverse();
+        setPosts(lastFivePosts);
+      } catch (error) {
+        setPosts([]);
+      }
+    };
+
+    fetchPosts();
+  }, []);
     return (
-<div className="category_box">
-    <div className="box_title">
-        <a href="category.html"><h2>জবস</h2></a>
-    </div>
-    <div className="box_content">
-        <div className="box_news_items">
-            <div className="box_news_single_item">
-                <div className="box_news_img">
-                    <img className="img-fluid" src="/src/assets/frontend/img/BCS-05.webp" alt="news title" />
-                </div>
-                <div className="box_news_title">
-                    <a href="#"><h2>৪৪তম বিসিএসের মৌখিক পরীক্ষা ৫ আগস্ট পর্যন্ত স্থগিত
-                    </h2></a>
-                </div>
+        <div className="category_box">
+            <div className="box_title">
+            {posts.length > 0 && posts[0].subcategories.length > 0 && (
+                <Link
+                    to={`/category/${posts[0].category.category_id}/subcategory/${posts[0].subcategories[0].id}/posts`}
+                >
+                    <h2>জবস</h2>
+                </Link>
+                )}
             </div>
-            <div className="box_news_single_item">
-                <div className="box_news_img">
-                    <img className="img-fluid" src="/src/assets/frontend/img/AB_9424.webp" alt="news title" />
-                </div>
-                <div className="box_news_title">
-                    <a href="#"><h2>সাধারণ বীমা করপোরেশনের তিন পদের পরীক্ষার তারিখ প্রকাশ
-                    </h2></a>
-                </div>
-            </div>
-            <div className="box_news_single_item">
-                <div className="box_news_img">
-                    <img className="img-fluid" src="/src/assets/frontend/img/পিএসসি ২.webp" alt="news title" />
-                </div>
-                <div className="box_news_title">
-                    <a href="#"><h2>পিএসসির বিভাগীয় পদোন্নতির পরীক্ষা ৩১ জুলাই পর্যন্ত স্থগিত
-                    </h2></a>
-                </div>
-            </div>
-            <div className="box_news_single_item">
-                <div className="box_news_img">
-                    <img className="img-fluid" src="/src/assets/frontend/img/panchaghor_police_death_040823.jpg" alt="news title" />
-                </div>
-                <div className="box_news_title">
-                    <a href="#"><h2>পঞ্চম গণবিজ্ঞপ্তির পুলিশ ভেরিফিকেশন ফরম পূরণের সময় বাড়ল
-                    </h2></a>
-                </div>
-            </div>
-            <div className="box_news_single_item">
-                <div className="box_news_img">
-                    <img className="img-fluid" src="/src/assets/frontend/img/job-brac-20240801144522.jpg" alt="news title" />
-                </div>
-                <div className="box_news_title">
-                    <a href="#"><h2>ব্র্যাকে নিয়োগ বিজ্ঞপ্তি, আবেদন করুন সময় থাকতেই
-                    </h2></a>
+            <div className="box_content">
+                <div className="box_news_items">
+                    {posts.map((post) => (
+                        <div key={post.id} className="box_news_single_item">
+                            <div className="box_news_img">
+                                <img
+                                className="img-fluid"
+                                src={`${baseURL}storage/post/${post.post_thumbnail}`}
+                                alt={post.post_title}
+                                />
+                            </div>
+                            <div className="box_news_title">
+                                <Link to={`/post/${post.id}`}>
+                                <h2>{post.post_title}</h2>
+                                </Link>
+                            </div>
+                        </div>
+                    ))}
+                    
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-);
+    );
 };
 
-export default Jobs;
+export default Lifestyle;
