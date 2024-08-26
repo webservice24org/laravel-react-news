@@ -1,104 +1,66 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axiosInstance from '/axiosConfig';
+import { Link } from 'react-router-dom';
+
 const SpecialNews = () => {
+  const [posts, setPosts] = useState([]);
+  const baseURL = axiosInstance.defaults.baseURL;
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axiosInstance.get('api/posts-by-subcategory?subcategory=বিশেষ প্রতিবেদন');
+        setPosts(response.data.data);
+      } catch (error) {
+        setPosts([]);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+
+  const smallPosts = posts.length > 0 ? posts.slice(0, 8) : [];
+
+
     return (
         <section class="special_news">
             <div class="section_wrapper">
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="category_title">
-                            <a href="category.html"><h2>বিশেষ প্রতিবেদন</h2></a>
+                            {posts.length > 0 && posts[0].subcategories.length > 0 && (
+                                <Link
+                                to={`/category/${posts[0].category.category_id}/subcategory/${posts[0].subcategories[0].id}/posts`}
+                                >
+                                <h2>বিশেষ প্রতিবেদন</h2>
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </div>
                 <div class="special_news_items">
                     <div class="row">
-                        <div class="col-md-3 col-sm-12">
-                            <div class="four_colum_news_item">
-                                <div class="img_box">
-                                    <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/Rampura-Clash-01.webp" alt="news title" /></a>
-                                </div>
-                                <div class="category_content">
-                                    <a href="single.html"><h2>কোটা সংস্কার আন্দোলনকে ঘিরে সংঘাত: নিহত বেড়ে ২১১
-                                    </h2></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-12">
-                            <div class="four_colum_news_item">
-                                <div class="img_box">
-                                    <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/DU-Protest-01.webp" alt="news title" /></a>
-                                </div>
-                                <div class="category_content">
-                                    <a href="single.html"><h2>নিপীড়নবিরোধী শিক্ষক সমাবেশ, গণগ্রেপ্তারের মাধ্যমে শিক্ষার্থীদের হয়রানি বন্ধের দাবি
-                                    </h2></a>
+                        {smallPosts.map((post, index) => (
+                            <div class="col-md-3 col-sm-12">
+                                <div class="four_colum_news_item">
+                                    <div class="img_box">
+                                        <a href={`/post/${post.id}`}>
+                                            <img 
+                                                className="img-fluid" 
+                                                src={`${baseURL}storage/post/${post.post_thumbnail}`} 
+                                                alt={post.post_title} 
+                                            />
+                                        </a>
+                                    </div>
+                                    <div class="category_content">
+                                        <a href={`/post/${post.id}`}>
+                                            <h2>{post.post_title}</h2>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-3 col-sm-12">
-                            <div class="four_colum_news_item">
-                                <div class="img_box">
-                                    <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/DH0699_2024072.webp" alt="news title" /></a>
-                                </div>
-                                <div class="category_content">
-                                    <a href="single.html"><h2>গোয়েন্দারা সজাগ না থাকলে গণভবন দখল করত হামলাকারীরা: চিফ হুইপ
-                                    </h2></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-12">
-                            <div class="four_colum_news_item">
-                                <div class="img_box">
-                                    <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/DB-f68a76dbd42ab6d9528c336d12a343be.jpg" alt="news title" /></a>
-                                </div>
-                                <div class="category_content">
-                                    <a href="single.html"><h2>ছয় সমন্বয়কের স্বজনরা ডিবি কার্যালয়ে
-                                    </h2></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-12">
-                            <div class="four_colum_news_item">
-                                <div class="img_box">
-                                    <a href="single.html"><img class="img-fluid" src="img/Asif-Arif-a232472a737981fd01c221f91479cd83.jpg" alt="news title" /></a>
-                                </div>
-                                <div class="category_content">
-                                    <a href="single.html"><h2>আসিফ মাহতাব ও সমন্বয়ক আরিফ সোহেল ৬ দিনের রিমান্ডে
-                                    </h2></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-12">
-                            <div class="four_colum_news_item">
-                                <div class="img_box">
-                                    <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/500-321-inqilab-white-20240713220635.jpg" alt="news title" /></a>
-                                </div>
-                                <div class="category_content">
-                                    <a href="single.html"><h2>শিক্ষা প্রতিষ্ঠান খুলবে কবে?
-                                    </h2></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-12">
-                            <div class="four_colum_news_item">
-                                <div class="img_box">
-                                    <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/image-831231-1722162762.jpg" alt="news title" /></a>
-                                </div>
-                                <div class="category_content">
-                                    <a href="single.html"><h2>‘শ্রীলংকা স্টাইলে’ গণভবন দখলের ষড়যন্ত্র ছিল: ওবায়দুল কাদের
-                                    </h2></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-12">
-                            <div class="four_colum_news_item">
-                                <div class="img_box">
-                                    <a href="single.html"><img class="img-fluid" src="/src/assets/frontend/img/image-809794-1716789651.jpg" alt="news title" /></a>
-                                </div>
-                                <div class="category_content">
-                                    <a href="single.html"><h2>ঘূর্ণিঝড়ে ক্ষতিগ্রস্ত রোহিঙ্গাদের জরুরি ত্রাণসহায়তা প্রয়োজন: জাতিসংঘ</h2></a>
-                                </div>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>

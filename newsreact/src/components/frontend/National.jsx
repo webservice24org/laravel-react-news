@@ -21,7 +21,7 @@ const National = () => {
   }, []);
 
   const lastPost = posts.length > 0 ? posts[0] : null;
-  const smallPosts = posts.length > 1 ? posts.slice(1, 4) : [];
+  const smallPosts = posts.length > 1 ? posts.slice(1, 6) : [];
 
   const getExcerpt = (details) => {
     const strippedDetails = details.replace(/<\/?p>/g, '');

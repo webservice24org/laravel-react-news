@@ -40,7 +40,7 @@ const CategoryPost = () => {
     }, [categoryId]);
 
     const getExcerpt = (details) => {
-        const strippedDetails = details.replace(/<\/?p>/g, '');
+        const strippedDetails = details.replace(/<\/?[^>]+(>|$)/g, '');
         return strippedDetails.split(' ').slice(0, 35).join(' ') + '...';
     };
 
