@@ -1,3 +1,4 @@
+// src/layouts/admin/MainLayout.jsx
 import React from 'react';
 import "../../assets/admin/css/styles.css";
 import { Outlet } from 'react-router-dom';
