@@ -119,7 +119,7 @@ const SinglePost = () => {
                   </div>
                   <div className="single_news_article">
                     <div className="img_box">
-                      <img className="rounded img-fluid w-100" src={`${baseURL}storage/post/${post.post_thumbnail}`} alt={post.post_title} />
+                      <img className="rounded img-fluid w-100" src={`${baseURL}storage/post/${post.post_thumbnail}`} alt={post.post_title} onError={(e) => { e.target.src = `${baseURL}storage/post/default-post.jpg`; }} />
                     </div>
                     <div className="news_post">
                       <div dangerouslySetInnerHTML={{ __html: post.post_details }} />

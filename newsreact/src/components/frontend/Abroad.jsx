@@ -34,11 +34,13 @@ const Abroad = () => {
           {posts.map((post) => (
             <div key={post.id} className="box_news_single_item">
               <div className="box_news_img">
-                <img
-                  className="img-fluid"
-                  src={`${baseURL}storage/post/${post.post_thumbnail}`}
-                  alt={post.post_title}
-                />
+              <img
+                className="img-fluid"
+                src={`${baseURL}storage/post/${post.post_thumbnail}`}
+                alt={post.post_title}
+                onError={(e) => { e.target.src = `${baseURL}storage/post/default-post.jpg`; }}
+              />
+
               </div>
               <div className="box_news_title">
                 <Link to={`/post/${post.id}`}>

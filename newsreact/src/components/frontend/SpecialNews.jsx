@@ -50,6 +50,7 @@ const SpecialNews = () => {
                                                 className="img-fluid" 
                                                 src={`${baseURL}storage/post/${post.post_thumbnail}`} 
                                                 alt={post.post_title} 
+                                                onError={(e) => { e.target.src = `${baseURL}storage/post/default-post.jpg`; }}
                                             />
                                         </a>
                                     </div>

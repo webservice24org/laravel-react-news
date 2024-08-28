@@ -57,6 +57,7 @@ const PoliticsLaw = () => {
                                             className="img-fluid" 
                                             src={`${baseURL}storage/post/${lastPost.post_thumbnail}`} 
                                             alt={lastPost.post_title} 
+                                            onError={(e) => { e.target.src = `${baseURL}storage/post/default-post.jpg`; }}
                                         />
                                         </a>
                                     </div>
@@ -84,9 +85,10 @@ const PoliticsLaw = () => {
                                                     <a href={`/post/${post.id}`}>
                                                     <img
                                                         className="img-fluid"
-                                                        src={post.post_thumbnail ? `${baseURL}storage/post/${post.post_thumbnail}` : '/path/to/default-thumbnail.jpg'}
+                                                        src={post.post_thumbnail ? `${baseURL}storage/post/${post.post_thumbnail}` : `${baseURL}storage/post/default-post.jpg`}
                                                         alt={post.thumbnail_alt || post.post_title}
                                                     />
+                                                    
                                                     </a>
                                                 </div>
                                                 </div>

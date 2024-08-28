@@ -32,7 +32,7 @@ function PostList() {
             src="${axios.defaults.baseURL}storage/post/${post.post_thumbnail}" 
             alt="Post Thumbnail" 
             style="width: 100px; height: auto;" 
-            onerror="this.src='/path/to/default-image.jpg';" 
+            onerror="this.src='${axios.defaults.baseURL}storage/post/default-post.jpg';" 
           />`,
           post.category.category_name, 
           post.id 

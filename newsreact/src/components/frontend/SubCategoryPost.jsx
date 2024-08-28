@@ -82,6 +82,7 @@ const SubCategoryPost = () => {
                                                 className="img-fluid" 
                                                 src={`${baseURL}storage/post/${lastPost.post_thumbnail}`} 
                                                 alt={lastPost.post_title} 
+                                                onError={(e) => { e.target.src = `${baseURL}storage/post/default-post.jpg`; }}
                                             />
                                         </a>
                                     </div>

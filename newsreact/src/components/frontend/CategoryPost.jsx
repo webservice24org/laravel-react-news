@@ -93,6 +93,7 @@ const CategoryPost = () => {
                                                 className="img-fluid" 
                                                 src={`${baseURL}storage/post/${lastPost.post_thumbnail}`} 
                                                 alt={lastPost.post_title} 
+                                                onError={(e) => { e.target.src = `${baseURL}storage/post/default-post.jpg`; }}
                                             />
                                         </a>
                                     </div>
@@ -116,7 +117,7 @@ const CategoryPost = () => {
                                         <a href={`/post/${post.id}`}>
                                         <div className="card">
                                             <div className="card-body">
-                                            <img className="img-fluid" src={`${baseURL}storage/post/${post.post_thumbnail}`} alt={post.post_title} />
+                                            <img className="img-fluid" src={`${baseURL}storage/post/${post.post_thumbnail}`} alt={post.post_title} onError={(e) => { e.target.src = `${baseURL}storage/post/default-post.jpg`; }} />
                                             <h2>{post.post_title}</h2>
                                             <p>
                                                 <a href={`/post/${post.id}`}>
