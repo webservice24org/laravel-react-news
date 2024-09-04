@@ -13,15 +13,15 @@ const Footer = () => {
                   <div className="footerLogo">
                     <Link to="#">
                       <img
-                        style={{ width: "120px" }}
-                        src="src/assets/frontend/img/logo-transferent.png"
+                        className="img-fluid"
+                        src="src/assets/frontend/img/logo.png"
                         alt="logo"
                       />
                     </Link>
                     <p className="footerAbout">
                       রাজনীতি, বাণিজ্য, খেলাধুলা, জাতীয়-আন্তর্জাতিক ব্রেকিং
                       নিউজ, বিশ্লেষণমূলক সংবাদসহ যাবতীয় খবর পেতে চোখ রাখুন
-                      এটিএন নিউজে
+                      অনুসন্ধান নিউজে
                     </p>
                   </div>
                 </div>

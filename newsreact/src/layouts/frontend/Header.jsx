@@ -10,16 +10,16 @@ const Header = () => {
                     <div className="header_logo_area">
                         <div className="container">
                             <div className="row">
-                                <div className="col-sm-2">
+                                <div className="col-sm-3">
                                     <div className="header_logo">
                                         <Link to="#">
                                             <img src="/src/assets/frontend/img/logo.png" alt="Our First Blog Site" />
                                         </Link>
                                     </div>
                                 </div>
-                                <div className="col-sm-2">
+                                <div className="col-sm-1">
                                     <div className="live_button mt-3">
-                                        <a className="button" data-bs-toggle="modal" data-bs-target="#exampleModal" href="#">ATN Live</a>
+                                        <a className="button" data-bs-toggle="modal" data-bs-target="#exampleModal" href="#">Video</a>
                                     </div>
                                 </div>
                                 <div className="col-sm-8 pt-3">

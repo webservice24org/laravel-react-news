@@ -96,7 +96,7 @@ img.topNewsImg {
     z-index: 999;
 }
 .header_logo img {
-    width: 113px;
+    width: 100%;
 }
 .manu_area {
   margin: 0;

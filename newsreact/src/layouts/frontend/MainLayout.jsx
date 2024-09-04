@@ -13,9 +13,9 @@ const MainLayout = () => {
 
   return (
     <div>
-      <header>
+      
         {isSinglePostOrCategory ? <SinglePostHeader /> : <Header />}
-      </header>
+      
       <main className='frontLayout'>
         <div className="container-fluid px-4">
           <Outlet />

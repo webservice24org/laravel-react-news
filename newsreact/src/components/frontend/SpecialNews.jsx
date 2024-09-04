@@ -42,7 +42,7 @@ const SpecialNews = () => {
                 <div class="special_news_items">
                     <div class="row">
                         {smallPosts.map((post, index) => (
-                            <div class="col-md-3 col-sm-12">
+                            <div class="col-md-3 col-sm-12" key={index}>
                                 <div class="four_colum_news_item">
                                     <div class="img_box">
                                         <a href={`/post/${post.id}`}>

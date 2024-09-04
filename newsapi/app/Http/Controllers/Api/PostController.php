@@ -137,8 +137,6 @@ class PostController extends Controller
             return response()->json(['success' => false, 'message' => 'Post creation failed. ' . $e->getMessage()], 500);
         }
     }
-
-
     public function show($id)
     {
         $post = Post::with([
@@ -158,9 +156,6 @@ class PostController extends Controller
         return response()->json(['success' => true, 'data' => $post, 'message' => 'Post retrieved successfully.']);
     }
     
-
-    
-
     public function updatePost(Request $request, $id)
     {
         $post = Post::findOrFail($id);

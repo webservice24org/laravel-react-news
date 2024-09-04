@@ -1,61 +1,87 @@
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
+import axiosInstance from '/axiosConfig';
+import { Link } from 'react-router-dom';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from 'react-responsive-carousel';
 
 const Foryou = () => {
+  const [posts, setPosts] = useState([]);
+  const baseURL = axiosInstance.defaults.baseURL;
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axiosInstance.get('api/posts-by-subcategory?subcategory=আপনার জন্য');
+        setPosts(response.data.data);
+      } catch (error) {
+        setPosts([]);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  const chunkPosts = (array, size) => {
+    const result = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
+  };
+
+  const chunkedPosts = chunkPosts(posts, 4);
+
   return (
-    <section class="category_news_section_one news_for_you">
-    <div class="container-fluid pt-5 mb-3">
-        <div class="section_wrapper">
-            <div class="section-title">
-                <h4 class="m-0 text-uppercase font-weight-bold">আপনার জন্য </h4>
-            </div>
-            <div class="owl-carousel news-carousel carousel-item-4 position-relative">
-                <div class="position-relative overflow-hidden" style={{height: "300px;"}}>
-                    <img class="img-fluid h-100" src="/src/assets/frontend/img/news-700x435-1.jpg" style={{ objectFit: "cover" }}  />
-                    <div class="overlay">
-                        <div class="mb-2">
-                        </div>
-                        <a class="h6 m-0 text-white " href="">সরকার ইন্টারনেট বন্ধ করেনি, বন্ধ হয়ে গেছে...</a>
+    <section className="category_news_section_one news_for_you">
+      <div className="container-fluid pt-5 mb-3">
+        <div className="section_wrapper">
+          <div className="section-title">
+            {posts.length > 0 && posts[0].subcategories.length > 0 && (
+              <Link
+                to={`/category/${posts[0].category.category_id}/subcategory/${posts[0].subcategories[0].id}/posts`}
+              >
+                <h4 className="m-0 text-uppercase font-weight-bold">আপনার জন্য</h4>
+              </Link>
+            )}
+          </div>
+          
+          <Carousel 
+            showThumbs={false}
+            infiniteLoop={false}
+            showStatus={false}
+            autoPlay={true}
+            interval={3000}
+            transitionTime={1000}
+            showArrows={true}
+            emulateTouch={true}
+          >
+            {chunkedPosts.map((group, index) => (
+              <div key={index} className="row">
+                {group.map((post, subIndex) => (
+                  <div key={subIndex} className="col-md-3 position-relative overflow-hidden" style={{ height: "300px" }}>
+                    <a href={`/post/${post.id}`}>
+                      <img 
+                        className="img-fluid h-100" 
+                        src={`${baseURL}storage/post/${post.post_thumbnail}`} 
+                        alt={post.post_title} 
+                        onError={(e) => { e.target.src = `${baseURL}storage/post/default-post.jpg`; }}
+                        style={{ objectFit: "cover" }}
+                      />
+                    </a>
+                    <div className="overlay">
+                      <a className="h6 m-0 text-white" href={`/post/${post.id}`}>
+                        {post.post_title}
+                      </a>
                     </div>
-                </div>
-                <div class="position-relative overflow-hidden" style={{height: "300px;"}}>
-                    <img class="img-fluid h-100" src="/src/assets/frontend/img/news-700x435-2.jpg" style={{ objectFit: "cover" }}  />
-                    <div class="overlay">
-                        <div class="mb-2">
-                        </div>
-                        <a class="h6 m-0 text-white " href="">যুক্তরাষ্ট্র থেকে শাফিনের মরদেহ আসছে ...</a>
-                    </div>
-                </div>
-                <div class="position-relative overflow-hidden" style={{height: "300px;"}}>
-                    <img class="img-fluid h-100" src="/src/assets/frontend/img/news-700x435-3.jpg" style={{ objectFit: "cover" }}  />
-                    <div class="overlay">
-                        <div class="mb-2">
-                        </div>
-                        <a class="h6 m-0 text-white " href="">ছয় দিনেও আসেনি এক দিনের সমান প্রবাসী আয় 
-                        </a>
-                    </div>
-                </div>
-                <div class="position-relative overflow-hidden" style={{height: "300px;"}}>
-                    <img class="img-fluid h-100" src="/src/assets/frontend/img/news-700x435-4.jpg" style={{ objectFit: "cover" }}  />
-                    <div class="overlay">
-                        <div class="mb-2">
-                        </div>
-                        <a class="h6 m-0 text-white " href="">কাল থেকে ব্যাংকের সব শাখা খোলা</a>
-                    </div>
-                </div>
-                <div class="position-relative overflow-hidden" style={{height: "300px;"}}>
-                    <img class="img-fluid h-100" src="/src/assets/frontend/img/news-700x435-5.jpg" style={{ objectFit: "cover" }}  />
-                    <div class="overlay">
-                        <div class="mb-2">
-                        </div>
-                        <a class="h6 m-0 text-white text-uppercase font-weight-semi-bold" href="">আহতদের যথাযথ চিকিৎসার আশ্বাস প্রধানমন্ত্রীর
-                        </a>
-                    </div>
-                </div>
-            </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </Carousel>
+          
         </div>
-    </div>
-</section>
+      </div>
+    </section>
   );
 };
 
