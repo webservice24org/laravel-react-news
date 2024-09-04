@@ -389,12 +389,12 @@ img.topNewsImg {
 #myTab {
 	border-bottom: none;
 }
-.nav-tabs .nav-link.active {
+.latest_news .nav-tabs .nav-link.active {
 	background: #13491d;
     color: #fff;
 	border-radius: 0;
 }
-.nav-tabs .nav-link {
+.latest_news .nav-tabs .nav-link {
 	border: none !important;
 	font-size: 18px;
 	color: #000;

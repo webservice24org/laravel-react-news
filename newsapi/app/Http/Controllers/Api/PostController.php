@@ -259,4 +259,17 @@ class PostController extends Controller
         return response()->json(['success' => true, 'message' => 'Post deleted successfully.']);
     }
 
+    public function incrementViewCount($id)
+    {
+        $post = Post::find($id);
+
+        if ($post) {
+            $post->increment('view_count');
+            return response()->json(['message' => 'View count incremented'], 200);
+        }
+
+        return response()->json(['message' => 'Post not found'], 404);
+    }
+    
+
 }

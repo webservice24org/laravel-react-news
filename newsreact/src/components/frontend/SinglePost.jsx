@@ -18,6 +18,7 @@ const SinglePost = () => {
         const response = await axiosInstance.get(`/api/posts/${postId}`);
         setPost(response.data.data);
         setLoading(false);
+        await axiosInstance.post(`/api/posts/${postId}/increment-view-count`);
       } catch (err) {
         setError('Failed to fetch post details.');
         setLoading(false);

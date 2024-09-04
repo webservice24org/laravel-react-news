@@ -131,6 +131,25 @@ class FrontEndDisplayController extends Controller
         return response()->json(['data' => $posts]);
     }
 
+    public function getLatestPosts()
+    {
+        return Post::select('id', 'post_title', 'post_thumbnail') 
+                ->without('category', 'subcategories', 'tags', 'seo') 
+                ->latest() 
+                ->take(6) 
+                ->get(); 
+    }
+    public function mostViewedPosts()
+    {
+        return Post::select('id', 'post_title', 'post_thumbnail', 'view_count')
+                    ->without('category', 'subcategories', 'tags', 'seo')
+                    ->orderBy('view_count', 'desc') 
+                    ->take(6)
+                    ->get(); 
+    }
+
+
+    
 
 
 

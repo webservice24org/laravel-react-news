@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DistrictController;
 use App\Http\Controllers\Api\DivisionController;
+use App\Http\Controllers\Api\FooterInfoController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\SubCategoryController;
 use App\Http\Controllers\Api\TagController;
@@ -42,11 +43,16 @@ Route::apiResource('/categories', CategoryController::class);
 Route::apiResource('/sub-categories', SubCategoryController::class);
 Route::apiResource('/posts', PostController::class);
 Route::post('/update/{id}', [PostController::class, 'updatePost']);
+Route::post('/posts/{id}/increment-view-count', [PostController::class, 'incrementViewCount']);
 
 //Route::get('/post-list', [PostController::class, 'postList']);
 
 Route::apiResource('/tags', TagController::class);
 
+
+
+Route::get('/latest-posts', [FrontEndDisplayController::class, 'getLatestPosts']);
+Route::get('/most-viewed-posts', [FrontEndDisplayController::class, 'mostViewedPosts']);
 
 
 Route::get('/lead-post', [FrontEndDisplayController::class, 'getLeadPost']);
@@ -59,6 +65,7 @@ Route::get('/posts-by-subcategory', [FrontEndDisplayController::class, 'getPosts
 
 Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getCategoryWithSubCategories']);
 
+Route::apiResource('/footer-infos', FooterInfoController::class);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
