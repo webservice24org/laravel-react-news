@@ -24,6 +24,9 @@ import SinglePost from './components/frontend/SinglePost';
 import CategoryPost from './components/frontend/CategoryPost';
 import PrivateRoute from './components/PrivateRoute'; 
 import SubCategoryPost from './components/frontend/SubCategoryPost';
+import FooterInfo from './components/admin/settings/FooterInfo';
+import HeaderInfo from './components/admin/settings/HeaderInfo';
+import VideoNews from './components/admin/posts/VideoNews';
 
 const router = createBrowserRouter([
   {
@@ -47,6 +50,9 @@ const router = createBrowserRouter([
           { path: "posts", element: <PostList /> },
           { path: "posts/create", element: <PostForm /> },
           { path: "posts/edit/:postId", element: <PostForm /> },
+          {path:"footer-settings", element:<FooterInfo />},
+          {path:"header-settings", element:<HeaderInfo />},
+          {path:"video-news", element:<VideoNews />},
         ],
       },
     ],

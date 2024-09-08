@@ -19,6 +19,7 @@ const Sidebar = () =>{
                         <nav className="sb-sidenav-menu-nested nav">
                             <Link className="nav-link" to="/admin/posts">All News Posts</Link>
                             <Link className="nav-link" to="/admin/posts/create">Add New Post</Link>
+                            <Link className="nav-link" to="/admin/video-news">Video News</Link>
                         </nav>
                     </div>
                     <Link className="nav-link" to="/admin/profile">
@@ -50,6 +51,17 @@ const Sidebar = () =>{
                             <Link className="nav-link" to="/admin/categories">Categories</Link>
                             <Link className="nav-link" to="/admin/sub-categories">Sub Categories</Link>
                             <Link className="nav-link" to="/admin/tags">Tags</Link>
+                        </nav>
+                    </div>
+                    <Link className="nav-link collapsed" to="#" data-bs-toggle="collapse" data-bs-target="#collapseThemeSettings" aria-expanded="false" aria-controls="collapseThemeSettings">
+                        <div className="sb-nav-link-icon"><i className="fas fa-columns"></i></div>
+                        Theme Settings
+                        <div className="sb-sidenav-collapse-arrow"><i className="fas fa-angle-down"></i></div>
+                    </Link>
+                    <div className="collapse" id="collapseThemeSettings" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                        <nav className="sb-sidenav-menu-nested nav">
+                            <Link className="nav-link" to="/admin/footer-settings">Footer Settings</Link>
+                            <Link className="nav-link" to="/admin/header-settings">Header Settings</Link>
                         </nav>
                     </div>
                     <Link className="nav-link collapsed" to="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">

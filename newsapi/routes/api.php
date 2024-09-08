@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DistrictController;
 use App\Http\Controllers\Api\DivisionController;
 use App\Http\Controllers\Api\FooterInfoController;
+use App\Http\Controllers\Api\HeaderInfoController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\SubCategoryController;
 use App\Http\Controllers\Api\TagController;
@@ -66,6 +67,10 @@ Route::get('/posts-by-subcategory', [FrontEndDisplayController::class, 'getPosts
 Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getCategoryWithSubCategories']);
 
 Route::apiResource('/footer-infos', FooterInfoController::class);
+Route::post('/footer-infos-update/{id}', [FooterInfoController::class, 'updateData']);
+
+Route::apiResource('/header-data', HeaderInfoController::class);
+Route::post('/header-data-update/{id}', [HeaderInfoController::class, 'updateData']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
