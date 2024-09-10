@@ -1,5 +1,6 @@
 // src/layouts/frontend/SinglePostHeader.jsx
 import React from 'react';
+import TopVideo from '../../components/frontend/TopVideo';
 
 const SinglePostHeader = () => {
   return (
@@ -17,19 +18,7 @@ const SinglePostHeader = () => {
                     </div>
                     <div className="col-sm-8 pt-3">
                         <div className="row">
-                            <div className="col-md-4">
-                                <img className="topNewsImg" src="img/outdoors.webp" alt="news title" />
-                                <a href="#" className="topNewsTitle">স্নিগ্ধ আমেজের লুকে সাফা কবির, পূজা চেরী ও নুসরাত</a>
-                            </div>
-                            <div className="col-md-4">
-                                <img className="topNewsImg" src="img/yamin.webp" alt="news title" />
-                                <a href="#" className="topNewsTitle">কোটা সংস্কার আন্দোলন: গুলিবিদ্ধ আরও একজন মারা</a>
-                            </div>
-                            <div className="col-md-4">
-                                <img className="topNewsImg" src="img/untitled_6.webp" alt="news title" />
-                                <a href="#" className="topNewsTitle">জাতিকে নিয়ে মশকরা কইরেন না: হাইকোর্ট
-                                </a>
-                            </div>
+                        <TopVideo />
                         </div>
                     </div>
                 </div>

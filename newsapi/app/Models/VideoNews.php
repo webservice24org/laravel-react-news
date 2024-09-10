@@ -8,7 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class VideoNews extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'video_title', 'video_link', 'isTop'
-    ];
+    protected $fillable = ['video_title', 'video_link', 'video_thumbnail', 'isTop'];
 }

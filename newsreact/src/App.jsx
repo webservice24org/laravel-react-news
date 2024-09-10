@@ -27,6 +27,8 @@ import SubCategoryPost from './components/frontend/SubCategoryPost';
 import FooterInfo from './components/admin/settings/FooterInfo';
 import HeaderInfo from './components/admin/settings/HeaderInfo';
 import VideoNews from './components/admin/posts/VideoNews';
+import VideoForm from './components/admin/posts/VideoForm';
+import SingleVideo from './components/frontend/SingleVideo';
 
 const router = createBrowserRouter([
   {
@@ -53,6 +55,8 @@ const router = createBrowserRouter([
           {path:"footer-settings", element:<FooterInfo />},
           {path:"header-settings", element:<HeaderInfo />},
           {path:"video-news", element:<VideoNews />},
+          {path:"video-news/create", element:<VideoForm />},
+          {path:"video-news/edit/:id", element:<VideoForm />},
         ],
       },
     ],
@@ -63,6 +67,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/post/:postId", element: <SinglePost /> }, 
+      { path: "/video-news/:id", element: <SingleVideo /> }, 
       { path: "/category/:categoryId/posts", element: <CategoryPost /> }, 
       { path: "/category/:categoryId/subcategory/:subcatId/posts", element: <SubCategoryPost /> }, 
     ],

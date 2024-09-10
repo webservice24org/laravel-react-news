@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\HeaderInfoController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\SubCategoryController;
 use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\Api\VideoNewsController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PermissionController;
 use App\Http\Controllers\Auth\RoleController;
@@ -71,6 +72,11 @@ Route::post('/footer-infos-update/{id}', [FooterInfoController::class, 'updateDa
 
 Route::apiResource('/header-data', HeaderInfoController::class);
 Route::post('/header-data-update/{id}', [HeaderInfoController::class, 'updateData']);
+
+Route::apiResource('/video-news', VideoNewsController::class);
+Route::post('/video-news/{id}', [VideoNewsController::class, 'updateVideo']);
+Route::get('/top-videos', [VideoNewsController::class, 'topVideos']);
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();

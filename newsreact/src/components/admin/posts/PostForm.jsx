@@ -267,8 +267,6 @@ function PostForm() {
     }
 };
 
-
-
   return (
     <div className='mt-3'>
       <div className='card mb-2'>

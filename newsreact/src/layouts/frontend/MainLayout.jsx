@@ -1,4 +1,3 @@
-// src/layouts/frontend/MainLayout.jsx
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
@@ -9,13 +8,14 @@ import Modal from './Modal';
 const MainLayout = () => {
   const location = useLocation();
   
-  const isSinglePostOrCategory = location.pathname.startsWith('/post/') || location.pathname.startsWith('/category/');
+  // Include /video-news/ in the condition
+  const isSinglePostOrCategory = location.pathname.startsWith('/post/') || 
+                                 location.pathname.startsWith('/category/') ||
+                                 location.pathname.startsWith('/video-news/');  // New condition for videos
 
   return (
     <div>
-      
-        {isSinglePostOrCategory ? <SinglePostHeader /> : <Header />}
-      
+      {isSinglePostOrCategory ? <SinglePostHeader /> : <Header />}
       <main className='frontLayout'>
         <div className="container-fluid px-4">
           <Outlet />
