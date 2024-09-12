@@ -95,6 +95,10 @@ const Sidebar = () =>{
                             </div>
                         </nav>
                     </div>
+                    <Link className="nav-link" to="/admin/advertising">
+                        <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                        Advertising
+                    </Link>
                     <div className="sb-sidenav-menu-heading">Addons</div>
                     <Link className="nav-link" to="charts.html">
                         <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>

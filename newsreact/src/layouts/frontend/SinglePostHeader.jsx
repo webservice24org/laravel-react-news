@@ -1,24 +1,49 @@
 // src/layouts/frontend/SinglePostHeader.jsx
-import React from 'react';
-import TopVideo from '../../components/frontend/TopVideo';
+import React, { useState, useEffect } from 'react';
+import TopVideo from "../../components/frontend/TopVideo";
+import axios from '/axiosConfig';
+import { Link } from "react-router-dom";
 
 const SinglePostHeader = () => {
+    const [headerData, setHeaderData] = useState(null);
+
+    useEffect(() => {
+        const fetchHeaderData = async () => {
+            try {
+                const response = await axios.get('/api/header-data/');
+                setHeaderData(response.data[0]); 
+            } catch (error) {
+                console.error("Error fetching header data:", error);
+            }
+        };
+
+        fetchHeaderData();
+    }, []);
+
+    if (!headerData) return null; 
   return (
     <header>
 
         <div className="header_logo_area">
             <div className="container">
                 <div className="row">
-                    <div className="col-sm-4">
+                    <div className="col-sm-3">
                         <div className="header_logo">
-                            <a href="#">
-                                <img src="img/logo.png" alt="Our First Blog Site" />
+                            <Link to="#">
+                                <img src={`${axios.defaults.baseURL}storage/logo/${headerData.header_logo}`} alt="Header Logo" />
+                            </Link>
+                        </div>
+                    </div>
+                    <div className="col-sm-1">
+                        <div className="live_button mt-3">
+                            <a className="button" href={headerData.video_link} target="_blank" rel="noopener noreferrer">
+                                {headerData.video_btn_text}
                             </a>
                         </div>
                     </div>
                     <div className="col-sm-8 pt-3">
                         <div className="row">
-                        <TopVideo />
+                            <TopVideo />
                         </div>
                     </div>
                 </div>

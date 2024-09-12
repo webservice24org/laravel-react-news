@@ -33,9 +33,10 @@ section {
   min-height: 700px;
 }
 section.lead_section.design2 {
-  padding-top: 70px;
+  top: 41%;
   margin: 0;
   padding-bottom: 160px;
+  position: absolute;
 }
 .header_section_bg {
   width: 100%;

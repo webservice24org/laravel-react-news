@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdvertisingController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DistrictController;
 use App\Http\Controllers\Api\DivisionController;
@@ -76,6 +77,9 @@ Route::post('/header-data-update/{id}', [HeaderInfoController::class, 'updateDat
 Route::apiResource('/video-news', VideoNewsController::class);
 Route::post('/video-news/{id}', [VideoNewsController::class, 'updateVideo']);
 Route::get('/top-videos', [VideoNewsController::class, 'topVideos']);
+
+Route::apiResource('/advertising', AdvertisingController::class);
+Route::post('/advertising/{id}', [AdvertisingController::class, 'updateAdvert']);
 
 
 Route::get('/user', function (Request $request) {

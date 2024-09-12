@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import axios from '/axiosConfig';
+import React, { useState, useEffect } from 'react';
+import axios from '/axiosConfig'; // Adjust the import path as needed
+import { toast } from 'react-toastify';
 import { Button, Card, Table, Modal, Form } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import { toast } from 'react-toastify';
 
 function Advertising() {
   const [advertisements, setAdvertisements] = useState([]);
@@ -22,68 +22,72 @@ function Advertising() {
     fetchAdvertisements();
   }, []);
 
-  const fetchAdvertisements = () => {
-    axios.get('/api/advertising')
-      .then(response => {
-        setAdvertisements(response.data);
-      })
-      .catch(error => {
-        console.error("There was an error fetching the advertising data!", error);
-      });
+  const fetchAdvertisements = async () => {
+    try {
+      const response = await axios.get('/api/advertising');
+      setAdvertisements(response.data);
+    } catch (error) {
+      console.error("There was an error fetching the advertising data!", error);
+    }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setFormData({
-      ...formData,
-      advert_image: file,
-      advert_image_preview: URL.createObjectURL(file),
-    });
+    if (file) {
+      setFormData(prevState => ({
+        ...prevState,
+        advert_image: file,
+        advert_image_preview: URL.createObjectURL(file)
+      }));
+    }
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    
+  
     const formPayload = new FormData();
     formPayload.append('title', formData.title);
+    formPayload.append('code', formData.code);
+    formPayload.append('status', formData.status ? '1' : '0'); // Convert checkbox value to a string
+    
     if (formData.advert_image) {
       formPayload.append('advert_image', formData.advert_image);
-    } else {
-      // Append old image filename if no new image is provided
+    }
+    
+    if (isEditing && formData.advert_image_old) {
       formPayload.append('advert_image_old', formData.advert_image_old);
     }
-    formPayload.append('code', formData.code);
-    formPayload.append('status', formData.status);
-
-    const url = isEditing ? `/api/advertising/${formData.id}` : '/api/advertising';
-    axios.post(url, formPayload, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-    .then(response => {
+  
+    try {
+      const url = isEditing ? `/api/advertising/${formData.id}` : '/api/advertising';
+      const method = isEditing ? 'post' : 'post'; // This should be 'put' for editing
+      
+      await axios({
+        method: method,
+        url: url,
+        data: formPayload,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+  
       toast.success(`${isEditing ? "Advertisement updated" : "Advertisement created"} successfully!`);
-      fetchAdvertisements();
-      handleCloseModal();
-    })
-    .catch(error => {
-      if (error.response && error.response.data) {
-        console.error(`${isEditing ? "Update" : "Create"} Error:`, error.response.data);
-        toast.error(`${isEditing ? "Error updating" : "Error creating"} advertisement: ${error.response.data.message || 'Unknown error'}`);
-      } else {
-        console.error(`Error ${isEditing ? "updating" : "creating"} the advertisement!`, error);
-        toast.error(`${isEditing ? "Error updating" : "Error creating"} advertisement.`);
-      }
-    });
+      fetchAdvertisements(); // Refresh the list of advertisements
+      handleCloseModal(); // Close the form modal
+    } catch (error) {
+      toast.error(`${isEditing ? "Error updating" : "Error creating"} advertisement.`);
+      console.error(`Error ${isEditing ? "updating" : "creating"} the advertisement!`, error);
+    }
   };
+  
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -99,19 +103,11 @@ function Advertising() {
         axios.delete(`/api/advertising/${id}`)
           .then(response => {
             setAdvertisements(advertisements.filter(ad => ad.id !== id));
-            Swal.fire(
-              'Deleted!',
-              'Advertisement has been deleted.',
-              'success'
-            );
+            Swal.fire('Deleted!', 'Advertisement has been deleted.', 'success');
           })
           .catch(error => {
             console.error("There was an error deleting the advertisement!", error);
-            Swal.fire(
-              'Error!',
-              'Error deleting advertisement.',
-              'error'
-            );
+            Swal.fire('Error!', 'Error deleting advertisement.', 'error');
           });
       }
     });
@@ -122,7 +118,7 @@ function Advertising() {
       id: ad.id,
       title: ad.title,
       advert_image: null,
-      advert_image_preview: ad.advert_image ? `${axios.defaults.baseURL}storage/advertising/${ad.advert_image}` : null,
+      advert_image_preview: `${axios.defaults.baseURL}storage/advertising/${ad.advert_image}`, // Set preview URL for old image
       code: ad.code,
       status: ad.status,
       advert_image_old: ad.advert_image // Set old image filename
@@ -173,7 +169,7 @@ function Advertising() {
                   <td>
                     {ad.advert_image ? (
                       <img
-                        src={`${axios.defaults.baseURL}storage/advertising/${ad.advert_image}`} 
+                        src={`${axios.defaults.baseURL}storage/advertising/${ad.advert_image}`}
                         alt={ad.title}
                         style={{ width: '100px' }}
                       />
@@ -204,6 +200,7 @@ function Advertising() {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleFormSubmit}>
+          <input type="hidden" name="id" value={formData} />
             <Form.Group className='mb-3'>
               <Form.Label>Title</Form.Label>
               <Form.Control
@@ -231,7 +228,7 @@ function Advertising() {
                   />
                 </div>
               )}
-              {isEditing && formData.advert_image_old && !formData.advert_image && (
+              {formData.advert_image && isEditing && formData.advert_image_old && (
                 <div className='mt-3'>
                   <img
                     src={`${axios.defaults.baseURL}storage/advertising/${formData.advert_image_old}`}
@@ -260,10 +257,11 @@ function Advertising() {
                 type='checkbox'
                 label='Published'
                 name='status'
-                checked={formData.status}
+                checked={formData.status || false}
                 onChange={(e) => setFormData({ ...formData, status: e.target.checked })}
               />
             </Form.Group>
+
 
             <Button variant='primary' type='submit'>
               {isEditing ? 'Update' : 'Submit'}

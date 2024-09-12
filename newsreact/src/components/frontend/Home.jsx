@@ -32,7 +32,7 @@ const Home = () => {
       <Literature />
       <Sports />
       <FourboxTwo />
-      <PhotoGallery />
+      
       <Video />
     </>
   );

@@ -7,11 +7,10 @@ import Modal from './Modal';
 
 const MainLayout = () => {
   const location = useLocation();
-  
-  // Include /video-news/ in the condition
+
   const isSinglePostOrCategory = location.pathname.startsWith('/post/') || 
                                  location.pathname.startsWith('/category/') ||
-                                 location.pathname.startsWith('/video-news/');  // New condition for videos
+                                 location.pathname.startsWith('/video-news/'); 
 
   return (
     <div>
