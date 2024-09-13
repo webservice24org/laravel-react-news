@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Spatie\ImageOptimizer\OptimizerChainFactory;
 use Log;
 
 class PostController extends Controller
@@ -47,10 +48,6 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        $input = $request->all();
-
-        $request->merge($input);
-
         $request->validate([
             'post_title' => 'required|string|max:255',
             'post_details' => 'required|string',
@@ -66,19 +63,23 @@ class PostController extends Controller
             'seo_descp' => 'nullable|string',
             'post_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg',
             'thumbnail_alt' => 'nullable|string|max:255|unique:posts,thumbnail_alt',
-            //'isLead' => 'required|boolean',
             'videoLink' => 'nullable|url'
         ]);
-
+    
         $input = $request->except(['sub_category_ids', 'tags', 'category_id', 'seo_title', 'seo_descp']);
         $input['division_id'] = $request->input('division_id') ? intval($request->input('division_id')) : null;
         $input['district_id'] = $request->input('district_id') ? intval($request->input('district_id')) : null;
         $input['user_id'] = $request->input('user_id') ? intval($request->input('user_id')) : null;
         $input['isLead'] = $request->boolean('isLead');
+    
         if ($request->hasFile('post_thumbnail')) {
             $file = $request->file('post_thumbnail');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/post', $filename);
+            $filename = 'anusandhan' . '_'. time() . '.' . $file->getClientOriginalExtension();
+            $path = public_path('storage/post/' . $filename);
+            $file->move(public_path('storage/post'), $filename);
+            $optimizerChain = OptimizerChainFactory::create();
+            $optimizerChain->optimize($path);
+
             $input['post_thumbnail'] = $filename;
         }
 
@@ -88,16 +89,16 @@ class PostController extends Controller
         if (empty($input['thumbnail_alt'])) {
             $input['thumbnail_alt'] = preg_replace('/\s+/u', '-', trim($input['post_title']));
         }
-
+    
         DB::beginTransaction();
         try {
             $post = Post::create($input);
-
+    
             PostCategory::create([
                 'post_id' => $post->id,
                 'category_id' => $request->category_id
             ]);
-
+    
             if ($request->has('sub_category_ids')) {
                 foreach ($request->sub_category_ids as $sub_category_id) {
                     PostSubcategory::create([
@@ -106,11 +107,11 @@ class PostController extends Controller
                     ]);
                 }
             }
-
+    
             if ($request->has('tags')) {
                 $tags = $request->input('tags');
                 $tagIds = [];
-                
+    
                 foreach ($tags as $tag) {
                     $tagName = is_array($tag) ? $tag['tag_name'] : $tag;
                     if (is_string($tagName)) {
@@ -118,10 +119,10 @@ class PostController extends Controller
                         $tagIds[] = $tagModel->id;
                     }
                 }
-                
+    
                 $post->tags()->sync($tagIds);
             }
-
+    
             PostSeo::updateOrCreate(
                 ['post_id' => $post->id],
                 [
@@ -129,7 +130,7 @@ class PostController extends Controller
                     'seo_descp' => $request->input('seo_descp')
                 ]
             );
-
+    
             DB::commit();
             return response()->json(['success' => true, 'data' => $post, 'message' => 'Post created successfully.']);
         } catch (\Exception $e) {
@@ -137,6 +138,7 @@ class PostController extends Controller
             return response()->json(['success' => false, 'message' => 'Post creation failed. ' . $e->getMessage()], 500);
         }
     }
+
     public function show($id)
     {
         $post = Post::with([
@@ -164,16 +166,24 @@ class PostController extends Controller
         $input['district_id'] = $request->input('district_id') !== null ? $request->input('district_id') : null;
         $input['user_id'] = $request->input('user_id') !== null ? $request->input('user_id') : null;
 
-        //$input['isLead'] = $request->has('isLead') ? true : false;
-
         if ($request->hasFile('post_thumbnail')) {
             $file = $request->file('post_thumbnail');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'anusandhan' . '_'.time() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/post', $filename);
+        
+            $filePath = storage_path('app/public/post/' . $filename);
+        
+            $optimizerChain = OptimizerChainFactory::create();
 
+            try {
+                $optimizerChain->optimize($filePath);
+            } catch (\Exception $e) {
+                \Log::error('Image optimization failed: ' . $e->getMessage());
+            }
+        
             if ($post->post_thumbnail && Storage::exists('public/post/' . $post->post_thumbnail)) {
                 $oldThumbnailPath = storage_path('app/public/post/' . $post->post_thumbnail);
-
+        
                 if (file_exists($oldThumbnailPath)) {
                     unlink($oldThumbnailPath);
                 }
@@ -237,7 +247,6 @@ class PostController extends Controller
             return response()->json(['success' => false, 'message' => 'Post update failed. ' . $e->getMessage()], 500);
         }
     }
-
 
 
     public function destroy($id)

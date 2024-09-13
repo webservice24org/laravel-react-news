@@ -22,10 +22,7 @@ const Sidebar = () =>{
                             <Link className="nav-link" to="/admin/video-news">Video News</Link>
                         </nav>
                     </div>
-                    <Link className="nav-link" to="/admin/profile">
-                        <div className="sb-nav-link-icon"><i className="fas fa-tachometer-alt"></i></div>
-                        Profile
-                    </Link>
+                    
                     <div className="sb-sidenav-menu-heading">Interface</div>
                     <Link className="nav-link collapsed" to="#" data-bs-toggle="collapse" data-bs-target="#collapseUserManagement" aria-expanded="false" aria-controls="collapseUserManagement">
                         <div className="sb-nav-link-icon"><i className="fas fa-columns"></i></div>
@@ -62,6 +59,7 @@ const Sidebar = () =>{
                         <nav className="sb-sidenav-menu-nested nav">
                             <Link className="nav-link" to="/admin/footer-settings">Footer Settings</Link>
                             <Link className="nav-link" to="/admin/header-settings">Header Settings</Link>
+                            <Link className="nav-link" to="/admin/menu-settings">Menu Settings</Link>
                         </nav>
                     </div>
                     <Link className="nav-link collapsed" to="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
@@ -99,20 +97,8 @@ const Sidebar = () =>{
                         <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
                         Advertising
                     </Link>
-                    <div className="sb-sidenav-menu-heading">Addons</div>
-                    <Link className="nav-link" to="charts.html">
-                        <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
-                        Charts
-                    </Link>
-                    <Link className="nav-link" to="tables.html">
-                        <div className="sb-nav-link-icon"><i className="fas fa-table"></i></div>
-                        Tables
-                    </Link>
+                    
                 </div>
-            </div>
-            <div className="sb-sidenav-footer">
-                <div className="small">Logged in as:</div>
-                Start Bootstrap
             </div>
         </nav>
     );

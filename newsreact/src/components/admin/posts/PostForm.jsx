@@ -32,9 +32,6 @@ function PostForm() {
     sub_category_ids: [],
     tags: [] 
 });
-
-
-
   
   const [divisions, setDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -479,7 +476,7 @@ function PostForm() {
                   type='checkbox' 
                   label='Is Lead Article'
                   name='isLead'
-                  checked={postData.isLead} // This should represent a boolean value (true/false)
+                  checked={postData.isLead} 
                   onChange={(e) => setPostData({ ...postData, isLead: e.target.checked ? 1 : 0 })}
                 />
 

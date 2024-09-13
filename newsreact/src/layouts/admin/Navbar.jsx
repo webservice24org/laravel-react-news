@@ -26,6 +26,18 @@ const Navbar = () => {
                 <i className="fas fa-bars"></i>
             </button>
             <Link className="btn btn-success" to="/" target="__blank">Visit Site</Link>
+            <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li className="nav-item dropdown">
+                    <Link className="nav-link dropdown-toggle" id="navbarDropdown" to="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i className="fa-solid fa-square-plus"></i>
+                        <span className="ps-1">Add New</span>
+                    </Link>
+                    <ul className="dropdown-menu dropdown-menu-end addnew" aria-labelledby="navbarDropdown">
+                        <li><Link className="nav-link" to="/admin/posts/create">Add New Post</Link></li>
+                        <li><Link className="nav-link" to="/admin/video-news">Video News</Link></li>
+                    </ul>
+                </li>
+            </ul>
             <form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                 <div className="input-group">
                     <input className="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
