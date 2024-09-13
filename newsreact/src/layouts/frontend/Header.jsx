@@ -5,7 +5,7 @@ import TopVideo from "../../components/frontend/TopVideo";
 import axios from '/axiosConfig';
 
 const Header = () => {
-    const [headerData, setHeaderData] = useState(null);
+    const [headerData, setHeaderData, menuData, setMenuData] = useState(null);
 
     useEffect(() => {
         const fetchHeaderData = async () => {
@@ -18,6 +18,19 @@ const Header = () => {
         };
 
         fetchHeaderData();
+    }, []);
+
+    useEffect(() => {
+        const fetchMenuData = async () => {
+            try {
+                const response = await axios.get('/api/menu-data');
+                setMenuData(response.data); 
+            } catch (error) {
+                console.error("Error fetching menu data:", error);
+            }
+        };
+
+        fetchMenuData();
     }, []);
 
     if (!headerData) return null; 
@@ -52,92 +65,50 @@ const Header = () => {
                         </div>
                     </div>
 
-                    {/* Test menu start */}
+                    {/* Menu will Here */}
                     <div className="bottom_header design2">
                         <div className="container">
                             <div className="row">
                                 <div className="col-md-10">
                                     <div className="manu_area">
                                         <ul>
-                                            <li className="active"><Link to="/"><i className="fas fa-home"></i></Link></li>
-                                            <li>
-                                                <Link to="#">বাংলাদেশ <span><i className="fa-solid fa-angle-down"></i></span></Link>
-                                                <ul>
-                                                    <li><Link to="All page/national.html">জাতীয়</Link></li>
-                                                    <li><Link to="All page/politics.html">রাজনীতি</Link></li>
-                                                    <li><Link to="All page/comercial.html">অর্থনীতি</Link></li>
-                                                </ul>
+                                            {/* Home Link */}
+                                            <li className="active">
+                                                <Link to="/"><i className="fas fa-home"></i></Link>
                                             </li>
-                                            <li>
-                                                <Link to="All page/over-country.html">দেশজুড়ে <span><i className="fa-solid fa-angle-down"></i></span></Link>
-                                                <ul>
-                                                    <li><Link to="All page/district-news.html">জেলার খবর</Link></li>
-                                                </ul>
-                                            </li>
-                                            <li><Link to="All page/internation.html">আন্তর্জাতিক</Link></li>
-                                            <li>
-                                                <Link to="All page/game.html">খেলাধুলা <span><i className="fa-solid fa-angle-down"></i></span></Link>
-                                                <ul>
-                                                    <li><Link to="All page/footbal.html">ফুটবল</Link></li>
-                                                    <li><Link to="All page/crickcet.html">ক্রিকেট</Link></li>
-                                                </ul>
-                                            </li>
-                                            <li><Link to="All page/expression.html">মতামত</Link></li>
-                                            <li>
-                                                <Link to="All page/entertainment.html">বিনোদন <span><i className="fa-solid fa-angle-down"></i></span></Link>
-                                                <ul>
-                                                    <li><Link to="All page/hollywood.html">হলিউড</Link></li>
-                                                    <li><Link to="All page/bollywood.html">বলিউড</Link></li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <Link to="All page/features.html">ফিচার <span><i className="fa-solid fa-angle-down"></i></span></Link>
-                                                <ul>
-                                                    <li><Link to="All page/photogallery.html">ফটো গ্যালারি</Link></li>
-                                                    <li><Link to="All page/lifestyle.html">লাইফস্টাইল</Link></li>
-                                                    <li><Link to="All page/ict.html">অথ্যপ্রযুক্তি</Link></li>
-                                                    <li><Link to="All page/travel.html">ভ্রমণ</Link></li>
-                                                    <li><Link to="All page/agriculture.html">কৃষি ও প্রকৃতি</Link></li>
-                                                    <li><Link to="All page/ekushe.html">একুশে বইমেলা</Link></li>
-                                                </ul>
-                                            </li>
+
+                                            {/* Loop through categories */}
+                                            {menuData.categories.map(category => (
+                                                <li key={category.id}>
+                                                    <Link to="#">{category.category_name} <span><i className="fa-solid fa-angle-down"></i></span></Link>
+                                                    <ul>
+                                                        {category.subcategories.map(sub => (
+                                                            <li key={sub.id}>
+                                                                <Link to={`/category/${category.id}/subcategory/${sub.id}`}>{sub.sub_category_name}</Link>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </li>
+                                            ))}
+
+                                            {/* Loop through divisions */}
                                             <li className="all_division_parent">
                                                 <Link to="#">সকল বিভাগ <span><i className="fa-solid fa-angle-down"></i></span></Link>
                                                 <div className="all_division">
                                                     <div className="container">
                                                         <div className="row">
-                                                            <div className="col-md-3">
-                                                                <div className="single_division">
-                                                                    <p><Link to="All page/education.html">শিক্ষা</Link></p>
-                                                                    <p><Link to="All page/campus.html">ক্যাম্পাস</Link></p>
-                                                                    <p><Link to="All page/health.html">স্বাস্থ্য</Link></p>
-                                                                    <p><Link to="All page/high-court.html">আইন-আদালত</Link></p>
+                                                            {menuData.divisions.map(division => (
+                                                                <div className="col-md-3" key={division.id}>
+                                                                    <div className="single_division">
+                                                                        <p><Link to={`/division/${division.id}`}>{division.division_name}</Link></p>
+                                                                        {division.districts.map(district => (
+                                                                            <p key={district.id}>
+                                                                                <Link to={`/division/${division.id}/district/${district.id}`}>{district.district_name}</Link>
+                                                                            </p>
+                                                                        ))}
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div className="col-md-3">
-                                                                <div className="single_division">
-                                                                    <p><Link to="All page/religion.html">ধর্ম</Link></p>
-                                                                    <p><Link to="All page/abroad.html">প্রবাস</Link></p>
-                                                                    <p><Link to="All page/news-mediam.html">গনমাধ্যম</Link></p>
-                                                                    <p><Link to="All page/children.html">নারী ও শিশু</Link></p>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-3">
-                                                                <div className="single_division">
-                                                                    <p><Link to="All page/comerce-fair.html">বাণিজ্য মেলা</Link></p>
-                                                                    <p><Link to="All page/literature.html">সাহিত্য</Link></p>
-                                                                    <p><Link to="All page/job.html">জাগো জবস</Link></p>
-                                                                    <p><Link to="All page/eid-magazine.html">ঈদ সংখ্যা</Link></p>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-3">
-                                                                <div className="single_division">
-                                                                    <p><Link to="All page/today.html"><span><i className="fas fa-stopwatch"></i></span> আজকের আয়োজন</Link></p>
-                                                                    <p><Link to="archive.html"><span><i className="fas fa-camera-retro"></i></span> আর্কাইভ</Link></p>
-                                                                    <p><Link to="All page/social.html"><span><i className="fas fa-share-alt"></i></span> সোশাল মিডিয়া</Link></p>
-                                                                    <p><Link to="https://www.jagonews24.com/bangla-converter"><span><i className="fas fa-language"></i></span> ইউনিকোড কনভার্টার</Link></p>
-                                                                </div>
-                                                            </div>
+                                                            ))}
                                                         </div>
                                                     </div>
                                                 </div>
