@@ -28,7 +28,7 @@ function PostForm() {
     news_source: '',
     user_id: null, 
     videoLink: '',
-    isLead: false,
+    isLead: '',
     sub_category_ids: [],
     tags: [] 
 });
@@ -254,6 +254,7 @@ function PostForm() {
     try {
         const requestMethod = postId ? axios.post : axios.post;
         const url = postId ? `/api/update/${postId}` : '/api/posts';
+        
       
         await requestMethod(url, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
@@ -474,13 +475,14 @@ function PostForm() {
             <div className='card shadow bg-white rounded'>
               <div className='card-body'>
               <Form.Group className='mb-3'>
-              <Form.Check 
+                <Form.Check 
                   type='checkbox' 
                   label='Is Lead Article'
                   name='isLead'
-                  checked={postData.isLead}
-                  onChange={(e) => setPostData({ ...postData, isLead: e.target.checked })}
-              />
+                  checked={postData.isLead} // This should represent a boolean value (true/false)
+                  onChange={(e) => setPostData({ ...postData, isLead: e.target.checked ? 1 : 0 })}
+                />
+
               </Form.Group>
                 <Form.Group className='mb-3'>
                   <Form.Label>Reporter Name <small className='text-danger'>(optional)</small></Form.Label>

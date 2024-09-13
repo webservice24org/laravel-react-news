@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->boolean('isLead')->default(false)->after('news_source'); 
+            $table->boolean('isLead')->after('news_source'); 
             $table->string('videoLink')->nullable()->after('isLead'); 
         });
     }

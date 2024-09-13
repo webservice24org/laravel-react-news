@@ -48,7 +48,6 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
-        $input['isLead'] = $request->has('isLead') ? false : true;
 
         $request->merge($input);
 
@@ -67,7 +66,7 @@ class PostController extends Controller
             'seo_descp' => 'nullable|string',
             'post_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg',
             'thumbnail_alt' => 'nullable|string|max:255|unique:posts,thumbnail_alt',
-            'isLead' => 'nullable|boolean',
+            //'isLead' => 'required|boolean',
             'videoLink' => 'nullable|url'
         ]);
 
@@ -75,6 +74,7 @@ class PostController extends Controller
         $input['division_id'] = $request->input('division_id') ? intval($request->input('division_id')) : null;
         $input['district_id'] = $request->input('district_id') ? intval($request->input('district_id')) : null;
         $input['user_id'] = $request->input('user_id') ? intval($request->input('user_id')) : null;
+        $input['isLead'] = $request->boolean('isLead');
         if ($request->hasFile('post_thumbnail')) {
             $file = $request->file('post_thumbnail');
             $filename = time() . '.' . $file->getClientOriginalExtension();
@@ -164,7 +164,7 @@ class PostController extends Controller
         $input['district_id'] = $request->input('district_id') !== null ? $request->input('district_id') : null;
         $input['user_id'] = $request->input('user_id') !== null ? $request->input('user_id') : null;
 
-        $input['isLead'] = $request->has('isLead') ? true : false;
+        //$input['isLead'] = $request->has('isLead') ? true : false;
 
         if ($request->hasFile('post_thumbnail')) {
             $file = $request->file('post_thumbnail');
