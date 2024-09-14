@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\HeaderInfoController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\SubCategoryController;
+use App\Http\Controllers\Api\SubMenuController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\VideoNewsController;
 use App\Http\Controllers\Auth\AuthController;
@@ -82,7 +83,7 @@ Route::get('/top-videos', [VideoNewsController::class, 'topVideos']);
 Route::apiResource('/advertising', AdvertisingController::class);
 Route::post('/advertising/{id}', [AdvertisingController::class, 'updateAdvert']);
 Route::apiResource('/menu', MenuController::class);
-
+Route::resource('/sub-menu', controller: SubMenuController::class);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

@@ -60,6 +60,7 @@ const Sidebar = () =>{
                             <Link className="nav-link" to="/admin/footer-settings">Footer Settings</Link>
                             <Link className="nav-link" to="/admin/header-settings">Header Settings</Link>
                             <Link className="nav-link" to="/admin/menu-settings">Menu Settings</Link>
+                            <Link className="nav-link" to="/admin/sub-menu-settings">Sub Menu Settings</Link>
                         </nav>
                     </div>
                     <Link className="nav-link collapsed" to="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">

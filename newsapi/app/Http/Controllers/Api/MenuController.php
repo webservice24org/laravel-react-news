@@ -26,17 +26,18 @@ class MenuController extends Controller
     $validatedData = $request->validate([
         'name' => 'required|string|max:255',
         'link' => 'required|string|max:255',
-        'status' => 'required|in:active,inactive',
+        'status' => 'required|in:active,inactive', // Validate the status field
         'position' => 'nullable|integer',
     ]);
 
-    $menu = Menu::create($validatedData);
+    $menu = Menu::create($validatedData); // Create menu with validated data
 
     return response()->json([
         'message' => 'Menu created successfully.',
         'data' => $menu
-    ], 201); // 201 Created status
+    ], 201); // Return 201 status
 }
+
     // Display the specified resource (GET /menu/{id})
     public function show($id): JsonResponse
     {
@@ -68,9 +69,9 @@ class MenuController extends Controller
     }
 
     $validatedData = $request->validate([
-        'name' => 'sometimes|string|max:255',
-        'link' => 'sometimes|string|max:255',
-        'status' => 'sometimes|in:active,inactive',
+        'name' => 'required|string|max:255',
+        'link' => 'required|string|max:255',
+        'status' => 'required|in:active,inactive', // Validate the status field
         'position' => 'nullable|integer',
     ]);
 

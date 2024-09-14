@@ -5,18 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Menu extends Model
+class SubMenu extends Model
 {
     use HasFactory;
     protected $fillable = [
         'name',
         'link',
+        'menu_id',
+        'position',
         'status',
-        'position'
     ];
 
-    public function subMenus()
+    // Define relationship with Menu
+    public function menu()
     {
-        return $this->hasMany(SubMenu::class, 'menu_id');
+        return $this->belongsTo(Menu::class);
     }
 }

@@ -77,7 +77,7 @@ const Header = () => {
                                                 <Link to="/"><i className="fas fa-home"></i></Link>
                                             </li>
 
-                                            {/* Loop through categories */}
+                                            {/* Loop through categories
                                             {menuData.categories.map(category => (
                                                 <li key={category.id}>
                                                     <Link to="#">{category.category_name} <span><i className="fa-solid fa-angle-down"></i></span></Link>
@@ -90,8 +90,9 @@ const Header = () => {
                                                     </ul>
                                                 </li>
                                             ))}
+                                                 */}
 
-                                            {/* Loop through divisions */}
+                                            {/* Loop through divisions 
                                             <li className="all_division_parent">
                                                 <Link to="#">সকল বিভাগ <span><i className="fa-solid fa-angle-down"></i></span></Link>
                                                 <div className="all_division">
@@ -113,6 +114,7 @@ const Header = () => {
                                                     </div>
                                                 </div>
                                             </li>
+                                            */}
                                         </ul>
                                     </div>
                                 </div>

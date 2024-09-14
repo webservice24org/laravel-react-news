@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('menus', function (Blueprint $table) {
-            $table->enum('status', ['active', 'inactive']); // Add status column
-            $table->integer('position')->nullable(); // Add position column
+            $table->enum('status', ['active', 'inactive']); 
+            $table->integer('position')->nullable(); 
         });
     }
 

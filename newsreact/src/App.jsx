@@ -31,6 +31,7 @@ import VideoForm from './components/admin/posts/VideoForm';
 import SingleVideo from './components/frontend/SingleVideo';
 import Advertising from './components/admin/advertising/Advertising';
 import Menu from './components/admin/settings/Menu';
+import SubMenu from './components/admin/settings/SubMenu';
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,7 @@ const router = createBrowserRouter([
           {path:"video-news/edit/:id", element:<VideoForm />},
           {path:"advertising", element:<Advertising />},
           {path:"menu-settings", element:<Menu />},
+          {path:"sub-menu-settings", element:<SubMenu />},
         ],
       },
     ],
