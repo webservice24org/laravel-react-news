@@ -85,6 +85,8 @@ Route::post('/advertising/{id}', [AdvertisingController::class, 'updateAdvert'])
 Route::apiResource('/menu', MenuController::class);
 Route::resource('/sub-menu', controller: SubMenuController::class);
 
+Route::get('/menu/{menu}/sub-menus', [SubMenuController::class, 'getSubMenusByMenu']);
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');

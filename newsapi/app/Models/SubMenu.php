@@ -16,9 +16,8 @@ class SubMenu extends Model
         'status',
     ];
 
-    // Define relationship with Menu
     public function menu()
     {
-        return $this->belongsTo(Menu::class);
+        return $this->belongsTo(Menu::class, 'menu_id');
     }
 }

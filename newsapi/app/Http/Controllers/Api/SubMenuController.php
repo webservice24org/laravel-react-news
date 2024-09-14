@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Menu;
 use App\Models\SubMenu;
 use Illuminate\Http\Request;
 
@@ -11,7 +12,10 @@ class SubMenuController extends Controller
     public function index()
     {
         $subMenus = SubMenu::with('menu')->get(); // Fetch sub-menus with their parent menus
-        return response()->json($subMenus);
+        return response()->json([
+            'message' => 'Menus retrieved successfully.',
+            'data' => $subMenus
+        ], 200); // 200 OK status
     }
 
     // Show the form for creating a new resource
@@ -77,6 +81,18 @@ class SubMenuController extends Controller
 
         return response()->json([
             'message' => 'Sub-menu deleted successfully.'
+        ]);
+    }
+
+    public function getSubMenusByMenu(Menu $menu)
+    {
+        // Load the subMenus relationship
+        $subMenus = $menu->subMenus()->get();
+
+        return response()->json([
+            'success' => true,
+            'menu' => $menu->name,
+            'sub_menus' => $subMenus,
         ]);
     }
 }
