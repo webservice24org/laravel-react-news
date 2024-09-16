@@ -112,7 +112,7 @@ function Division() {
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th style={{ width: '5%' }}>SL</th>
+                <th style={{ width: '5%' }}>ID</th>
                 <th style={{ width: '40%' }}>Division Name</th>
                 <th style={{ width: '55%' }} className='text-center'>Actions</th>
               </tr>
@@ -121,7 +121,7 @@ function Division() {
               {Array.isArray(divisions) && divisions.length > 0 ? (
                 divisions.map((division, index) => (
                   <tr key={division.id}>
-                    <td>{index + 1}</td>
+                    <td>{division.id}</td>
                     <td>{division.division_name}</td>
                     <td className='text-center'>
                       <Button className='btn btn-primary me-1' onClick={() => handleEdit(division)}>Edit</Button>

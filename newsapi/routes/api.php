@@ -70,6 +70,9 @@ Route::get('/posts-by-subcategory', [FrontEndDisplayController::class, 'getPosts
 
 Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getCategoryWithSubCategories']);
 
+Route::get('/division-news/{divisionId}', [FrontEndDisplayController::class, 'getDivisionWiseNews']);
+Route::get('/division/{divisionId}/districts', [DistrictController::class, 'getDistrictsByDivision']);
+
 Route::apiResource('/footer-infos', FooterInfoController::class);
 Route::post('/footer-infos-update/{id}', [FooterInfoController::class, 'updateData']);
 

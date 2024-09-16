@@ -12,7 +12,6 @@ import SpecialNews from './SpecialNews';
 import Literature from './Literature';
 import Sports from './Sports';
 import FourboxTwo from './FourboxTwo';
-import PhotoGallery from './PhotoGallery';
 import Video from './Video';
 
 

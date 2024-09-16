@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 const SinglePostHeader = () => {
     const [headerData, setHeaderData] = useState(null);
+    const [menus, setMenus] = useState([]); 
 
     useEffect(() => {
         const fetchHeaderData = async () => {
@@ -18,6 +19,32 @@ const SinglePostHeader = () => {
         };
 
         fetchHeaderData();
+    }, []);
+
+    useEffect(() => {
+        const fetchMenuData = async () => {
+            try {
+
+                const menuResponse = await axios.get('/api/menu/');
+                const menusData = menuResponse.data.data;
+
+                const menusWithSubMenus = await Promise.all(
+                    menusData.map(async (menu) => {
+                        const subMenuResponse = await axios.get(`/api/menu/${menu.id}/sub-menus`);
+                        return {
+                            ...menu,
+                            sub_menus: subMenuResponse.data.sub_menus
+                        };
+                    })
+                );
+
+                setMenus(menusWithSubMenus);
+            } catch (error) {
+                console.error("Error fetching menu data:", error);
+            }
+        };
+
+        fetchMenuData();
     }, []);
 
     if (!headerData) return null; 
@@ -63,84 +90,29 @@ const SinglePostHeader = () => {
                         
                         <div className="manu_area">
                             <ul>
-                                <li className="active"><a href="index.html"><i className="fas fa-home"></i></a></li>
-                                <li><a href="">বাংলাদেশ <span><i className="fa-solid fa-angle-down"></i></span>
-                                    <ul>
-                                        <li><a href="All page/national.html">জাতীয়</a></li>
-                                        <li><a href="All page/politics.html">রাজনীতি</a></li>
-                                        <li><a href="All page/comercial.html">অর্থনীতি</a></li>
-                                    </ul>
-                                </a></li>
-                                <li><a href="All page/over-country.html">দেশজুড়ে <span><i className="fa-solid fa-angle-down"></i></span>
-                                    <ul>
-                                        <li><a href="All page/district-news.html">জেলার খবর</a></li>
-                                    </ul>
-                                </a></li>
-                                <li><a href="All page/internation.html">আন্তর্জাতিক</a></li>
-                                <li><a href="All page/game.html">খেলাধুলা <span><i className="fa-solid fa-angle-down"></i></span>
-                                    <ul>
-                                        <li><a href="All page/footbal.html">ফুটবল</a></li>
-                                        <li><a href="All page/crickcet.html">ক্রিকেট</a></li>
-                                    </ul>
-                                </a></li>
-                                <li><a href="All page/expression.html">মতামত</a></li>
-                                <li><a href="All page/entertainment.html">বিনোদন <span><i className="fa-solid fa-angle-down"></i></span>
-                                    <ul>
-                                        <li><a href="All page/hollywood.html">হলিউড</a></li>
-                                        <li><a href="All page/bollywood.html">বলিউড</a></li>
-                                    </ul>
-                                </a></li>
-                                <li><a href="All page/features.html">ফিচার <span><i className="fa-solid fa-angle-down"></i></span>
-                                    <ul>
-                                        <li><a href="All page/photogallery.html">ফটো গ্যালারি</a></li>
-                                        <li><a href="All page/lifestyle.html">লাইফস্টাইল</a></li>
-                                        <li><a href="All page/ict.html">অথ্যপ্রযুক্তি</a></li>
-                                        <li><a href="All page/travel.html">ভ্রমণ</a></li>
-                                        <li><a href="All page/agriculture.html">কৃষি ও প্রকৃতি</a></li>
-                                        <li><a href="All page/ekushe.html">একুশে বইমেলা</a></li>
-                                    </ul>
-                                </a></li>
-                                <li className="all_division_parent"><a href="">সকল বিভাগ <span><i className="fa-solid fa-angle-down"></i></span></a>
-                                    <div className="all_division">
-                                        <div className="container">
-                                            <div className="row">
-                                                <div className="col-md-3">
-                                                    <div className="single_division">
-                                                        <p><a href="All page/education.html">শিক্ষা</a></p>
-                                                        <p><a href="All page/campus.html">ক্যাম্পাস</a></p>
-                                                        <p><a href="All page/health.html">স্বাস্থ্য</a></p>
-                                                        <p><a href="All page/high-court.html">আইন-আদালত</a></p>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-3">
-                                                    <div className="single_division">
-                                                        <p><a href="All page/religion.html">ধর্ম</a></p>
-                                                        <p><a href="All page/abroad.html">প্রবাস</a></p>
-                                                        <p><a href="All page/news-mediam.html">গনমাধ্যম</a></p>
-                                                        <p><a href="All page/children.html">নারী ও শিশু</a></p>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-3">
-                                                    <div className="single_division">
-                                                        <p><a href="All page/comerce-fair.html">বাণিজ্য মেলা</a></p>
-                                                        <p><a href="All page/literature.html">সাহিত্য</a></p>
-                                                        <p><a href="All page/job.html">জাগো জবস</a></p>
-                                                        <p><a href="All page/eid-magazine.html">ঈদ সংখ্যা</a></p>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-3">
-                                                    <div className="single_division">
-                                                        <p><a href="All page/today.html"><span><i className="fas fa-stopwatch"></i></span> আজকের আয়োজন</a></p>
-                                                        <p><a href="archive.html"><span><i className="fas fa-camera-retro"></i></span> আর্কাইভ</a></p>
-                                                        <p><a href="All page/social.html"><span><i className="fas fa-share-alt"></i></span> সোশাল মিডিয়া</a></p>
-                                                        <p><a href="https://www.jagonews24.com/bangla-converter"><span><i className="fas fa-language"></i></span> ইউনিকোড কনভার্টার</a></p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li> 
-                            </ul> 
+                                <li className="active">
+                                    <Link to="/"><i className="fas fa-home"></i></Link>
+                                </li>
+                                {menus.map((menu) => (
+                                    <li key={menu.id}>
+                                        <a href={`/${menu.link}`}>
+                                            {menu.name}
+                                            {menu.sub_menus && menu.sub_menus.length > 0 && (
+                                                <span><i className="fa-solid fa-angle-down"></i></span>
+                                            )}
+                                        </a>
+                                        {menu.sub_menus && menu.sub_menus.length > 0 && (
+                                            <ul>
+                                                {menu.sub_menus.map((subMenu) => (
+                                                    <li key={subMenu.id}>
+                                                        <a href={`/${subMenu.link}`}>{subMenu.name}</a>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                         
                     </div>

@@ -149,6 +149,29 @@ class FrontEndDisplayController extends Controller
     }
 
 
+    public function getDivisionWiseNews($divisionId)
+    {
+        $news = Post::select('posts.id', 'posts.post_title', 'posts.post_details', 'posts.division_id', 'posts.post_thumbnail', 'divisions.division_name')
+            ->join('divisions', 'posts.division_id', '=', 'divisions.id')
+            ->without(['category', 'subcategories', 'tags', 'seo']) 
+            ->where('posts.division_id', $divisionId)
+            ->orderBy('posts.created_at', 'desc') 
+            ->get();
+
+        if ($news->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No news found for this division.'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'division_id' => $divisionId,
+            'news' => $news
+        ], 200);
+    }
+
     
 
 

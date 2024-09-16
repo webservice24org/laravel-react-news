@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\District;
+use App\Models\Division;
 use Illuminate\Http\Request;
 
 class DistrictController extends Controller
@@ -75,6 +76,28 @@ class DistrictController extends Controller
         $district->delete();
 
         return response()->json(['success' => true, 'message' => 'District deleted successfully.']);
+    }
+
+    public function getDistrictsByDivision($divisionId)
+    {
+        $division = Division::with('districts')->find($divisionId);
+    
+        if (!$division) {
+            return response()->json(['error' => 'Division not found'], 404);
+        }
+    
+        $response = [
+            'divisionName' => $division->division_name,
+            'divisionId' => $division->id,
+            'districts' => $division->districts->map(function ($district) {
+                return [
+                    'id' => $district->id,
+                    'name' => $district->district_name
+                ];
+            })
+        ];
+    
+        return response()->json($response);
     }
 
 

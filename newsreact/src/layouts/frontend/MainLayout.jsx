@@ -10,16 +10,20 @@ const MainLayout = () => {
 
   const isSinglePostOrCategory = location.pathname.startsWith('/post/') || 
                                  location.pathname.startsWith('/category/') ||
-                                 location.pathname.startsWith('/video-news/'); 
+                                 location.pathname.startsWith('/video-news/') ||
+                                 location.pathname.startsWith('/division/');  
 
   return (
     <div>
+
       {isSinglePostOrCategory ? <SinglePostHeader /> : <Header />}
+      
       <main className='frontLayout'>
         <div className="container-fluid px-4">
           <Outlet />
         </div>
       </main>
+      
       <footer>
         <Footer />
       </footer>

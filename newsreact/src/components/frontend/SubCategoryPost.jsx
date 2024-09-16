@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axiosInstance from '/axiosConfig';
 import LatestPopuler from './LatestPopuler';
-import formatDate from '/formatDate';
-
 const SubCategoryPost = () => {
     const { categoryId, subcatId } = useParams();
     const [posts, setPosts] = useState([]);
@@ -17,7 +15,6 @@ const SubCategoryPost = () => {
     useEffect(() => {
         axiosInstance.get(`/api/posts/category/${categoryId}/subcategory/${subcatId}`)
           .then(response => {
-              console.log('API Response:', response.data);
               setCategoryName(response.data.category.name);
               setSubCategory(response.data.subCategory); 
               const allPosts = response.data.posts;
@@ -108,15 +105,7 @@ const SubCategoryPost = () => {
                                                 <div className="card-body">
                                                     <img className="img-fluid" src={`${baseURL}storage/post/${post.post_thumbnail}`} alt={post.post_title} />
                                                     <h2>{post.post_title}</h2>
-                                                    <p>
-                                                        <a href={`/post/${post.id}`}>
-                                                            প্রকাশঃ <span><i className="fa-solid fa-calendar-days"></i></span> {formatDate(post.created_at)}
-                                                        </a> 
-                                                        <br />
-                                                        <a href={`/post/${post.id}`}>
-                                                            আপডেটঃ <span><i className="fa-solid fa-calendar-days"></i></span> {formatDate(post.updated_at)}
-                                                        </a>
-                                                    </p>
+                                                   
                                                 </div>
                                             </div>
                                         </a>

@@ -32,6 +32,7 @@ import SingleVideo from './components/frontend/SingleVideo';
 import Advertising from './components/admin/advertising/Advertising';
 import Menu from './components/admin/settings/Menu';
 import SubMenu from './components/admin/settings/SubMenu';
+import DivisionPosts from './components/frontend/DivisionPosts';
 
 const router = createBrowserRouter([
   {
@@ -76,6 +77,7 @@ const router = createBrowserRouter([
       { path: "/video-news/:id", element: <SingleVideo /> }, 
       { path: "/category/:categoryId/posts", element: <CategoryPost /> }, 
       { path: "/category/:categoryId/subcategory/:subcatId/posts", element: <SubCategoryPost /> }, 
+      { path: "/division/:divisionId/posts", element: <DivisionPosts /> }, 
     ],
   },
 ]);
