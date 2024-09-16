@@ -56,4 +56,8 @@ class Post extends Model
     {
         return $this->belongsTo(Division::class, 'division_id');
     }
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
 }

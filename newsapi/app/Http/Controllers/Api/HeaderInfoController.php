@@ -24,7 +24,7 @@ class HeaderInfoController extends Controller
             'header_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'fave_icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'video_btn_text' => 'nullable|string|max:255',
-            'video_link' => 'nullable|url',
+            'video_link' => 'nullable|string',
         ]);
 
         $input = $request->all();
@@ -65,7 +65,7 @@ class HeaderInfoController extends Controller
             //'header_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             //'fave_icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'video_btn_text' => 'nullable|string|max:255',
-            'video_link' => 'nullable|url',
+            'video_link' => 'nullable|string',
         ]);
 
         $headerData = HeaderData::findOrFail($id);

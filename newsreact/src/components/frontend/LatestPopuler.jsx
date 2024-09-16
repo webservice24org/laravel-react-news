@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axiosInstance from '/axiosConfig'; // Make sure this path is correct
+import axiosInstance from '/axiosConfig';
 
 const LatestPopuler = () => {
   const [latestPosts, setLatestPosts] = useState([]);

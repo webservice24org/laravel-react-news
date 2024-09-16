@@ -33,6 +33,7 @@ import Advertising from './components/admin/advertising/Advertising';
 import Menu from './components/admin/settings/Menu';
 import SubMenu from './components/admin/settings/SubMenu';
 import DivisionPosts from './components/frontend/DivisionPosts';
+import DistrictPosts from './components/frontend/DistrictPosts';
 
 const router = createBrowserRouter([
   {
@@ -78,6 +79,7 @@ const router = createBrowserRouter([
       { path: "/category/:categoryId/posts", element: <CategoryPost /> }, 
       { path: "/category/:categoryId/subcategory/:subcatId/posts", element: <SubCategoryPost /> }, 
       { path: "/division/:divisionId/posts", element: <DivisionPosts /> }, 
+      { path: "/district/:districtId/posts", element: <DistrictPosts /> }, 
     ],
   },
 ]);

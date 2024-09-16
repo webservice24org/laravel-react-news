@@ -1,59 +1,55 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import axiosInstance from '/axiosConfig';
-import LatestPopuler from './LatestPopuler';
+import axios from '/axiosConfig';
+import LatestPopuler from './LatestPopuler'; // Adjust import based on your file structure
 
-const DivisionPosts = () => {
-    const { divisionId } = useParams();
+const baseURL = axios.defaults.baseURL; // Replace with your actual API base URL
+const postsPerPage = 6; // Adjust the number of posts per page as needed
+
+function DistrictPosts() {
+    const { districtId } = useParams(); // Get the district ID from the URL
     const [posts, setPosts] = useState([]);
-    const [lastPost, setLastPost] = useState(null);
-    const [districts, setDistricts] = useState([]);
     const [divisionName, setDivisionName] = useState('');
+    const [districtName, setDistrictName] = useState('');
+    const [divisionId, setDivisionId] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [postsPerPage] = useState(6);
-    const baseURL = axiosInstance.defaults.baseURL;
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axiosInstance.get(`/api/division-news/${divisionId}`)
+        // Fetch district-wise news data
+        axios.get(`${baseURL}api/district-news/${districtId}`)
             .then(response => {
-                const allPosts = response.data.news;
-                if (allPosts && allPosts.length > 0) {
-                    setLastPost(allPosts[0]); 
-                    const postsToDisplay = allPosts.slice(1); 
-                    setPosts(postsToDisplay);
-                    
-                    setDivisionName(allPosts[0].division_name);
-                }
+                setPosts(response.data.news);
+                setDivisionName(response.data.division_name);
+                setDistrictName(response.data.district_name);
+                setDivisionId(response.data.division_id);
+                setLoading(false);
             })
             .catch(error => {
-                console.error('Error fetching posts:', error);
+                console.error("There was an error fetching the news data!", error);
+                setLoading(false);
             });
-    
-        axiosInstance.get(`/api/division/${divisionId}/districts`)
-            .then(response => {
-                setDistricts(response.data.districts);
-                if (!divisionName) {
-                    setDivisionName(response.data.divisionName);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching districts:', error);
-            });
-    }, [divisionId]);
-    
-    
-    const indexOfLastPost = currentPage * postsPerPage;
-    const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost); 
-    
-    
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
+    }, [districtId]);
+
     const getExcerpt = (details) => {
+
         const strippedDetails = details.replace(/<\/?[^>]+(>|$)/g, '');
         return strippedDetails.split(' ').slice(0, 35).join(' ') + '...';
     };
+
+    const handlePageChange = (page) => {
+        if (page < 1 || page > Math.ceil(posts.length / postsPerPage)) return;
+        setCurrentPage(page);
+    };
+
+    const currentPosts = posts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
+
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
+    const lastPost = currentPosts.length > 0 ? currentPosts[0] : null;
+
     return (
         <>
             <section className="bredcumb_sec">
@@ -62,18 +58,9 @@ const DivisionPosts = () => {
                         <div className="col-sm-12">
                             <div className="single_bredcumb">
                                 <ul>
-                                    <li><a href="/"><i className="fa-solid fa-house"></i></a> <span className="bredcumb_devider"><i className="fa-solid fa-angles-right"></i></span></li>
+                                    <li><Link to="/"><i className="fa-solid fa-house"></i></Link> <span className="bredcumb_devider"><i className="fa-solid fa-angles-right"></i></span></li>
                                     <li><Link to={`/division/${divisionId}/posts`}>{divisionName}</Link><span className="bredcumb_devider"><i className="fa-solid fa-angles-right"></i></span></li>
-                                    {
-                                        districts.map((district, index) => (
-                                            <li key={index}>
-                                                <Link to={`/district/${district.id}/posts`}>{district.name}</Link>
-                                                {index !== districts.length - 1 && (
-                                                    <span className="bredcumb_devider"><i className="fa-solid fa-grip-lines-vertical ps-1"></i></span>
-                                                )}
-                                            </li>
-                                        ))
-                                    }
+                                    <li><Link to={`/district/${districtId}/posts`}>{districtName}</Link></li>
                                 </ul>
                             </div>
                         </div> 
@@ -86,7 +73,6 @@ const DivisionPosts = () => {
                         <div className="col-md-8 col-sm-12">
                             <div className="category_news_part">
                                 <div className="category_big_news">
-                                    
                                     {lastPost ? (
                                         <>
                                             <div className="img_box">
@@ -108,11 +94,10 @@ const DivisionPosts = () => {
                                             </div>
                                         </>
                                     ) : (
-                                        <p>Loading...</p>
+                                        <p>No news available.</p>
                                     )}
                                 </div>
 
-                                    
                                 <div className="category_posts">
                                     <div className="row">
                                         {currentPosts.map(post => (
@@ -163,6 +148,6 @@ const DivisionPosts = () => {
             </section>
         </>
     );
-};
+}
 
-export default DivisionPosts;
+export default DistrictPosts;

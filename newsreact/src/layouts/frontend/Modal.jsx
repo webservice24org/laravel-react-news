@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import axios from '/axiosConfig'; // Using the axios instance you configured
+import React, { useEffect, useState } from 'react';
+import axios from '/axiosConfig';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 const Modal = () => {
+  const [headerData, setHeaderData] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -30,6 +31,21 @@ const Modal = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchHeaderData = async () => {
+        try {
+            const response = await axios.get('/api/header-data/');
+            setHeaderData(response.data[0]);
+        } catch (error) {
+            console.error("Error fetching header data:", error);
+        }
+    };
+
+    fetchHeaderData();
+  }, []);
+
+  if (!headerData) return null;
+  
   return (
     <>
       <div className="goTop">
@@ -63,9 +79,8 @@ const Modal = () => {
               <div className="atnLive">
                 <iframe
                   className="responsive-iframe"
-                  src="https://www.youtube.com/embed/SXiknLjWAY8?si=4EmN8TDL6OFmrHb3"
+                  src={`https://www.youtube.com/embed/${headerData.video_link}`}
                   title="YouTube video player"
-                  frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen

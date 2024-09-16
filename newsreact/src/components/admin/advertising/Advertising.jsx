@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from '/axiosConfig'; // Adjust the import path as needed
+import axios from '/axiosConfig'; 
 import { toast } from 'react-toastify';
 import { Button, Card, Table, Modal, Form } from 'react-bootstrap';
 import Swal from 'sweetalert2';
@@ -15,7 +15,7 @@ function Advertising() {
     advert_image_preview: null,
     code: '',
     status: false,
-    advert_image_old: '' // Hidden field for old image filename
+    advert_image_old: '' 
   });
 
   useEffect(() => {
@@ -56,7 +56,7 @@ function Advertising() {
     const formPayload = new FormData();
     formPayload.append('title', formData.title);
     formPayload.append('code', formData.code);
-    formPayload.append('status', formData.status ? '1' : '0'); // Convert checkbox value to a string
+    formPayload.append('status', formData.status ? '1' : '0'); 
     
     if (formData.advert_image) {
       formPayload.append('advert_image', formData.advert_image);
@@ -68,7 +68,7 @@ function Advertising() {
   
     try {
       const url = isEditing ? `/api/advertising/${formData.id}` : '/api/advertising';
-      const method = isEditing ? 'post' : 'post'; // This should be 'put' for editing
+      const method = isEditing ? 'post' : 'post'; 
       
       await axios({
         method: method,
@@ -80,8 +80,8 @@ function Advertising() {
       });
   
       toast.success(`${isEditing ? "Advertisement updated" : "Advertisement created"} successfully!`);
-      fetchAdvertisements(); // Refresh the list of advertisements
-      handleCloseModal(); // Close the form modal
+      fetchAdvertisements(); 
+      handleCloseModal(); 
     } catch (error) {
       toast.error(`${isEditing ? "Error updating" : "Error creating"} advertisement.`);
       console.error(`Error ${isEditing ? "updating" : "creating"} the advertisement!`, error);
@@ -118,10 +118,10 @@ function Advertising() {
       id: ad.id,
       title: ad.title,
       advert_image: null,
-      advert_image_preview: `${axios.defaults.baseURL}storage/advertising/${ad.advert_image}`, // Set preview URL for old image
+      advert_image_preview: `${axios.defaults.baseURL}storage/advertising/${ad.advert_image}`, 
       code: ad.code,
       status: ad.status,
-      advert_image_old: ad.advert_image // Set old image filename
+      advert_image_old: ad.advert_image 
     });
     setIsEditing(true);
     setShowModal(true);
@@ -135,7 +135,7 @@ function Advertising() {
       advert_image_preview: null,
       code: '',
       status: false,
-      advert_image_old: '' // Reset old image filename
+      advert_image_old: '' 
     });
     setIsEditing(false);
     setShowModal(true);

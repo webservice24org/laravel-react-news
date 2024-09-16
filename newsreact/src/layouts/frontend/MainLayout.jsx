@@ -11,7 +11,8 @@ const MainLayout = () => {
   const isSinglePostOrCategory = location.pathname.startsWith('/post/') || 
                                  location.pathname.startsWith('/category/') ||
                                  location.pathname.startsWith('/video-news/') ||
-                                 location.pathname.startsWith('/division/');  
+                                 location.pathname.startsWith('/division/')  ||
+                                 location.pathname.startsWith('/district/');
 
   return (
     <div>

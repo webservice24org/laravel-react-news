@@ -21,23 +21,22 @@ function SubCategoryManagement() {
   }, []);
 
   useEffect(() => {
-    // Cleanup previous DataTable instance if any
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
       $(tableRef.current).DataTable().destroy();
     }
 
-    // Initialize DataTable after subCategories data is set
+    
     if (subCategories.length > 0) {
       $(tableRef.current).DataTable({
         data: subCategories.map((subCategory, index) => [
-          index + 1,
+          subCategory.id,
           categories.find(category => category.id === subCategory.category_id)?.category_name || 'N/A',
           subCategory.sub_category_name,
           subCategory.description,
-          subCategory.id // for actions
+          subCategory.id 
         ]),
         columns: [
-          { title: "SL" },
+          { title: "ID" },
           { title: "Category" },
           { title: "Sub-Category Name" },
           { title: "Description" },
@@ -55,7 +54,6 @@ function SubCategoryManagement() {
         responsive: true
       });
 
-      // Attach event listeners for edit and delete buttons
       $(tableRef.current).on('click', '.edit-btn', function () {
         const id = $(this).data('id');
         const subCategory = subCategories.find(sc => sc.id === id);
@@ -70,7 +68,6 @@ function SubCategoryManagement() {
       });
     }
 
-    // Cleanup DataTable on component unmount
     return () => {
       if ($.fn.DataTable.isDataTable(tableRef.current)) {
         $(tableRef.current).DataTable().clear().destroy();
@@ -86,7 +83,7 @@ function SubCategoryManagement() {
 
     axios.get(url)
       .then((response) => {
-        console.log('Fetched Sub-Categories:', response.data); // Debugging log
+        console.log('Fetched Sub-Categories:', response.data); 
         if (Array.isArray(response.data.data)) {
           setSubCategories(response.data.data);
         } else {
@@ -101,7 +98,7 @@ function SubCategoryManagement() {
   const fetchCategories = () => {
     axios.get('/api/categories/')
       .then((response) => {
-        console.log('Fetched Categories:', response.data); // Debugging log
+        console.log('Fetched Categories:', response.data); 
         if (Array.isArray(response.data.data)) {
           setCategories(response.data.data);
         } else {
@@ -109,7 +106,7 @@ function SubCategoryManagement() {
         }
       })
       .catch((error) => {
-        console.error('Error fetching Categories:', error); // Debugging log
+        console.error('Error fetching Categories:', error); 
         toast.error('Error fetching Categories');
       });
   };
@@ -176,7 +173,7 @@ function SubCategoryManagement() {
           <Table striped bordered hover responsive ref={tableRef}>
             <thead>
               <tr>
-                <th style={{ width: '5%' }}>SL</th>
+                <th style={{ width: '5%' }}>ID</th>
                 <th style={{ width: '20%' }}>Category</th>
                 <th style={{ width: '20%' }}>Sub-Category Name</th>
                 <th style={{ width: '40%' }}>Description</th>
@@ -187,7 +184,7 @@ function SubCategoryManagement() {
               {subCategories.length > 0 ? (
                 subCategories.map((subCategory, index) => (
                   <tr key={subCategory.id}>
-                    <td>{index + 1}</td>
+                    <td>{subCategory.id}</td>
                     <td>{categories.find(category => category.id === subCategory.category_id)?.category_name}</td>
                     <td>{subCategory.sub_category_name}</td>
                     <td>{subCategory.description}</td>

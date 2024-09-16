@@ -65,7 +65,7 @@ const Header = () => {
                                 </div>
                                 <div className="col-sm-1">
                                     <div className="live_button mt-3">
-                                        <a className="button" href={headerData.video_link} target="_blank" rel="noopener noreferrer">
+                                        <a className="button" data-bs-toggle="modal" data-bs-target="#exampleModal" href="#">
                                             {headerData.video_btn_text}
                                         </a>
                                     </div>
@@ -82,7 +82,7 @@ const Header = () => {
                     <div className="bottom_header design2">
                         <div className="container">
                             <div className="row">
-                                <div className="col-md-10">
+                                <div className="col-md-11">
                                     <div className="manu_area">
                                         <ul>
                                             <li className="active">
@@ -111,7 +111,7 @@ const Header = () => {
 
                                     </div>
                                 </div>
-                                <div className="col-md-2">
+                                <div className="col-md-1">
                                     <a className="loginBtn btn btn-light" data-bs-toggle="modal" data-bs-target="#loginModal" href="#">Login</a>
                                 </div>
                             </div>

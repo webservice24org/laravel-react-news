@@ -39,8 +39,8 @@ const SingleVideo = () => {
                 <div className="img_box">
                   
                 <iframe
-                    width="100%"  // Full width for responsiveness
-                    height="450px"  // Set a height for the video
+                    width="100%"  
+                    height="450px"  
                     src={`https://www.youtube.com/embed/${videoData.video_link}`}
                     title={videoData.video_title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

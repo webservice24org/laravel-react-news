@@ -21,24 +21,24 @@ function District() {
   }, []);
 
   useEffect(() => {
-    // Cleanup previous DataTable instance if any
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
       $(tableRef.current).DataTable().destroy();
     }
 
-    // Initialize DataTable after districts data is set
     if (districts.length > 0) {
       $(tableRef.current).DataTable({
         data: districts.map((district, index) => [
           index + 1,
           divisions.find(division => division.id === district.division_id)?.division_name || 'N/A',
           district.district_name,
-          district.id // for actions
+          district.id,
+          district.id 
         ]),
         columns: [
           { title: "SL" },
           { title: "Division Name" },
           { title: "District Name" },
+          { title: "District ID" },
           {
             title: "Actions",
             orderable: false,
@@ -53,7 +53,6 @@ function District() {
         responsive: true
       });
 
-      // Attach event listeners for edit and delete buttons
       $(tableRef.current).on('click', '.edit-btn', function () {
         const id = $(this).data('id');
         const district = districts.find(d => d.id === id);
@@ -68,7 +67,6 @@ function District() {
       });
     }
 
-    // Cleanup DataTable on component unmount
     return () => {
       if ($.fn.DataTable.isDataTable(tableRef.current)) {
         $(tableRef.current).DataTable().clear().destroy();
@@ -194,7 +192,8 @@ function District() {
               <tr>
                 <th style={{ width: '5%' }}>SL</th>
                 <th style={{ width: '20%' }}>Division Name</th>
-                <th style={{ width: '35%' }}>District Name</th>
+                <th style={{ width: '30%' }}>District Name</th>
+                <th style={{ width: '5%' }}>District ID</th>
                 <th style={{ width: '40%' }} className='text-center'>Actions</th>
               </tr>
             </thead>
@@ -205,6 +204,7 @@ function District() {
                     <td>{index + 1}</td>
                     <td>{divisions.find(division => division.id === district.division_id)?.division_name || 'N/A'}</td>
                     <td>{district.district_name}</td>
+                    <td>{district.id}</td>
                     <td className='text-center'>
                       <Button className='btn btn-primary me-1' onClick={() => handleEdit(district)}>Edit</Button>
                       <Button className='btn btn-danger' onClick={() => handleDelete(district.id)}>Delete</Button>

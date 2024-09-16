@@ -173,6 +173,34 @@ class FrontEndDisplayController extends Controller
     }
 
     
+    public function getDistrictWiseNews($districtId)
+    {
+        $news = Post::select('posts.id', 'posts.post_title', 'posts.post_details', 'posts.district_id', 'posts.post_thumbnail', 'districts.district_name', 'divisions.division_name', 'divisions.id as division_id')
+            ->join('districts', 'posts.district_id', '=', 'districts.id')
+            ->join('divisions', 'districts.division_id', '=', 'divisions.id')
+            ->without(['category', 'subcategories', 'tags', 'seo']) 
+            ->where('posts.district_id', $districtId)
+            ->orderBy('posts.created_at', 'desc')
+            ->get();
+
+        if ($news->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No news found for this district.'
+            ], 404);
+        }
+
+        $firstPost = $news->first();
+
+        return response()->json([
+            'success' => true,
+            'district_id' => $districtId,
+            'district_name' => $firstPost->district_name,
+            'division_id' => $firstPost->division_id,
+            'division_name' => $firstPost->division_name,
+            'news' => $news
+        ], 200);
+    }
 
 
 

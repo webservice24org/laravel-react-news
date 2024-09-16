@@ -1222,3 +1222,6 @@ img.imgSize {
 .video.big_news:hover {
   cursor: pointer;
 }
+.international_cat .category_title ul li a.nav-link {
+  padding: 8px!important;
+}
