@@ -1,0 +1,18 @@
+"use client"
+
+import FrontendFooter from "@/pages/Frontend/Footer"
+import FrontendHeader from "@/pages/Frontend/Header"
+import React from "react"
+
+
+export default function FrontendLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-neutral-50 text-neutral-900">
+      <FrontendHeader />
+
+      <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
+
+      <FrontendFooter />
+    </div>
+  )
+}
