@@ -3,12 +3,68 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\NewsPost;
+use App\Models\HomeSection;
+use Inertia\Inertia;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        return inertia('Frontend/Home');
+        // Lead and Sub-Lead
+        $leadNews    = $this->getLeadNews();
+        $subLeadNews = $this->getSubLeadNews();
+
+        // Fetch homepage sections ordered by 'order'
+        $sectionsConfig = HomeSection::orderBy('order')->get();
+
+        $sections = [];
+
+        foreach ($sectionsConfig as $section) {
+            $news = $this->getCategoryNews($section->category_slug, $section->limit);
+
+            $sections[] = [
+                'type' => $section->type,
+                'category_slug' => $section->category_slug,
+                'news' => $news,
+            ];
+        }
+
+        return Inertia::render('Frontend/Home', [
+            'leadNews'    => $leadNews,
+            'subLeadNews' => $subLeadNews,
+            'sections'    => $sections,
+        ]);
+    }
+
+    private function getLeadNews()
+    {
+        return NewsPost::query()
+            ->where('status', 'published')
+            ->where('is_lead', true)
+            ->latest()
+            ->take(10)
+            ->get();
+    }
+
+    private function getSubLeadNews()
+    {
+        return NewsPost::query()
+            ->where('status', 'published')
+            ->where('is_sub_lead', true)
+            ->latest()
+            ->take(5)
+            ->get();
+    }
+
+    private function getCategoryNews(string $slug, int $limit = 5)
+    {
+        return NewsPost::query()
+            ->with('categories:id,name,slug')
+            ->where('status', 'published')
+            ->whereHas('categories', fn($q) => $q->where('slug', $slug))
+            ->latest()
+            ->take($limit)
+            ->get();
     }
 }

@@ -14,6 +14,9 @@ use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\NewsPostController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Admin\HomeSectionController;
+
+use App\Http\Controllers\Frontend\SectionController;
 
 
 
@@ -114,6 +117,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('uploads/images', [UploadController::class, 'destroyImage'])->name('uploads.images.destroy');
 
 
+        Route::get('homepage-builder', [HomeSectionController::class, 'index'])->name('homepage-builder');
+        Route::post('homepage-builder/order', [HomeSectionController::class, 'updateOrder'])->name('homepage-builder.order');
 
         
 
@@ -122,7 +127,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/details', [UserController::class, 'editDetails'])->name('profile.details.edit');
     Route::post('/user/details', [UserController::class, 'updateDetails'])->name('profile.details.update');
 
-    
+
+    Route::get('/api/category-news', [SectionController::class, 'getCategoryNews']);
 
     
 
