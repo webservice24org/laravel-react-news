@@ -29,7 +29,7 @@ export default function FourCategoryBlock({ categories }: Props) {
 
           return (
             <div key={category.title} className="space-y-4">
-              <h2 className="text-xl font-bold mb-4">{category.title}</h2>
+              <h2 className="text-xl font-bold">{category.title}</h2>
 
               {/* Featured News */}
               {featured && (
@@ -52,7 +52,7 @@ export default function FourCategoryBlock({ categories }: Props) {
               )}
 
               {/* List News */}
-              <ul className="space-y-2 mt-4">
+              <ul className="space-y-1 mt-2">
                 {listNews.map((item) => (
                   <li key={item.id}>
                     <Link

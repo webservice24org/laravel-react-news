@@ -25,22 +25,38 @@ interface Props {
 }
 
 export default function Home({ leadNews, subLeadNews, sections }: Props) {
+  // Group sections into four-category blocks
+  const groupedFourBlocks: Section[][] = []
+  let temp: Section[] = []
+
+  sections.forEach((section) => {
+    if (section.type === "four-category-block") {
+      temp.push(section)
+      if (temp.length === 4) {
+        groupedFourBlocks.push(temp)
+        temp = []
+      }
+    }
+  })
+  // Push remaining if less than 4
+  if (temp.length) groupedFourBlocks.push(temp)
+
   return (
     <FrontendLayout>
       <Head title="Home" />
 
       {/* Lead Section */}
-      <LeadSection
-        leadNews={leadNews}
-        subLeadNews={subLeadNews}
-      />
+      <LeadSection leadNews={leadNews} subLeadNews={subLeadNews} />
 
       {/* Dynamic Sections */}
       {sections.map((section) => {
+        // Skip sections included in FourCategoryBlock groups
+        if (section.type === "four-category-block") return null
+
         if (!section.news?.length) return null
 
         switch (section.type) {
-          case "five_split":
+          case "category-five-split":
             return (
               <CategoryFiveSplitSection
                 key={section.category_slug}
@@ -49,7 +65,7 @@ export default function Home({ leadNews, subLeadNews, sections }: Props) {
               />
             )
 
-          case "grid":
+          case "category-grid":
             return (
               <CategoryGridSection
                 key={section.category_slug}
@@ -58,7 +74,7 @@ export default function Home({ leadNews, subLeadNews, sections }: Props) {
               />
             )
 
-          case "nine_split":
+          case "category-nine-split":
             return (
               <CategoryNineSplitSection
                 key={section.category_slug}
@@ -67,16 +83,7 @@ export default function Home({ leadNews, subLeadNews, sections }: Props) {
               />
             )
 
-          case "four_block":
-            // For FourCategoryBlock, wrap as array with single category
-            return (
-              <FourCategoryBlock
-                key={section.category_slug}
-                categories={[{ title: section.category_slug, news: section.news }]}
-              />
-            )
-
-          case "two_column_list":
+          case "two-column-featured-list":
             return (
               <TwoColumnFeaturedList
                 key={section.category_slug}
@@ -95,6 +102,17 @@ export default function Home({ leadNews, subLeadNews, sections }: Props) {
             )
         }
       })}
+
+      {/* Render FourCategoryBlocks */}
+      {groupedFourBlocks.map((group, index) => (
+        <FourCategoryBlock
+          key={`four-block-${index}`}
+          categories={group.map((section) => ({
+            title: section.category_slug,
+            news: section.news.slice(0, 6), // only latest 6 news per category
+          }))}
+        />
+      ))}
     </FrontendLayout>
   )
 }

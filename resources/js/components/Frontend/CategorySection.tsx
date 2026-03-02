@@ -21,7 +21,6 @@ export default function CategorySection({ title, news }: Props) {
   return (
     <section className="py-8 border-b">
       <h2 className="text-2xl font-bold mb-6">{title}</h2>
-
       <div className="grid md:grid-cols-12 gap-6">
         
         {/* Left Featured */}

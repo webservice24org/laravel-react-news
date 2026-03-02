@@ -117,8 +117,23 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('uploads/images', [UploadController::class, 'destroyImage'])->name('uploads.images.destroy');
 
 
-        Route::get('homepage-builder', [HomeSectionController::class, 'index'])->name('homepage-builder');
-        Route::post('homepage-builder/order', [HomeSectionController::class, 'updateOrder'])->name('homepage-builder.order');
+         Route::get('homepage-builder', [HomeSectionController::class, 'index'])
+        ->name('homepage-builder');
+
+        Route::post('homepage-builder', [HomeSectionController::class, 'store'])
+            ->name('homepage-builder.store');
+
+        Route::put('homepage-builder/{homepage_builder}', [HomeSectionController::class, 'update'])
+            ->name('homepage-builder.update');
+
+        Route::delete('homepage-builder/{homepage_builder}', [HomeSectionController::class, 'destroy'])
+            ->name('homepage-builder.destroy');
+
+        Route::post('homepage-builder/order', [HomeSectionController::class, 'updateOrder'])
+            ->name('homepage-builder.order');
+
+            Route::put('homepage-builder/{section}/status', [HomeSectionController::class, 'updateStatus'])
+            ->name('homepage-builder.status');
 
         
 
