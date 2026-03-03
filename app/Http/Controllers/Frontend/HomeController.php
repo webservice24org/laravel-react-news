@@ -16,18 +16,32 @@ class HomeController extends Controller
         $subLeadNews = $this->getSubLeadNews();
 
         // Fetch homepage sections ordered by 'order'
-        $sectionsConfig = HomeSection::orderBy('order')->get();
+        $sectionsConfig = HomeSection::with(['category'])
+                        ->where('status', true)
+                        ->orderBy('order')
+                        ->get();
 
         $sections = [];
 
         foreach ($sectionsConfig as $section) {
-            $news = $this->getCategoryNews($section->category_slug, $section->limit);
+            $news = $this->getCategoryNews(
+                $section->category_slug,
+                $section->limit
+            );
 
-            $sections[] = [
-                'type' => $section->type,
-                'category_slug' => $section->category_slug,
-                'news' => $news,
-            ];
+            $sections = $sectionsConfig->map(function ($section) {
+
+                return [
+                    'id' => $section->id,
+                    'type' => $section->type,
+                    'category_slug' => $section->category_slug,
+                    'category' => $section->category,
+                    'news' => $this->getCategoryNews(
+                        $section->category_slug,
+                        $section->limit
+                    ),
+                ];
+            });
         }
 
         return Inertia::render('Frontend/Home', [
@@ -35,6 +49,7 @@ class HomeController extends Controller
             'subLeadNews' => $subLeadNews,
             'sections'    => $sections,
         ]);
+        
     }
 
     private function getLeadNews()
@@ -67,4 +82,6 @@ class HomeController extends Controller
             ->take($limit)
             ->get();
     }
+
+    
 }

@@ -12,7 +12,10 @@ class HomeSectionController extends Controller
 {
     public function index()
     {
-        $sections = HomeSection::orderBy('order')->get();
+        $sections = HomeSection::with('category')
+        ->where('status', true)
+        ->orderBy('order')
+        ->get();
 
         $categories = Category::where('status', true)
             ->orderBy('name')

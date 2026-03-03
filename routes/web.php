@@ -16,7 +16,7 @@ use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Admin\HomeSectionController;
 
-use App\Http\Controllers\Frontend\SectionController;
+use App\Http\Controllers\Frontend\FrontendController;
 
 
 
@@ -144,6 +144,9 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/api/category-news', [SectionController::class, 'getCategoryNews']);
+
+    Route::get('/news/{newsPost}', [FrontendController::class, 'show'])
+    ->name('news.show');
 
     
 
