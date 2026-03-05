@@ -9,7 +9,7 @@ interface NewsItem {
   id: number
   news_title: string
   slug: string
-  created_at: string
+  created_at?: string
   news_thumbnail?: string
 }
 
@@ -20,7 +20,7 @@ interface Props {
 
 export default function LatestNews({ title = "সর্বশেষ সংবাদ", news }: Props) {
   return (
-    <div>
+    <div className="bg-white p-4 rounded-lg shadow">
       <h3 className="text-lg font-bold mb-4 border-b pb-2">
         {title}
       </h3>

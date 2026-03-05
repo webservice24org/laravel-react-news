@@ -13,9 +13,10 @@ use App\Http\Controllers\Admin\UnionController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\NewsPostController;
 use App\Http\Controllers\Admin\UploadController;
-use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Admin\HomeSectionController;
+use App\Http\Controllers\Admin\AuthorAnalyticsController;
 
+use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\FrontendController;
 
 
@@ -135,6 +136,10 @@ Route::middleware(['auth'])->group(function () {
             Route::put('homepage-builder/{section}/status', [HomeSectionController::class, 'updateStatus'])
             ->name('homepage-builder.status');
 
+
+        Route::get('authors/monthly-ranking', [AuthorAnalyticsController::class, 'monthlyRanking'])->name('authors.monthlyRanking');
+        Route::get('authors/analytics', [AuthorAnalyticsController::class, 'analyticsDashboard'])->name('authors.analytics');
+
         
 
     });
@@ -145,12 +150,28 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/api/category-news', [SectionController::class, 'getCategoryNews']);
 
-    Route::get('/news/{newsPost}', [FrontendController::class, 'show'])
-    ->name('news.show');
+    
 
     
 
 });
 
+    Route::get('/news/{newsPost}', [FrontendController::class, 'show'])
+    ->name('news.show');
+
+
+    Route::get('/news/{slug}/download', [FrontendController::class, 'downloadPdf'])
+    ->name('news.download');
+
+    Route::get('/category/{slug}', [FrontendController::class, 'category'])
+    ->name('category.show');
+    Route::get('/category/{categorySlug}/{subSlug}', [FrontendController::class, 'subCategory'])
+    ->name('subcategory.show');
+
+    Route::get('/author/{id}', [FrontendController::class, 'author'])
+    ->name('author.show');
+
+    Route::get('/top-writers', [FrontendController::class, 'topWriters'])
+    ->name('author.top');
 
 require __DIR__.'/settings.php';

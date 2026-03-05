@@ -4,6 +4,9 @@ import React from "react"
 import { Head, Link } from "@inertiajs/react"
 import FrontendLayout from "@/layouts/frontend-layout"
 import LatestNews from "@/components/Frontend/Sidebar/LatestNews"
+import RelatedNews from "@/components/Frontend/Sidebar/RelatedNews"
+import MostViewedNews from "@/components/Frontend/Sidebar/MostViewedNews"
+import toast from "react-hot-toast"
 
 declare function route(name: string, params?: any): string
 
@@ -27,6 +30,7 @@ interface NewsPost {
   thumbnail_caption?: string
   meta_title?: string
   meta_description?: string
+  meta_keywords?: string
   created_at: string
   updated_at?: string
   view_count: number
@@ -36,112 +40,231 @@ interface NewsPost {
 
 interface Props {
   news: NewsPost
-   latestNews: any[]
+  latestNews: NewsPost[]
+  mostViewedNews: NewsPost[]
+  relatedNews: NewsPost[]
+  previousNews?: NewsPost
+  nextNews?: NewsPost
 }
 
-export default function Show({ news, latestNews }: Props) {
+export default function Show({
+  news,
+  latestNews,
+  mostViewedNews,
+  relatedNews,
+  previousNews,
+  nextNews,
+}: Props) {
+
+  const category = news.categories?.[0]
+
+  const currentUrl =
+    typeof window !== "undefined" ? window.location.href : ""
+
+  const siteUrl =
+    typeof window !== "undefined" ? window.location.origin : ""
+
+  const imageUrl = news.news_thumbnail
+    ? `${siteUrl}/storage/${news.news_thumbnail}`
+    : `${siteUrl}/logo.png`
+
+  const publishedDate = new Date(news.created_at).toISOString()
+  const updatedDate = new Date(news.updated_at ?? news.created_at).toISOString()
 
   // ==============================
-  // Bangla Relative Time
+  // Google News Structured Data
   // ==============================
-  const getRelativeTime = (dateString: string) => {
-    const now = new Date()
-    const past = new Date(dateString)
-    const diff = Math.floor((now.getTime() - past.getTime()) / 60000)
-
-    if (diff < 60) return `${diff} মিনিট আগে`
-    const hours = Math.floor(diff / 60)
-    if (hours < 24) return `${hours} ঘণ্টা আগে`
-    const days = Math.floor(hours / 24)
-    return `${days} দিন আগে`
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": currentUrl,
+    },
+    headline: news.news_title,
+    description:
+      news.meta_description ||
+      news.news_title.substring(0, 150),
+    image: [imageUrl],
+    datePublished: publishedDate,
+    dateModified: updatedDate,
+    author: {
+      "@type": "Person",
+      name: news.author?.name || "নিজস্ব প্রতিবেদক",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "আপনার নিউজ পোর্টাল",
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/logo.png`,
+      },
+    },
   }
 
-  // ==============================
-  // Full Bangla Date Format
-  // ==============================
-  const formatBanglaDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("bn-BD", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }) + " " +
-    new Date(dateString).toLocaleTimeString("bn-BD", {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
+  const copyLink = async () => {
+    await navigator.clipboard.writeText(currentUrl)
+    toast.success("লিংক কপি হয়েছে!")
   }
 
   return (
     <FrontendLayout>
       <Head>
         <title>{news.meta_title || news.news_title}</title>
+
+        {/* Basic SEO */}
         <meta
           name="description"
-          content={news.meta_description || news.news_title}
+          content={
+            news.meta_description ||
+            news.news_title.substring(0, 150)
+          }
         />
+        <meta
+          name="keywords"
+          content={news.meta_keywords || ""}
+        />
+
+        <link rel="canonical" href={currentUrl} />
+
+        {/* OpenGraph */}
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={news.news_title} />
+        <meta
+          property="og:description"
+          content={
+            news.meta_description ||
+            news.news_title.substring(0, 150)
+          }
+        />
+        <meta property="og:url" content={currentUrl} />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="og:site_name" content="আপনার নিউজ পোর্টাল" />
+
+        {/* Article Info */}
+        <meta property="article:published_time" content={publishedDate} />
+        <meta property="article:modified_time" content={updatedDate} />
+        <meta property="article:author" content={news.author?.name || ""} />
+        {category && (
+          <meta property="article:section" content={category.name} />
+        )}
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={news.news_title} />
+        <meta
+          name="twitter:description"
+          content={
+            news.meta_description ||
+            news.news_title.substring(0, 150)
+          }
+        />
+        <meta name="twitter:image" content={imageUrl} />
+
+        {/* AMP future ready */}
+        <link rel="amphtml" href={`${siteUrl}/amp/news/${news.slug}`} />
+
+        {/* JSON-LD Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
       </Head>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Floating Share */}
+      <div className="hidden lg:flex flex-col gap-3 fixed top-1/3 right-6 z-50 no-print">
+        <a
+          href={`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`}
+          target="_blank"
+          className="bg-blue-600 text-white p-3 rounded-full shadow"
+        >
+          FB
+        </a>
+        <a
+          href={`https://twitter.com/intent/tweet?url=${currentUrl}`}
+          target="_blank"
+          className="bg-black text-white p-3 rounded-full shadow"
+        >
+          X
+        </a>
+      </div>
 
-        {/* ================= BREADCRUMB ================= */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Breadcrumb */}
         <div className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-red-600">হোম</Link>
+          <Link href="/" className="hover:text-black transition">
+            হোম
+          </Link>
+
+          {category && (
+            <>
+              {" / "}
+              <Link
+                href={route("category.show", category.slug)}
+                className="text-gray-600 hover:text-black font-medium transition"
+              >
+                {category.name}
+              </Link>
+            </>
+          )}
+
           {" / "}
-          {news.categories[0]?.name}
-          {" / "}
-          <span className="text-gray-700">{news.news_title}</span>
+          <span className="text-gray-700">
+            {news.news_title}
+          </span>
         </div>
 
-        {/* ================= 12 Column Layout ================= */}
         <div className="grid grid-cols-12 gap-6">
+          {/* LEFT SIDEBAR META */}
+          <div className="col-span-12 lg:col-span-2">
+            <div className="lg:sticky lg:top-24 space-y-4 text-sm text-gray-600 bg-gray-50 p-4 rounded shadow-sm no-print">
 
-          {/* ========= LEFT 2 COL (Meta Info) ========= */}
-          <div className="col-span-12 lg:col-span-2 text-sm text-gray-600 space-y-3 shadow-sm p-2 rounded bg-gray-50">
 
-            <div>
-              <strong>লেখক:</strong><br />
-              {news.author?.name || "নিজস্ব প্রতিবেদক"}
-            </div>
+              <div>
+                <strong>লেখক:</strong><br />
 
-            <div>
-              {getRelativeTime(news.created_at)}
-            </div>
+                {news.author ? (
+                  <Link
+                    href={route("author.show", news.author.id)}
+                    className="inline-block bg-gray-100 px-2 py-1 rounded text-sm hover:bg-gray-200 transition"
+                  >
+                    {news.author.name}
+                  </Link>
+                ) : (
+                  "নিজস্ব প্রতিবেদক"
+                )}
+              </div>
 
-            <div>
-              <strong>আপডেট:</strong><br />
-              {formatBanglaDate(news.updated_at || news.created_at)}
-            </div>
+              <div>
+                <strong>ভিউ:</strong><br />
+                {news.view_count}
+              </div>
 
-            <div>
-              <strong>বিভাগ:</strong><br />
-              {news.categories[0]?.name}
-            </div>
+              <div className="pt-4 space-y-2">
 
-            {/* Share Buttons */}
-            <div className="pt-4 space-y-2">
-              <div className="font-semibold">শেয়ার করুন:</div>
-              <div className="flex gap-2">
                 <a
-                  href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}
+                  href={route("news.download", news.slug)}
                   target="_blank"
-                  className="bg-blue-600 text-white px-2 py-1 text-xs rounded"
+                  rel="noopener noreferrer"
+                  className="w-full bg-gray-200 py-2 rounded text-center block"
+                  onClick={() => {
+                    toast.success("PDF ডাউনলোড শুরু হয়েছে")
+                  }}
                 >
-                  Facebook
+                  🖨 Download PDF
                 </a>
-                <a
-                  href={`https://twitter.com/intent/tweet?url=${window.location.href}`}
-                  target="_blank"
-                  className="bg-black text-white px-2 py-1 text-xs rounded"
+
+                <button
+                  onClick={copyLink}
+                  className="w-full bg-gray-200 py-2 rounded"
                 >
-                  X
-                </a>
+                  🔗 Copy Link
+                </button>
               </div>
             </div>
           </div>
 
-          {/* ========= MIDDLE 7 COL ========= */}
-          <div className="col-span-12 lg:col-span-7 shadow-sm p-2 rounded bg-white">
+          {/* MAIN CONTENT */}
+          <div className="col-span-12 lg:col-span-7">
 
             <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-6">
               {news.news_title}
@@ -163,21 +286,24 @@ export default function Show({ news, latestNews }: Props) {
             )}
 
             <div
-            className="prose max-w-none text-lg leading-relaxed"
-            dangerouslySetInnerHTML={{
-              __html: news.news_description,
-            }}
-          />
+              className="prose max-w-none text-lg leading-relaxed"
+              dangerouslySetInnerHTML={{
+                __html: news.news_description,
+              }}
+            />
+            {/* Previous / Next */} <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6 mt-10"> {previousNews && ( <Link href={`/news/${previousNews.slug}`} className="p-4 border rounded hover:bg-gray-50 transition" > <p className="text-sm text-gray-500">← Previous</p> <h4 className="font-semibold"> {previousNews.news_title} </h4> </Link> )} {nextNews && ( <Link href={`/news/${nextNews.slug}`} className="p-4 border rounded hover:bg-gray-50 transition text-right" > <p className="text-sm text-gray-500">Next →</p> <h4 className="font-semibold"> {nextNews.news_title} </h4> </Link> )} </div>
+            <RelatedNews relatedNews={relatedNews} />
           </div>
 
-          {/* ========= RIGHT 3 COL (Sidebar) ========= */}
-            <div className="col-span-12 lg:col-span-3">
-                <LatestNews news={latestNews} />
+          {/* RIGHT SIDEBAR */}
+          <div className="col-span-12 lg:col-span-3">
+            <div className="lg:sticky lg:top-24 space-y-6 no-print">
+              <LatestNews news={latestNews} />
+              <MostViewedNews mostViewedNews={mostViewedNews} />
             </div>
+          </div>
+
         </div>
-
-        
-
       </div>
     </FrontendLayout>
   )
