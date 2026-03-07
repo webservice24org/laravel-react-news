@@ -74,7 +74,11 @@ const mainNavItems: NavItem[] = [
         href: route('admin.news-posts.index'),
         icon: LayoutGrid,
     },
-    
+    {
+        title: 'Author Analytics',
+        href: route('admin.authors.analytics'),
+        icon: Users,
+    }
 ];
 
 const footerNavItems: NavItem[] = [

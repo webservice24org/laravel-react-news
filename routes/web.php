@@ -15,6 +15,8 @@ use App\Http\Controllers\Admin\NewsPostController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\HomeSectionController;
 use App\Http\Controllers\Admin\AuthorAnalyticsController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\MenuController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\FrontendController;
@@ -25,10 +27,10 @@ use App\Http\Controllers\Frontend\FrontendController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
+
+
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -111,9 +113,6 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('news-posts/{newsPost}/toggle-status', [NewsPostController::class, 'toggleStatus'])->name('news-posts.toggle-status');
 
 
-
-
-
         Route::post('uploads/images', [UploadController::class, 'image'])->name('uploads.images');
         Route::delete('uploads/images', [UploadController::class, 'destroyImage'])->name('uploads.images.destroy');
 
@@ -133,12 +132,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('homepage-builder/order', [HomeSectionController::class, 'updateOrder'])
             ->name('homepage-builder.order');
 
-            Route::put('homepage-builder/{section}/status', [HomeSectionController::class, 'updateStatus'])
+        Route::put('homepage-builder/{section}/status', [HomeSectionController::class, 'updateStatus'])
             ->name('homepage-builder.status');
 
 
-        Route::get('authors/monthly-ranking', [AuthorAnalyticsController::class, 'monthlyRanking'])->name('authors.monthlyRanking');
+
         Route::get('authors/analytics', [AuthorAnalyticsController::class, 'analyticsDashboard'])->name('authors.analytics');
+
+        Route::get('menus', [MenuController::class,'index'])->name('menus');
+        Route::post('menus', [MenuController::class,'store'])->name('menus.store');
 
         
 
