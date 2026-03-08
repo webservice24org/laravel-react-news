@@ -11,13 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-         Schema::create('menus', function (Blueprint $table) {
+        Schema::create('menus', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('url')->nullable();
-            $table->foreignId('category_id')->nullable()->constrained()->cascadeOnDelete(); // optional: link to category
-            $table->foreignId('parent_id')->nullable()->constrained('menus')->cascadeOnDelete(); // parent menu for nesting
-            $table->integer('order')->default(0); // for ordering in the menu
+
+            $table->enum('type', ['category', 'subcategory', 'custom'])->default('category');
+
+            $table->foreignId('category_id')->nullable()->constrained()->cascadeOnDelete(); 
+            $table->foreignId('sub_category_id')->nullable()->constrained('sub_categories')->cascadeOnDelete(); 
+            $table->foreignId('parent_id')->nullable()->constrained('menus')->cascadeOnDelete(); 
+
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }

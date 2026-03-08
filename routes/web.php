@@ -141,6 +141,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('menus', [MenuController::class,'index'])->name('menus');
         Route::post('menus', [MenuController::class,'store'])->name('menus.store');
+        Route::post('menus/order',[MenuController::class,'order'])->name('menus.order');
+        Route::delete('menus/{id}', [MenuController::class, 'destroy'])->name('menus.destroy');
+
 
         
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\NewsPost;
 use App\Models\HomeSection;
 use Inertia\Inertia;
+use App\Models\Menu;
 
 class HomeController extends Controller
 {
@@ -44,10 +45,17 @@ class HomeController extends Controller
             });
         }
 
+         // 🔹 MENU
+        $menus = Menu::with('childrenRecursive')
+            ->whereNull('parent_id')
+            ->orderBy('order')
+            ->get();
+
         return Inertia::render('Frontend/Home', [
             'leadNews'    => $leadNews,
             'subLeadNews' => $subLeadNews,
             'sections'    => $sections,
+            'menus'       => $menus,
         ]);
         
     }
