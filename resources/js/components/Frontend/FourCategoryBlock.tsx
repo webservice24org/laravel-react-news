@@ -20,7 +20,7 @@ export default function FourCategoryBlock({ categories }: Props) {
     thumbnail ? `/storage/${thumbnail}` : "/images/fallback-news.jpg"
 
   return (
-    <section className="py-10 border-b">
+    <section className="max-w-7xl mx-auto py-2 border-b">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {categories.map((category) => {
           if (!category.news?.length) return null

@@ -19,8 +19,8 @@ export default function LeadSection({ leadNews, subLeadNews }: Props) {
   const rest = leadNews.slice(1, 10)
 
   return (
-    <section className="w-full py-2">
-      <div className="container mx-auto px-4">
+    <section className="max-w-7xl mx-auto py-2">
+      <div className="container  px-4">
         <div className="grid grid-cols-12 gap-6">
           
           {/* LEFT SIDE */}

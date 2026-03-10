@@ -20,7 +20,7 @@ export default function CategoryGridSection({ title, news }: Props) {
   const displayNews = news.slice(0, 8)
 
   return (
-    <section className="py-10 border-b">
+    <section className="max-w-7xl mx-auto py-2 border-b">
       <h2 className="text-2xl font-bold mb-6">{title}</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

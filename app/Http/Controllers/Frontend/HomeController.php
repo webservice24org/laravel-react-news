@@ -46,16 +46,14 @@ class HomeController extends Controller
         }
 
          // 🔹 MENU
-        $menus = Menu::with('childrenRecursive')
-            ->whereNull('parent_id')
-            ->orderBy('order')
-            ->get();
+        
+        //dd($menus);
 
         return Inertia::render('Frontend/Home', [
             'leadNews'    => $leadNews,
             'subLeadNews' => $subLeadNews,
             'sections'    => $sections,
-            'menus'       => $menus,
+            //'menus'       => $menus,
         ]);
         
     }

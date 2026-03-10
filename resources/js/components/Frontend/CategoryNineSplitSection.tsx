@@ -27,7 +27,7 @@ export default function CategoryNineSplitSection({ title, news }: Props) {
   const bottomItems = sideItems.slice(4, 8)
 
   return (
-    <section className="py-10 border-b">
+    <section className="max-w-7xl mx-auto py-2 border-b">
       <h2 className="text-2xl font-bold mb-6">{title}</h2>
 
       <div className="grid md:grid-cols-12 gap-6">

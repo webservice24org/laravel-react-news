@@ -1,109 +1,206 @@
-"use client"
+import React, { useState } from "react"
+import { Link, usePage } from "@inertiajs/react"
 
-import React from "react"
-import { Link } from "@inertiajs/react"
-
-declare function route(name: string, params?: any): string
-
-interface Menu {
+type Menu = {
   id: number
   title: string
-  url?: string
-  childrenRecursive?: Menu[]
+  url: string
+  parent_id: number | null
+  children_recursive?: Menu[]
 }
 
-export default function FrontendHeader({ menus }: { menus: Menu[] }) {
+type PageProps = {
+  menus: Menu[]
+}
+
+export default function FrontendHeader() {
+  const { menus } = usePage<PageProps>().props
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <header className="bg-white border-b">
-
+    <header className="relative z-50 border-b bg-white shadow-sm">
       <div className="mx-auto max-w-7xl px-4">
+        <nav className="flex items-center justify-between py-4">
+          <div className="text-xl font-bold">
+            <Link href="/">Logo</Link>
+          </div>
 
-        {/* Top row */}
-        <div className="flex items-center justify-between py-3">
+          <button
+            type="button"
+            className="inline-flex items-center rounded-md border px-3 py-2 text-sm md:hidden"
+            onClick={() => setMobileOpen((prev) => !prev)}
+          >
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              {mobileOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
 
-          <Link href={route("home")} className="flex items-center gap-2">
-
-            <div className="h-9 w-9 rounded bg-neutral-900" />
-
-            <div className="leading-tight">
-              <div className="text-lg font-bold">Mzamin Clone</div>
-              <div className="text-xs text-neutral-500">News Portal</div>
-            </div>
-
-          </Link>
-
-          <div className="text-sm text-neutral-500">Bangladesh</div>
-
-        </div>
-
-
-        {/* Bottom row menu */}
-        <nav className="flex items-center gap-3 py-2 text-sm">
-
-          <NavItem href={route("home")} label="Home" />
-
-          {menus.map(menu => (
-            <MenuDropdown key={menu.id} menu={menu} />
-          ))}
-
+          <ul className="hidden items-center gap-2 md:flex">
+            {menus.map((menu) => (
+              <DesktopMenuItem key={menu.id} menu={menu} />
+            ))}
+          </ul>
         </nav>
 
+        <div
+          className={`overflow-hidden transition-all duration-300 md:hidden ${
+            mobileOpen ? "max-h-[1000px] pb-4 opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <ul className="space-y-1 border-t pt-3">
+            {menus.map((menu) => (
+              <MobileMenuItem key={menu.id} menu={menu} />
+            ))}
+          </ul>
+        </div>
       </div>
-
     </header>
   )
 }
 
-function NavItem({ href, label }: { href: string; label: string }) {
+function DesktopMenuItem({ menu }: { menu: Menu }) {
+  const hasChildren = !!menu.children_recursive?.length
+
   return (
-    <Link
-      href={href}
-      className="px-3 py-2 rounded hover:bg-neutral-100 transition"
-    >
-      {label}
-    </Link>
+    <li className="group relative">
+      <Link
+        href={menu.url ?? "#"}
+        className="inline-flex items-center gap-1 rounded-md px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-blue-600"
+      >
+        {menu.title}
+        {hasChildren && (
+          <svg
+            className="h-4 w-4 transition group-hover:rotate-180"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.168l3.71-3.938a.75.75 0 1 1 1.08 1.04l-4.25 4.512a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06Z"
+              clipRule="evenodd"
+            />
+          </svg>
+        )}
+      </Link>
+
+      {hasChildren && (
+        <ul className="invisible absolute left-0 top-full z-50 mt-2 min-w-[220px] translate-y-2 rounded-lg border bg-white p-1 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+          {menu.children_recursive!.map((child) => (
+            <DesktopSubMenuItem key={child.id} menu={child} />
+          ))}
+        </ul>
+      )}
+    </li>
   )
 }
 
-function MenuDropdown({ menu }: { menu: any }) {
-
-  const hasChildren = menu.childrenRecursive && menu.childrenRecursive.length > 0
-
-  if (!hasChildren) {
-    return <NavItem href={menu.url || "#"} label={menu.title} />
-  }
+function DesktopSubMenuItem({ menu }: { menu: Menu }) {
+  const hasChildren = !!menu.children_recursive?.length
 
   return (
-
-    <div className="relative group">
-
+    <li className="group/sub relative">
       <Link
-        href={menu.url || "#"}
-        className="px-3 py-2 rounded hover:bg-neutral-100 flex items-center gap-1"
+        href={menu.url ?? "#"}
+        className="flex items-center justify-between rounded-md px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-100 hover:text-blue-600"
       >
-        {menu.title}
+        <span>{menu.title}</span>
+        {hasChildren && (
+          <svg
+            className="h-4 w-4"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.512 4.25a.75.75 0 0 1 0 1.08l-4.512 4.25a.75.75 0 0 1-1.06-.02Z"
+              clipRule="evenodd"
+            />
+          </svg>
+        )}
       </Link>
 
-      {/* Dropdown */}
-      <div className="absolute left-0 hidden group-hover:block bg-white shadow-lg border mt-1 min-w-45 z-50">
+      {hasChildren && (
+        <ul className="invisible absolute left-full top-0 ml-2 min-w-[220px] translate-x-2 rounded-lg border bg-white p-1 opacity-0 shadow-lg transition-all duration-200 group-hover/sub:visible group-hover/sub:translate-x-0 group-hover/sub:opacity-100">
+          {menu.children_recursive!.map((child) => (
+            <DesktopSubMenuItem key={child.id} menu={child} />
+          ))}
+        </ul>
+      )}
+    </li>
+  )
+}
 
-        {menu.childrenRecursive.map((child: any) => (
+function MobileMenuItem({ menu, level = 0 }: { menu: Menu; level?: number }) {
+  const [open, setOpen] = useState(false)
+  const hasChildren = !!menu.children_recursive?.length
 
-          <Link
-            key={child.id}
-            href={child.url || "#"}
-            className="block px-4 py-2 hover:bg-neutral-100 text-sm"
+  return (
+    <li>
+      <div
+        className="flex items-center justify-between rounded-md hover:bg-gray-50"
+        style={{ paddingLeft: `${level * 16}px` }}
+      >
+        <Link
+          href={menu.url ?? "#"}
+          className="flex-1 px-4 py-3 text-sm font-medium text-gray-700"
+        >
+          {menu.title}
+        </Link>
+
+        {hasChildren && (
+          <button
+            type="button"
+            className="px-4 py-3 text-gray-500"
+            onClick={() => setOpen((prev) => !prev)}
           >
-            {child.title}
-          </Link>
-
-        ))}
-
+            <svg
+              className={`h-4 w-4 transition-transform duration-200 ${
+                open ? "rotate-180" : ""
+              }`}
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.168l3.71-3.938a.75.75 0 1 1 1.08 1.04l-4.25 4.512a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        )}
       </div>
 
-    </div>
-
+      {hasChildren && (
+        <div
+          className={`overflow-hidden transition-all duration-300 ${
+            open ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <ul className="ml-2 border-l border-gray-200">
+            {menu.children_recursive!.map((child) => (
+              <MobileMenuItem key={child.id} menu={child} level={level + 1} />
+            ))}
+          </ul>
+        </div>
+      )}
+    </li>
   )
-
 }
