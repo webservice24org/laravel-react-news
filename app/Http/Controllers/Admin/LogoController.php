@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Logo;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class LogoController extends Controller
 {
-     public function index()
+    public function index()
     {
         $logos = Logo::pluck('path','type');
 
@@ -33,16 +34,25 @@ class LogoController extends Controller
 
         foreach ($types as $type) {
 
-            if ($request->hasFile($type)) {
-
-                $file = $request->file($type);
-                $path = $file->store('logos','public');
-
-                Logo::updateOrCreate(
-                    ['type' => $type],
-                    ['path' => $path]
-                );
+            if (!$request->hasFile($type)) {
+                continue;
             }
+
+            $file = $request->file($type);
+
+            $existing = Logo::where('type',$type)->first();
+
+            // delete old file if exists
+            if ($existing && Storage::disk('public')->exists($existing->path)) {
+                Storage::disk('public')->delete($existing->path);
+            }
+
+            $path = $file->store('logos','public');
+
+            Logo::updateOrCreate(
+                ['type' => $type],
+                ['path' => $path]
+            );
         }
 
         return back()->with('success','Logos updated successfully');

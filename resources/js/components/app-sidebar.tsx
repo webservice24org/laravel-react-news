@@ -78,6 +78,26 @@ const mainNavItems: NavItem[] = [
         title: 'Author Analytics',
         href: route('admin.authors.analytics'),
         icon: Users,
+    },
+    {
+        title: 'Menu Management',
+        href: route('admin.menus'),
+        icon: Folder,
+    },
+    {
+        title: 'Logo Settings',
+        href: route('admin.logos.index'),
+        icon: BookOpen,
+    },
+    {
+        title: 'Website Settings',
+        href: route('admin.settings.index'),
+        icon: BookText,
+    },
+    {
+        title: 'Office Information',
+        href: route('admin.office-info.index'),
+        icon: BookAudio,
     }
 ];
 

@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\AuthorAnalyticsController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\LogoController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\OfficeInfoController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\FrontendController;
@@ -148,6 +150,12 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('logos', [LogoController::class, 'index'])->name('logos.index');
         Route::post('logos', [LogoController::class, 'store'])->name('logos.store');
+       
+        Route::get('settings', [SettingController::class,'index'])->name('settings.index');
+        Route::post('settings', [SettingController::class,'store'])->name('settings.store');
+
+        Route::get('office-info', [OfficeInfoController::class, 'index'])->name('office-info.index');
+        Route::post('office-info', [OfficeInfoController::class, 'store'])->name('office-info.store');
 
     });
 
