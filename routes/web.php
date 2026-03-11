@@ -20,6 +20,12 @@ use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\LogoController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\OfficeInfoController;
+use App\Http\Controllers\Admin\SocialConnectionController;
+use App\Http\Controllers\Admin\AnalyticsConfigController;
+use App\Http\Controllers\Admin\AnalyticsDashboardController;
+use App\Http\Controllers\Admin\MailConfigController;
+use App\Http\Controllers\Admin\FallbackImageController;
+use App\Http\Controllers\Admin\AdvertisementAssignmentController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\FrontendController;
@@ -156,6 +162,29 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('office-info', [OfficeInfoController::class, 'index'])->name('office-info.index');
         Route::post('office-info', [OfficeInfoController::class, 'store'])->name('office-info.store');
+
+        Route::get('social-connections', [SocialConnectionController::class,'index'])->name('social-connections.index');
+        Route::post('social-connections', [SocialConnectionController::class,'store'])->name('social-connections.store');
+
+        Route::get('analytics-config', [AnalyticsConfigController::class,'index'])->name('analytics-config.index');
+        Route::post('analytics-config', [AnalyticsConfigController::class,'store'])->name('analytics-config.store');
+
+        Route::get('analytics-dashboard',[AnalyticsDashboardController::class,'analytics'])->name('analytics.dashboard');
+        Route::get('pro-analytics-dashboard',[AnalyticsDashboardController::class,'index'])->name('pro.analytics.dashboard');
+
+        Route::get('mail-config', [MailConfigController::class, 'index'])->name('mail-config.index');
+        Route::post('mail-config', [MailConfigController::class, 'store'])->name('mail-config.store');
+
+        Route::get('fallback-image', [FallbackImageController::class, 'index'])->name('fallback-image.index');
+        Route::post('fallback-image', [FallbackImageController::class, 'store'])->name('fallback-image.store');
+        
+        Route::get('advertisements', [AdvertisementAssignmentController::class, 'index'])->name('advertisements.index');
+
+        Route::get('advertisements/create', [AdvertisementAssignmentController::class, 'create'])->name('advertisements.create');
+
+        Route::post('advertisements/store', [AdvertisementAssignmentController::class, 'store'])->name('advertisements.store');
+
+        Route::delete('advertisements/{advertisement}', [AdvertisementAssignmentController::class, 'destroy'])->name('advertisements.destroy');
 
     });
 

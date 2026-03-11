@@ -23,5 +23,9 @@ class SubCategory extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function advertisements()
+    {
+        return $this->belongsToMany(Advertisement::class, 'advertisement_sub_category');
+    }
     
 }

@@ -3,7 +3,7 @@ declare function route(
   params?: any
 ): string
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Users, Projector, BookText, BookAudio, BrickWall, Tag  } from 'lucide-react'; // added Users icon
+import { BookOpen, Folder, LayoutGrid, Users, Projector, BookText, BookAudio, BrickWall, Tag, Mail, Image, BetweenHorizontalStart   } from 'lucide-react'; // added Users icon
 
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -98,7 +98,43 @@ const mainNavItems: NavItem[] = [
         title: 'Office Information',
         href: route('admin.office-info.index'),
         icon: BookAudio,
-    }
+    },
+    {
+        title: 'Social Connections',
+        href: route('admin.social-connections.index'),
+        icon: BrickWall,
+    },
+    {
+        title: 'Analytics Configuration',
+        href: route('admin.analytics-config.index'),
+        icon: Tag,
+    },
+    {
+        title: 'Analytics Dashboard',
+        href: route('admin.analytics.dashboard'),
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Pro Analytics',
+        href: route('admin.pro.analytics.dashboard'),
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Mail Configuration',
+        href: route('admin.mail-config.index'),
+        icon: Mail,
+    },
+    {
+        title: 'Fallback Image',
+        href: route('admin.fallback-image.index'),
+        icon: Image,
+    },
+    {
+        title: 'Advertisements',
+        href: route('admin.advertisements.index'),
+        icon: BetweenHorizontalStart ,
+    },
+
 ];
 
 const footerNavItems: NavItem[] = [

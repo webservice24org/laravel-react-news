@@ -30,7 +30,10 @@ class Category extends Model
                 ->orderBy('order_no', 'asc'); // order by order_no
     }
 
-
+    public function advertisements()
+    {
+        return $this->belongsToMany(Advertisement::class, 'advertisement_category');
+    }
 
 
 }
