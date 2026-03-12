@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\AnalyticsDashboardController;
 use App\Http\Controllers\Admin\MailConfigController;
 use App\Http\Controllers\Admin\FallbackImageController;
 use App\Http\Controllers\Admin\AdvertisementAssignmentController;
+use App\Http\Controllers\Admin\PageController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\FrontendController;
@@ -179,12 +180,19 @@ Route::middleware(['auth'])->group(function () {
         Route::post('fallback-image', [FallbackImageController::class, 'store'])->name('fallback-image.store');
         
         Route::get('advertisements', [AdvertisementAssignmentController::class, 'index'])->name('advertisements.index');
-
         Route::get('advertisements/create', [AdvertisementAssignmentController::class, 'create'])->name('advertisements.create');
-
         Route::post('advertisements/store', [AdvertisementAssignmentController::class, 'store'])->name('advertisements.store');
-
+        Route::get('advertisements/{advertisement}/edit', [AdvertisementAssignmentController::class,'edit'])->name('advertisements.edit');
+        Route::post('advertisements/{advertisement}/update',[AdvertisementAssignmentController::class,'update'])->name('advertisements.update');
+        Route::patch('advertisements/{advertisement}/toggle-status',[AdvertisementAssignmentController::class, 'toggleStatus'])->name('advertisements.toggleStatus');
         Route::delete('advertisements/{advertisement}', [AdvertisementAssignmentController::class, 'destroy'])->name('advertisements.destroy');
+
+        Route::get('pages', [PageController::class, 'index'])->name('pages.index');
+        Route::get('pages/create', [PageController::class, 'create'])->name('pages.create');
+        Route::post('pages', [PageController::class, 'store'])->name('pages.store');
+        Route::get('pages/{page}/edit', [PageController::class, 'edit'])->name('pages.edit');
+        Route::post('pages/{page}', [PageController::class, 'update'])->name('pages.update');
+        Route::delete('pages/{page}', [PageController::class, 'destroy'])->name('pages.destroy');
 
     });
 

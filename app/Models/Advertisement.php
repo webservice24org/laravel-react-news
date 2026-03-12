@@ -28,5 +28,12 @@ class Advertisement extends Model
         return $this->belongsToMany(SubCategory::class, 'advertisement_sub_category');
     }
 
+    protected static function booted()
+    {
+        static::deleting(function ($ad) {
+            $ad->categories()->detach();
+            $ad->subCategories()->detach();
+        });
+    }
 
 }

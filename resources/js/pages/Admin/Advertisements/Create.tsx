@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import toast from "react-hot-toast"
 import { FormEvent, useState } from "react"
 import { BreadcrumbItem } from "@/types"
-import { Checkbox } from "@/components/ui/checkbox"
+import CheckboxGroup from "@/components/Admin/Advertisement/checkbox-group"
 
 interface AssignProps {
   categories: { id: number; name: string }[]
@@ -173,81 +173,29 @@ export default function Assign({ categories, subCategories }: AssignProps) {
 
               {/* Categories */}
                 <div>
-                <label className="text-sm font-medium">Categories</label>
 
-                <div className="grid grid-cols-3 gap-3 mt-3">
+                  <label className="font-medium">Categories</label>
 
-                    {categories.map((cat) => {
+                  <CheckboxGroup
+                    items={categories}
+                    selected={data.categories}
+                    onChange={(val)=>setData("categories",val)}
+                  />
 
-                    const checked = data.categories.includes(cat.id)
-
-                    return (
-                        <div key={cat.id} className="flex items-center space-x-2">
-
-                        <Checkbox
-                            checked={checked}
-                            onCheckedChange={(value) => {
-
-                            if (value) {
-                                setData("categories", [...data.categories, cat.id])
-                            } else {
-                                setData(
-                                "categories",
-                                data.categories.filter((id) => id !== cat.id)
-                                )
-                            }
-
-                            }}
-                        />
-
-                        <label className="text-sm">{cat.name}</label>
-
-                        </div>
-                    )
-
-                    })}
-
-                </div>
                 </div>
 
 
               {/* Sub Categories */}
                 <div>
-                <label className="text-sm font-medium">Sub Categories</label>
 
-                <div className="grid grid-cols-3 gap-3 mt-3 max-h-60 overflow-y-auto">
+                  <label className="font-medium">Sub Categories</label>
 
-                    {subCategories.map((sub) => {
+                  <CheckboxGroup
+                    items={subCategories}
+                    selected={data.sub_categories}
+                    onChange={(val)=>setData("sub_categories",val)}
+                  />
 
-                    const checked = data.sub_categories.includes(sub.id)
-
-                    return (
-                        <div key={sub.id} className="flex items-center space-x-2">
-
-                        <Checkbox
-                            checked={checked}
-                            onCheckedChange={(value) => {
-
-                            if (value) {
-                                setData("sub_categories", [...data.sub_categories, sub.id])
-                            } else {
-                                setData(
-                                "sub_categories",
-                                data.sub_categories.filter((id) => id !== sub.id)
-                                )
-                            }
-
-                            }}
-                        />
-
-                        <label className="text-sm">{sub.name}</label>
-
-                        </div>
-                    )
-
-                    })}
-
-                </div>
                 </div>
 
 
