@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Page;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PageController extends Controller
 {
@@ -42,7 +43,7 @@ class PageController extends Controller
 
         Page::create([
             'title' => $request->title,
-            'slug' => $request->slug,
+            'slug' => Str::slug($request->slug ?: $request->title),
             'content' => $request->content,
             'thumbnail' => $thumbnailPath,
             'status' => $request->status ?? true,
@@ -65,7 +66,7 @@ class PageController extends Controller
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:pages,slug,' . $page->id,
             'content' => 'nullable|string',
-            'thumbnail' => 'nullable|image|max:2048',
+            'thumbnail' => 'sometimes|nullable|image|max:2048',
             'status' => 'boolean',
             'layout' => 'required|in:default,sidebar-left,sidebar-right',
         ]);
@@ -73,16 +74,18 @@ class PageController extends Controller
         $thumbnailPath = $page->thumbnail;
 
         if ($request->hasFile('thumbnail')) {
-            // Delete old thumbnail
+
+            // delete old thumbnail
             if ($page->thumbnail && Storage::disk('public')->exists($page->thumbnail)) {
                 Storage::disk('public')->delete($page->thumbnail);
             }
+
             $thumbnailPath = $request->file('thumbnail')->store('pages', 'public');
         }
 
         $page->update([
             'title' => $request->title,
-            'slug' => $request->slug,
+            'slug' => Str::slug($request->slug ?: $request->title),
             'content' => $request->content,
             'thumbnail' => $thumbnailPath,
             'status' => $request->status ?? true,
@@ -103,6 +106,19 @@ class PageController extends Controller
         return back()->with('success', 'Page deleted successfully');
     }
 
+
+    public function show($slug)
+    {
+        $page = Page::where('slug', $slug)
+            ->where('status', true)
+            ->firstOrFail();
+
+        return Inertia::render('Frontend/Pages/Page', [
+            'page' => $page
+        ]);
+    }
+
+    
 
 
 }

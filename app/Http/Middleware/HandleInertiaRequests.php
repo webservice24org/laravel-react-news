@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\Menu;
+use App\Models\NewsPost;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -56,7 +57,19 @@ class HandleInertiaRequests extends Middleware
                 ->whereNull('parent_id')
                 ->orderBy('order')
                 ->get(),
-        ];
+
+            'latestNews' => fn () =>
+            NewsPost::latest()
+                ->take(5)
+                ->get()
+                ->map(fn ($post) => [
+                    'id' => $post->id,
+                    'news_title' => $post->news_title,
+                    'slug' => $post->slug,
+                    'news_thumbnail' => $post->news_thumbnail,
+                    'created_at' => $post->created_at,
+                ]),
+                ];
     }
 
 }

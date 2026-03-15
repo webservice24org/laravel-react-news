@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import { FormEvent } from "react";
+import { router } from "@inertiajs/react";
+import PageContent from "@/components/Admin/Pages/PageContent";
 
 interface Page {
   id: number;
@@ -37,32 +39,33 @@ export default function EditPage({ page }: Props) {
   const { data, setData, post, processing, errors } = useForm<PageFormData>({
     title: page.title,
     slug: page.slug,
-    content: page.content || "",
+    content: page.content ?? "",
     thumbnail: page.thumbnail || null,
     status: page.status,
     layout: page.layout,
   });
 
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
+  const submit = (e: React.FormEvent) => {
+  e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("slug", data.slug);
-    formData.append("content", data.content || "");
-    formData.append("status", data.status ? "1" : "0");
-    formData.append("layout", data.layout);
+  const formData = new FormData();
 
-    if (data.thumbnail instanceof File) {
-      formData.append("thumbnail", data.thumbnail);
-    }
+  formData.append("title", data.title);
+  formData.append("slug", data.slug);
+  formData.append("content", data.content ?? "");
+  formData.append("layout", data.layout);
+  formData.append("status", data.status ? "1" : "0");
 
-    post(route("admin.pages.update", page.id), {
-      preserveScroll: true,
-      onSuccess: () => toast.success("Page updated successfully"),
-      onError: () => toast.error("Update failed"),
-    });
-  };
+  if (data.thumbnail instanceof File) {
+    formData.append("thumbnail", data.thumbnail);
+  }
+
+  router.post(route("admin.pages.update", page.id), formData, {
+    preserveScroll: true,
+    onSuccess: () => toast.success("Page updated successfully"),
+    onError: () => toast.error("Update failed"),
+  });
+};
 
   return (
     <AppLayout>
@@ -94,11 +97,7 @@ export default function EditPage({ page }: Props) {
 
             <div>
               <label className="block mb-1 font-medium">Content</label>
-              <Textarea
-                value={data.content}
-                onChange={(e) => setData("content", e.target.value)}
-                rows={10}
-              />
+              <PageContent data={data} setData={setData} errors={errors} />
               {errors.content && <p className="text-red-600 text-sm">{errors.content}</p>}
             </div>
           </div>

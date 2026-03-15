@@ -9,9 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import toast from "react-hot-toast";
 import { FormEvent } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import PageContent from "@/components/Admin/Pages/PageContent";
 
 export default function Create() {
-  const { data, setData, post, processing } = useForm({
+  const { data, setData, post, processing, errors } = useForm({
     title: "",
     slug: "",
     content: "",
@@ -48,9 +49,20 @@ export default function Create() {
                         <label className="block mb-1 font-medium">Title</label>
                         <Input
                             value={data.title}
-                            onChange={(e) => setData("title", e.target.value)}
+                            onChange={(e) => {
+                                const title = e.target.value;
+
+                                setData("title", title);
+
+                                const slug = title
+                                .toLowerCase()
+                                .replace(/[^\w\s-]/g, "")
+                                .replace(/\s+/g, "-");
+
+                                setData("slug", slug);
+                            }}
                             required
-                        />
+                            />
                         </div>
 
                         <div>
@@ -62,13 +74,11 @@ export default function Create() {
                         />
                         </div>
 
-                        <div>
+                        <div className="p-4">
                         <label className="block mb-1 font-medium">Content</label>
-                        <Textarea
-                            value={data.content}
-                            onChange={(e) => setData("content", e.target.value)}
-                            rows={10}
-                        />
+
+                          <PageContent data={data} setData={setData} errors={errors} />
+
                         </div>
 
                     </div>

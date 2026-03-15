@@ -31,6 +31,8 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\FrontendController;
 
+use App\Models\Page;
+
 
 
 
@@ -225,5 +227,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/top-writers', [FrontendController::class, 'topWriters'])
     ->name('author.top');
+
+    Route::get('/{slug}', [PageController::class, 'show'])
+    ->name('page.show');
 
 require __DIR__.'/settings.php';
