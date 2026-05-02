@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\Menu;
 use App\Models\NewsPost;
+use App\Models\Logo;
+use App\Models\SocialConnection;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -35,7 +37,9 @@ class HandleInertiaRequests extends Middleware
      *
      * @return array<string, mixed>
      */
-   public function share(Request $request): array
+
+
+    public function share(Request $request): array
     {
         return [
             ...parent::share($request),
@@ -52,24 +56,44 @@ class HandleInertiaRequests extends Middleware
                 ! $request->hasCookie('sidebar_state') ||
                 $request->cookie('sidebar_state') === 'true',
 
-            // ✅ Global Menu
+            // ✅ Menus
             'menus' => Menu::with('childrenRecursive')
                 ->whereNull('parent_id')
                 ->orderBy('order')
                 ->get(),
 
+            // ✅ Latest News
             'latestNews' => fn () =>
-            NewsPost::latest()
-                ->take(5)
-                ->get()
-                ->map(fn ($post) => [
-                    'id' => $post->id,
-                    'news_title' => $post->news_title,
-                    'slug' => $post->slug,
-                    'news_thumbnail' => $post->news_thumbnail,
-                    'created_at' => $post->created_at,
-                ]),
+                NewsPost::latest()
+                    ->take(5)
+                    ->get()
+                    ->map(fn ($post) => [
+                        'id' => $post->id,
+                        'news_title' => $post->news_title,
+                        'slug' => $post->slug,
+                        'news_thumbnail' => $post->news_thumbnail,
+                        'created_at' => $post->created_at,
+                    ]),
+
+            // ✅ Logos (GLOBAL)
+            'logos' => fn () => Logo::all()->keyBy('type')->map(fn ($logo) => [
+            'path' => asset('storage/' . $logo->path),
+            'alt' => $logo->alt,
+            ]),
+
+            // ✅ Social Links (GLOBAL)
+            'socials' => fn () => optional(SocialConnection::first(), function ($s) {
+                return [
+                    'facebook' => $s->facebook_url,
+                    'twitter' => $s->twitter_url,
+                    'instagram' => $s->instagram_url,
+                    'youtube' => $s->youtube_url,
+                    'tiktok' => $s->tiktok_url,
+                    'pinterest' => $s->pinterest_url,
+                    'whatsapp' => $s->whatsapp_url,
                 ];
+            }),
+        ];
     }
 
 }

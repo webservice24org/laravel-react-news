@@ -30,6 +30,8 @@ use App\Http\Controllers\Admin\PageController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\FrontendController;
+use App\Http\Controllers\Frontend\SectionController;
+
 
 use App\Models\Page;
 
@@ -210,7 +212,7 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-    Route::get('/news/{newsPost}', [FrontendController::class, 'show'])
+    Route::get('/news/{newsPost:slug}', [FrontendController::class, 'show'])
     ->name('news.show');
 
 

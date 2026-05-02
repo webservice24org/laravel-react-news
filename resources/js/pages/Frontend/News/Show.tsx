@@ -275,7 +275,7 @@ export default function Show({
                 <img
                   src={`/storage/${news.news_thumbnail}`}
                   alt={news.news_title}
-                  className="w-full rounded"
+                  className="w-full max-h-[500px] object-contain rounded bg-gray-100"
                 />
                 {news.thumbnail_caption && (
                   <p className="text-xs text-gray-500 mt-1">

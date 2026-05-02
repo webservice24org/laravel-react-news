@@ -224,123 +224,123 @@ class NewsPostController extends Controller
      * Update the specified news post.
      * NOTE: If new thumbnail uploaded -> delete old one, else keep old.
      */
-  public function update(Request $request, NewsPost $newsPost)
-{
-    $validated = $request->validate([
-        'top_title'          => 'nullable|string|max:255',
-        'news_title'         => 'required|string|max:255',
-        'hanger_title'       => 'nullable|string|max:255',
-        'slug'               => 'nullable|string|max:255|unique:news_posts,slug,' . $newsPost->id,
-        'news_description'   => 'required|string',
+    public function update(Request $request, NewsPost $newsPost)
+    {
+        $validated = $request->validate([
+            'top_title'          => 'nullable|string|max:255',
+            'news_title'         => 'required|string|max:255',
+            'hanger_title'       => 'nullable|string|max:255',
+            'slug'               => 'nullable|string|max:255|unique:news_posts,slug,' . $newsPost->id,
+            'news_description'   => 'required|string',
 
-        // thumbnail optional
-        'news_thumbnail'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-        'thumbnail_caption'  => 'nullable|string|max:255',
+            // thumbnail optional
+            'news_thumbnail'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'thumbnail_caption'  => 'nullable|string|max:255',
 
-        'meta_title'         => 'nullable|string|max:255',
-        'meta_description'   => 'nullable|string|max:255',
+            'meta_title'         => 'nullable|string|max:255',
+            'meta_description'   => 'nullable|string|max:255',
 
-        'is_lead'            => 'nullable|boolean',
-        'is_sub_lead'        => 'nullable|boolean',
-        'status'             => 'required|in:published,draft,scheduled',
-        'scheduled_at'       => 'nullable|date',
+            'is_lead'            => 'nullable|boolean',
+            'is_sub_lead'        => 'nullable|boolean',
+            'status'             => 'required|in:published,draft,scheduled',
+            'scheduled_at'       => 'nullable|date',
 
-        'categories'         => 'nullable|array',
-        'categories.*'       => 'integer|exists:categories,id',
+            'categories'         => 'nullable|array',
+            'categories.*'       => 'integer|exists:categories,id',
 
-        'subcategories'      => 'nullable|array',
-        'subcategories.*'    => 'integer|exists:sub_categories,id',
+            'subcategories'      => 'nullable|array',
+            'subcategories.*'    => 'integer|exists:sub_categories,id',
 
-        'tags'               => 'nullable|array',
-        'tags.*'             => 'integer|exists:tags,id',
+            'tags'               => 'nullable|array',
+            'tags.*'             => 'integer|exists:tags,id',
 
-        // LocationSelector payload
-        'unions'             => 'nullable|array',
-        'unions.*'           => 'integer|exists:unions,id',
-        'primary_union_id'   => 'nullable|integer|exists:unions,id',
+            // LocationSelector payload
+            'unions'             => 'nullable|array',
+            'unions.*'           => 'integer|exists:unions,id',
+            'primary_union_id'   => 'nullable|integer|exists:unions,id',
 
-        'user_id'            => 'nullable|integer|exists:users,id',
-    ]);
+            'user_id'            => 'nullable|integer|exists:users,id',
+        ]);
 
-    // ✅ auto slug
-    if (empty($validated['slug'])) {
-        $validated['slug'] = Str::slug($validated['news_title']);
-    }
-
-    // ✅ keep existing author if not sent
-    if (!$request->filled('user_id')) {
-        unset($validated['user_id']);
-    }
-
-    /**
-     * ✅ AUTO-CLEAN REMOVED EDITOR IMAGES
-     * Compare old vs new HTML before updating DB.
-     */
-    $oldHtml = (string) ($newsPost->news_description ?? "");
-    $newHtml = (string) ($validated['news_description'] ?? "");
-
-    $oldPaths = $this->extractNewsImagePathsFromHtml($oldHtml); // ['news-images/a.jpg', ...]
-    $newPaths = $this->extractNewsImagePathsFromHtml($newHtml);
-
-    $removedPaths = array_values(array_diff($oldPaths, $newPaths));
-
-    // ✅ If new thumbnail uploaded -> delete old + store new
-    if ($request->hasFile('news_thumbnail')) {
-        if ($newsPost->news_thumbnail) {
-            Storage::disk('public')->delete($newsPost->news_thumbnail);
+        // ✅ auto slug
+        if (empty($validated['slug'])) {
+            $validated['slug'] = Str::slug($validated['news_title']);
         }
 
-        $manager = new ImageManager(new Driver());
-        $image = $manager->read($request->file('news_thumbnail'));
-        $webp = $image->toWebp(80);
-
-        $filename = (string) Str::uuid() . '.webp';
-        $path = 'news-thumbnails/' . $filename;
-
-        Storage::disk('public')->put($path, (string) $webp);
-        $validated['news_thumbnail'] = $path;
-    } else {
-        unset($validated['news_thumbnail']); // don’t overwrite old
-    }
-
-    // ❗ remove non-columns before update
-    unset(
-        $validated['categories'],
-        $validated['subcategories'],
-        $validated['tags'],
-        $validated['unions'],
-        $validated['primary_union_id']
-    );
-
-    // ✅ update main row
-    $newsPost->update($validated);
-
-    // ✅ sync taxonomy
-    $newsPost->categories()->sync($request->input('categories', []));
-    $newsPost->subCategories()->sync($request->input('subcategories', []));
-    $newsPost->tags()->sync($request->input('tags', []));
-
-    // ✅ sync location pivots from unions[]
-    [$divisionIds, $districtIds, $upazilaIds, $unionIds] =
-        $this->resolveLocationPivotIdsFromUnionArray($request->input('unions', []));
-
-    $newsPost->divisions()->sync($divisionIds);
-    $newsPost->districts()->sync($districtIds);
-    $newsPost->upazilas()->sync($upazilaIds);
-    $newsPost->unions()->sync($unionIds);
-
-    /**
-     * ✅ Delete removed editor images AFTER successful update
-     * (so if validation/update fails, we don’t delete files incorrectly)
-     */
-    foreach ($removedPaths as $p) {
-        if (Storage::disk('public')->exists($p)) {
-            Storage::disk('public')->delete($p);
+        // ✅ keep existing author if not sent
+        if (!$request->filled('user_id')) {
+            unset($validated['user_id']);
         }
-    }
 
-    return back()->with('success', 'News post updated successfully.');
-}
+        /**
+         * ✅ AUTO-CLEAN REMOVED EDITOR IMAGES
+         * Compare old vs new HTML before updating DB.
+         */
+        $oldHtml = (string) ($newsPost->news_description ?? "");
+        $newHtml = (string) ($validated['news_description'] ?? "");
+
+        $oldPaths = $this->extractNewsImagePathsFromHtml($oldHtml); // ['news-images/a.jpg', ...]
+        $newPaths = $this->extractNewsImagePathsFromHtml($newHtml);
+
+        $removedPaths = array_values(array_diff($oldPaths, $newPaths));
+
+        // ✅ If new thumbnail uploaded -> delete old + store new
+        if ($request->hasFile('news_thumbnail')) {
+            if ($newsPost->news_thumbnail) {
+                Storage::disk('public')->delete($newsPost->news_thumbnail);
+            }
+
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($request->file('news_thumbnail'));
+            $webp = $image->toWebp(80);
+
+            $filename = (string) Str::uuid() . '.webp';
+            $path = 'news-thumbnails/' . $filename;
+
+            Storage::disk('public')->put($path, (string) $webp);
+            $validated['news_thumbnail'] = $path;
+        } else {
+            unset($validated['news_thumbnail']); // don’t overwrite old
+        }
+
+        // ❗ remove non-columns before update
+        unset(
+            $validated['categories'],
+            $validated['subcategories'],
+            $validated['tags'],
+            $validated['unions'],
+            $validated['primary_union_id']
+        );
+
+        // ✅ update main row
+        $newsPost->update($validated);
+
+        // ✅ sync taxonomy
+        $newsPost->categories()->sync($request->input('categories', []));
+        $newsPost->subCategories()->sync($request->input('subcategories', []));
+        $newsPost->tags()->sync($request->input('tags', []));
+
+        // ✅ sync location pivots from unions[]
+        [$divisionIds, $districtIds, $upazilaIds, $unionIds] =
+            $this->resolveLocationPivotIdsFromUnionArray($request->input('unions', []));
+
+        $newsPost->divisions()->sync($divisionIds);
+        $newsPost->districts()->sync($districtIds);
+        $newsPost->upazilas()->sync($upazilaIds);
+        $newsPost->unions()->sync($unionIds);
+
+        /**
+         * ✅ Delete removed editor images AFTER successful update
+         * (so if validation/update fails, we don’t delete files incorrectly)
+         */
+        foreach ($removedPaths as $p) {
+            if (Storage::disk('public')->exists($p)) {
+                Storage::disk('public')->delete($p);
+            }
+        }
+
+        return back()->with('success', 'News post updated successfully.');
+    }
 
 
 
@@ -353,38 +353,38 @@ class NewsPostController extends Controller
      * - else if division picked -> only division
      */
     private function resolveLocationPivotIdsFromUnionArray(array $unionIds): array
-{
-    $unionIds = array_values(array_unique(array_map('intval', $unionIds)));
+    {
+        $unionIds = array_values(array_unique(array_map('intval', $unionIds)));
 
-    if (empty($unionIds)) {
-        return [[], [], [], []];
+        if (empty($unionIds)) {
+            return [[], [], [], []];
+        }
+
+        $divisionIds = [];
+        $districtIds = [];
+        $upazilaIds  = [];
+
+        $unions = Union::with('upazila.district.division')
+            ->whereIn('id', $unionIds)
+            ->get();
+
+        foreach ($unions as $union) {
+            $u = $union->upazila;
+            $d = $u?->district;
+            $v = $d?->division;
+
+            if ($u) $upazilaIds[] = $u->id;
+            if ($d) $districtIds[] = $d->id;
+            if ($v) $divisionIds[] = $v->id;
+        }
+
+        return [
+            array_values(array_unique($divisionIds)),
+            array_values(array_unique($districtIds)),
+            array_values(array_unique($upazilaIds)),
+            $unionIds,
+        ];
     }
-
-    $divisionIds = [];
-    $districtIds = [];
-    $upazilaIds  = [];
-
-    $unions = Union::with('upazila.district.division')
-        ->whereIn('id', $unionIds)
-        ->get();
-
-    foreach ($unions as $union) {
-        $u = $union->upazila;
-        $d = $u?->district;
-        $v = $d?->division;
-
-        if ($u) $upazilaIds[] = $u->id;
-        if ($d) $districtIds[] = $d->id;
-        if ($v) $divisionIds[] = $v->id;
-    }
-
-    return [
-        array_values(array_unique($divisionIds)),
-        array_values(array_unique($districtIds)),
-        array_values(array_unique($upazilaIds)),
-        $unionIds,
-    ];
-}
 
     
 
@@ -488,7 +488,7 @@ class NewsPostController extends Controller
     }
 
 
-  public function bulkDestroy(Request $request)
+    public function bulkDestroy(Request $request)
     {
         $ids = $request->input('ids', []);
 

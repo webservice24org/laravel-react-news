@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Link, usePage } from "@inertiajs/react"
 
+
 type Menu = {
   id: number
   title: string
@@ -16,13 +17,24 @@ type PageProps = {
 export default function FrontendHeader() {
   const { menus } = usePage<PageProps>().props
   const [mobileOpen, setMobileOpen] = useState(false)
-
+  const { logos } = usePage().props as any;
+  const headerLogo = logos?.header;
   return (
     <header className="relative z-50 border-b bg-white shadow-sm">
       <div className="mx-auto max-w-7xl px-4">
         <nav className="flex items-center justify-between py-4">
           <div className="text-xl font-bold">
-            <Link href="/">Logo</Link>
+            <Link href="/">
+            {headerLogo ? (
+              <img
+                src={headerLogo.path}
+                alt={headerLogo.alt ?? "Logo"}
+                className="h-10"
+              />
+            ) : (
+              <span className="font-bold text-xl">My Site</span>
+            )}
+          </Link>
           </div>
 
           <button
@@ -62,7 +74,7 @@ export default function FrontendHeader() {
 
         <div
           className={`overflow-hidden transition-all duration-300 md:hidden ${
-            mobileOpen ? "max-h-[1000px] pb-4 opacity-100" : "max-h-0 opacity-0"
+            mobileOpen ? "max-h-250 pb-4 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <ul className="space-y-1 border-t pt-3">
@@ -102,7 +114,7 @@ function DesktopMenuItem({ menu }: { menu: Menu }) {
       </Link>
 
       {hasChildren && (
-        <ul className="invisible absolute left-0 top-full z-50 mt-2 min-w-[220px] translate-y-2 rounded-lg border bg-white p-1 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+        <ul className="invisible absolute left-0 top-full z-50 mt-2 min-w-55 translate-y-2 rounded-lg border bg-white p-1 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
           {menu.children_recursive!.map((child) => (
             <DesktopSubMenuItem key={child.id} menu={child} />
           ))}
@@ -138,7 +150,7 @@ function DesktopSubMenuItem({ menu }: { menu: Menu }) {
       </Link>
 
       {hasChildren && (
-        <ul className="invisible absolute left-full top-0 ml-2 min-w-[220px] translate-x-2 rounded-lg border bg-white p-1 opacity-0 shadow-lg transition-all duration-200 group-hover/sub:visible group-hover/sub:translate-x-0 group-hover/sub:opacity-100">
+        <ul className="invisible absolute left-full top-0 ml-2 min-w-55 translate-x-2 rounded-lg border bg-white p-1 opacity-0 shadow-lg transition-all duration-200 group-hover/sub:visible group-hover/sub:translate-x-0 group-hover/sub:opacity-100">
           {menu.children_recursive!.map((child) => (
             <DesktopSubMenuItem key={child.id} menu={child} />
           ))}
@@ -191,7 +203,7 @@ function MobileMenuItem({ menu, level = 0 }: { menu: Menu; level?: number }) {
       {hasChildren && (
         <div
           className={`overflow-hidden transition-all duration-300 ${
-            open ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+            open ? "max-h-250 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <ul className="ml-2 border-l border-gray-200">
