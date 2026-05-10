@@ -98,83 +98,116 @@ export default function EditNews({
       <form onSubmit={submit} className="p-4 md:p-6">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Edit News</h1>
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+            Edit News
+          </h1>
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           {/* LEFT */}
-          <div className="lg:col-span-9 space-y-6">
-            <Section title="Titles">
-              <NewsTitles data={data} setData={setData} errors={errors} />
-            </Section>
+          <div className="space-y-6 lg:col-span-9">
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+              <Section title="Titles">
+                <NewsTitles data={data} setData={setData} errors={errors} />
+              </Section>
+            </div>
 
-            <Section title="Content">
-              <NewsDescription data={data} setData={setData} errors={errors} />
-            </Section>
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+              <Section title="Content">
+                <NewsDescription data={data} setData={setData} errors={errors} />
+              </Section>
+            </div>
 
-            <Section title="SEO">
-              <MetaSeoAccordion data={data} setData={setData} errors={errors} />
-            </Section>
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+              <Section title="SEO">
+                <MetaSeoAccordion
+                  data={data}
+                  setData={setData}
+                  errors={errors}
+                />
+              </Section>
+            </div>
           </div>
 
           {/* RIGHT */}
-          <div className="lg:col-span-3 space-y-6">
-            <SidebarBox title="Publish">
-              <PublishBox data={data} setData={setData} />
-              <button
-                type="submit"
-                disabled={processing}
-                className="w-full mt-3 bg-blue-600 text-white rounded px-3 py-2"
-              >
-                {processing ? "Updating..." : "Update News"}
-              </button>
-              <DeleteNewsButton
-              id={newsPost.id}
-              title={newsPost.news_title}
-            />
+          <div className="space-y-6 lg:col-span-3">
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+              <SidebarBox title="Publish">
+                <PublishBox data={data} setData={setData} />
 
-            </SidebarBox>
+                <button
+                  type="submit"
+                  disabled={processing}
+                  className="mt-3 w-full rounded bg-blue-600 px-3 py-2 text-white"
+                >
+                  {processing ? "Updating..." : "Update News"}
+                </button>
 
-            <SidebarBox title="Location">
-              <LocationSelector
-                data={data}
-                setData={setData}
-                divisions={divisions}
-                districts={districts}
-                upazilas={upazilas}
-                unions={unions}
-                errors={errors}
-              />
-            </SidebarBox>
-
-            <SidebarBox title="Categories">
-              <CategoryTreeWp
-                data={data}
-                setData={setData}
-                categories={categories}
-                subcategories={subcategories}
-                errors={errors}
-              />
-            </SidebarBox>
-
-            <SidebarBox title="Tags">
-              <TagSelector data={data} setData={setData} tags={tags} errors={errors} />
-            </SidebarBox>
-
-            <SidebarBox title="Featured Image">
-              <ThumbnailUpload
-                data={data}
-                setData={setData}
-                errors={errors}
-                existingUrl={newsPost.news_thumbnail_url}   // ✅ add this
+                <DeleteNewsButton
+                  id={newsPost.id}
+                  title={newsPost.news_title}
                 />
+              </SidebarBox>
+            </div>
 
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+              <SidebarBox title="Location">
+                <LocationSelector
+                  data={data}
+                  setData={setData}
+                  divisions={divisions}
+                  districts={districts}
+                  upazilas={upazilas}
+                  unions={unions}
+                  errors={errors}
+                />
+              </SidebarBox>
+            </div>
 
-            </SidebarBox>
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+              <SidebarBox title="Categories">
+                <CategoryTreeWp
+                  data={data}
+                  setData={setData}
+                  categories={categories}
+                  subcategories={subcategories}
+                  errors={errors}
+                />
+              </SidebarBox>
+            </div>
 
-            <SidebarBox title="Author">
-              <UserSelect data={data} setData={setData} users={users} errors={errors} />
-            </SidebarBox>
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+              <SidebarBox title="Tags">
+                <TagSelector
+                  data={data}
+                  setData={setData}
+                  tags={tags}
+                  errors={errors}
+                />
+              </SidebarBox>
+            </div>
+
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+              <SidebarBox title="Featured Image">
+                <ThumbnailUpload
+                  data={data}
+                  setData={setData}
+                  errors={errors}
+                  existingUrl={newsPost.news_thumbnail_url}
+                />
+              </SidebarBox>
+            </div>
+
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+              <SidebarBox title="Author">
+                <UserSelect
+                  data={data}
+                  setData={setData}
+                  users={users}
+                  errors={errors}
+                />
+              </SidebarBox>
+            </div>
           </div>
         </div>
       </form>
