@@ -30,12 +30,12 @@ export default function LeadGrid({ news }: Props) {
                 alt={item.news_title}
                 loading="lazy"
                 decoding="async"
-                className="w-full h-40 object-cover rounded-md transition-transform duration-300 group-hover:scale-105"
+                className="w-full h-40 object-cover rounded-md transition-transform duration-300"
               />
             </Link>
 
             <Link href={`/news/${item.slug}`}>
-              <h3 className="font-semibold text-lg line-clamp-2 hover:text-red-600 transition">
+              <h3 className="font-semibold mt-1 text-lg line-clamp-2 hover:text-red-600 transition">
                 {item.news_title}
               </h3>
             </Link>

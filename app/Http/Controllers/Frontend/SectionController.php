@@ -26,7 +26,7 @@ class SectionController extends Controller
         $news = NewsPost::query()
             ->where('status', 'published')
             ->whereHas('categories', fn($q) => $q->where('slug', $slug))
-            ->latest()
+            ->latest('published_at')
             ->take($limit)
             ->get();
 

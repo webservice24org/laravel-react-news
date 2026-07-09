@@ -62,6 +62,7 @@ export default function EditNews({
     is_sub_lead: Boolean(newsPost.is_sub_lead),
     status: newsPost.status ?? "draft",
     scheduled_at: newsPost.scheduled_at ?? "",
+    published_at: newsPost.published_at ?? "",
   })
 
   const submit = (e: React.FormEvent) => {
@@ -146,6 +147,17 @@ export default function EditNews({
                 <DeleteNewsButton
                   id={newsPost.id}
                   title={newsPost.news_title}
+                />
+              </SidebarBox>
+            </div>
+
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+              <SidebarBox title="Publish Date / Archive Date">
+                <input
+                  type="datetime-local"
+                  value={data.published_at}
+                  onChange={(e) => setData("published_at", e.target.value)}
+                  className="form-input"
                 />
               </SidebarBox>
             </div>

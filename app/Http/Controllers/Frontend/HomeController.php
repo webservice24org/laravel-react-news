@@ -10,7 +10,7 @@ use App\Models\Menu;
 
 class HomeController extends Controller
 {
-    public function index()
+   /* public function index()
     {
         // Lead and Sub-Lead
         $leadNews    = $this->getLeadNews();
@@ -56,14 +56,48 @@ class HomeController extends Controller
             //'menus'       => $menus,
         ]);
         
-    }
+    }*/
+
+        public function index()
+{
+    // Lead and Sub-Lead
+    $leadNews    = $this->getLeadNews();
+    $subLeadNews = $this->getSubLeadNews();
+
+    // Fetch homepage sections ordered by 'order'
+    $sectionsConfig = HomeSection::with(['category'])
+        ->where('status', true)
+        ->orderBy('order')
+        ->get();
+
+    // ✅ FIXED: Proper map (NO foreach needed)
+    $sections = $sectionsConfig->map(function ($section) {
+        return [
+            'id'            => $section->id,
+            'type'          => $section->type,
+            'title'         => $section->category->name ?? $section->title ?? '',
+            'category_slug' => $section->category_slug ?? null,
+            'category'      => $section->category,
+            'news'          => $this->getCategoryNews(
+                $section->category_slug,
+                $section->limit
+            ),
+        ];
+    });
+
+    return Inertia::render('Frontend/Home', [
+        'leadNews'    => $leadNews,
+        'subLeadNews' => $subLeadNews,
+        'sections'    => $sections,
+    ]);
+}
 
     private function getLeadNews()
     {
         return NewsPost::query()
             ->where('status', 'published')
             ->where('is_lead', true)
-            ->latest()
+            ->latest('published_at')
             ->take(10)
             ->get();
     }
@@ -73,7 +107,7 @@ class HomeController extends Controller
         return NewsPost::query()
             ->where('status', 'published')
             ->where('is_sub_lead', true)
-            ->latest()
+            ->latest('published_at')
             ->take(5)
             ->get();
     }
@@ -84,7 +118,7 @@ class HomeController extends Controller
             ->with('categories:id,name,slug')
             ->where('status', 'published')
             ->whereHas('categories', fn($q) => $q->where('slug', $slug))
-            ->latest()
+            ->latest('published_at')
             ->take($limit)
             ->get();
     }

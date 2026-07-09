@@ -76,6 +76,7 @@ export default function CreateNews({
     is_sub_lead: false,
     status: "draft",
     scheduled_at: "",
+    published_at: "",
   })
 
   /* ----------------------------------------------------
@@ -225,7 +226,36 @@ export default function CreateNews({
                 </div>
               </div>
             </div>
-
+            
+            <div className="rounded border bg-white shadow-sm dark:bg-gray-900">
+                <div className="border-b px-4 py-3">
+                  <div className="text-sm font-semibold text-neutral-900 dark:text-white">Publication Date</div>
+                </div>
+                <div className="p-4">
+                  <div className="space-y-2">
+                    <label
+                        htmlFor="published_at"
+                        className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
+                    >
+                        Publication Date
+                    </label>
+                    <input
+                      type="datetime-local"
+                      id="published_at"
+                      name="published_at"
+                      value={data.published_at}
+                      onChange={(e) => setData("published_at", e.target.value)}
+                      className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                    />
+                    {errors.published_at && (
+                      <p className="text-sm text-red-600">{errors.published_at}</p>
+                    )}
+                    <p className="mt-1 text-sm text-gray-500">
+                        Leave empty to publish with the current date and time. Select a date to create a backdated article for the archive.
+                    </p>
+                  </div>
+                </div>
+            </div>
             {/* LocationSelector */}
             <div className="rounded border bg-white shadow-sm dark:bg-gray-900">
               <div className="border-b px-4 py-3">

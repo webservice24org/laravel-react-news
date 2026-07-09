@@ -8,12 +8,9 @@ use App\Models\NewsPost;
 use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\User;
-use App\Models\HomeSection;
 use Inertia\Inertia;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
-use Dompdf\Dompdf;
-use Dompdf\Options;
+use App\Services\PdfService;
 
 class FrontendController extends Controller
 {
@@ -24,7 +21,7 @@ class FrontendController extends Controller
             'categories',
             'subCategories',
             'tags',
-            'author',
+            'author.profile',
         ]);
 
         $newsPost->increment('view_count');
@@ -39,19 +36,19 @@ class FrontendController extends Controller
                 })
                 ->where('id', '!=', $newsPost->id)
                 ->where('status', 'published')
-                ->latest()
+                ->latest('published_at')
                 ->take(6)
                 ->get();
         }
 
         $previous = NewsPost::where('status', 'published')
             ->where('id', '<', $newsPost->id)
-            ->latest('id')
+            ->latest('published_at')
             ->first();
 
         $next = NewsPost::where('status', 'published')
             ->where('id', '>', $newsPost->id)
-            ->oldest('id')
+            ->oldest('published_at')
             ->first();
 
         return Inertia::render('Frontend/News/Show', [
@@ -61,18 +58,22 @@ class FrontendController extends Controller
             'relatedNews' => $this->getRelatedNewsByCategory($newsPost, 6),
             'previousNews' => $previous,
             'nextNews' => $next,
+            'seo' => [
+                'url' => url()->current(),
+                'site_url' => config('app.url'),
+            ],
             
         ]);
     }
         
     private function getLatestNews($limit = 6, $excludeId = null)
     {
-    return NewsPost::select('id','news_title','slug','created_at','news_thumbnail')
+    return NewsPost::select('id','news_title','slug','published_at','news_thumbnail')
         ->when($excludeId, function ($query) use ($excludeId) {
             $query->where('id', '!=', $excludeId);
         })
         ->where('status', 'published')
-        ->orderByDesc('created_at')
+        ->orderByDesc('published_at')
         ->take($limit)
         ->get();
 
@@ -81,7 +82,7 @@ class FrontendController extends Controller
 
     private function getMostViewedNews($limit = 6, $excludeId = null)
     {
-        return NewsPost::select('id','news_title','slug','created_at','news_thumbnail','view_count')
+        return NewsPost::select('id','news_title','slug','published_at','news_thumbnail','view_count')
             ->when($excludeId, fn($query) =>
                 $query->where('id', '!=', $excludeId)
             )
@@ -99,38 +100,46 @@ class FrontendController extends Controller
             return collect();
         }
 
-        return NewsPost::select('id','news_title','slug','created_at','news_thumbnail')
+        return NewsPost::select('id','news_title','slug','published_at','news_thumbnail')
             ->whereHas('categories', function ($q) use ($categoryId) {
                 $q->where('categories.id', $categoryId);
             })
             ->where('id', '!=', $newsPost->id)
             ->where('status', 'published')
-            ->latest()
+            ->latest('published_at')
             ->take($limit)
             ->get();
     }
 
 
 
-
-
     public function downloadPdf($slug)
     {
-        $news = NewsPost::with(['categories', 'author'])
-            ->where('slug', $slug)
-            ->where('status', 'published')
-            ->firstOrFail();
+        $news = NewsPost::with([
+            'categories',
+            'author',
+        ])
+        ->where('slug', $slug)
+        ->where('status', 'published')
+        ->firstOrFail();
 
-        $pdf = Pdf::loadView('news.pdf', compact('news'))
-            ->setPaper('A4', 'portrait')
-            ->setOptions([
-                'isHtml5ParserEnabled' => true,
-                'isRemoteEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'defaultFont' => 'SolaimanLipi',
-            ]);
+        $html = view('news.pdf', compact('news'))->render();
 
-        return $pdf->download(Str::slug($news->news_title).'.pdf');
+        $pdf = PdfService::make();
+
+        $pdf->WriteHTML($html);
+
+        return response(
+            $pdf->Output(
+                Str::slug($news->news_title).'.pdf',
+                'S'
+            ),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="'.Str::slug($news->news_title).'.pdf"',
+            ]
+        );
     }
 
     public function category($slug)
@@ -142,11 +151,11 @@ class FrontendController extends Controller
                 $query->where('categories.id', $category->id);
             })
             ->where('status', 'published')
-            ->latest()
+            ->latest('published_at')
             ->paginate(12);
 
         $latestNews = NewsPost::where('status', 'published')
-            ->latest()
+            ->latest('published_at')
             ->take(5)
             ->get();
 
@@ -178,11 +187,11 @@ class FrontendController extends Controller
                 $query->where('sub_categories.id', $subCategory->id);
             })
             ->where('status', 'published')
-            ->latest()
+            ->latest('published_at')
             ->paginate(12);
 
         $latestNews = NewsPost::where('status', 'published')
-            ->latest()
+            ->latest('published_at')
             ->take(5)
             ->get();
 
@@ -213,11 +222,11 @@ class FrontendController extends Controller
         $news = NewsPost::with(['categories'])
             ->where('user_id', $author->id)
             ->where('status', 'published')
-            ->latest()
+            ->latest('published_at')
             ->paginate(12);
 
         $latestNews = NewsPost::where('status', 'published')
-            ->latest()
+            ->latest('published_at')
             ->take(5)
             ->get();
 

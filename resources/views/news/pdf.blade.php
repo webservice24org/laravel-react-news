@@ -1,17 +1,13 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn-BD">
 <head>
     <meta charset="UTF-8">
     <title>{{ $news->news_title }}</title>
 
     <style>
-        @font-face {
-            font-family: 'SolaimanLipi';
-            src: url("{{ storage_path('fonts/SolaimanLipi.ttf') }}") format("truetype");
-        }
-
+        
         body {
-            font-family: 'SolaimanLipi', sans-serif;
+            font-family:'notobengali';
             margin: 40px;
             color: #111;
             line-height: 1.9;
@@ -111,7 +107,7 @@
 
     <!-- NEWS CONTENT -->
     <main class="content">
-        {!! $news->news_description ?? '<p>কোনো বিষয়বস্তু পাওয়া যায়নি।</p>' !!}
+                {!! html_entity_decode($news->news_description) !!}
     </main>
 
     <!-- FOOTER -->

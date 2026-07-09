@@ -21,6 +21,7 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Inertia\Inertia;
 use DB;
+use Carbon\Carbon;
 
 
 class NewsPostController extends Controller
@@ -73,16 +74,17 @@ class NewsPostController extends Controller
             'news_thumbnail'     => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
             'thumbnail_caption'  => 'nullable|string|max:255',
 
-            'meta_title' => 'nullable|string|max:60',
-            'meta_description' => 'nullable|string|max:170',
-
+            'meta_title'         => 'nullable|string|max:60',
+            'meta_description'   => 'nullable|string|max:170',
 
             'is_lead'            => 'nullable|boolean',
             'is_sub_lead'        => 'nullable|boolean',
-            'status'             => 'required|in:published,draft,scheduled',
-            'scheduled_at'       => 'nullable|date',
 
-            // ✅ taxonomy pivots
+            'status'             => 'required|in:published,draft,scheduled',
+            'published_at'       => 'nullable|date',
+            'scheduled_at'       => 'nullable|date|after:now',
+
+            // Taxonomy
             'categories'         => 'required|array',
             'categories.*'       => 'integer|exists:categories,id',
 
@@ -91,55 +93,138 @@ class NewsPostController extends Controller
 
             'tags'               => 'nullable|array',
             'tags.*'             => 'integer|exists:tags,id',
-            'new_tags' => 'nullable|array',
-            'new_tags.*' => 'string|max:50',
 
+            'new_tags'           => 'nullable|array',
+            'new_tags.*'         => 'string|max:50',
 
-            // ✅ WP LocationSelector payload
+            // Location
             'unions'             => 'nullable|array',
             'unions.*'           => 'integer|exists:unions,id',
             'primary_union_id'   => 'nullable|integer|exists:unions,id',
 
-            // optional author
+            // Author
             'user_id'            => 'nullable|integer|exists:users,id',
         ]);
 
+        /**
+         * Generate slug
+         */
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['news_title']);
         }
 
+        /**
+         * Default values
+         */
         $validated['user_id'] = $validated['user_id'] ?? auth()->id();
         $validated['view_count'] = 0;
 
-        // ✅ Save thumbnail (webp)
+        /**
+         * Publication Workflow
+         */
+        switch ($validated['status']) {
+
+            case 'draft':
+
+                $validated['published_at'] = null;
+                $validated['scheduled_at'] = null;
+
+                break;
+
+            case 'published':
+
+                $validated['published_at'] = !empty($validated['published_at'])
+                    ? Carbon::parse($validated['published_at'])
+                    : now();
+
+                $validated['scheduled_at'] = null;
+
+                break;
+
+            case 'scheduled':
+
+                if (empty($validated['scheduled_at'])) {
+                    return back()
+                        ->withErrors([
+                            'scheduled_at' => 'Please select a schedule date and time.',
+                        ])
+                        ->withInput();
+                }
+
+                $validated['scheduled_at'] = Carbon::parse($validated['scheduled_at']);
+
+                $validated['published_at'] = null;
+
+                break;
+        }
+
+        /**
+         * Upload Thumbnail
+         */
         if ($request->hasFile('news_thumbnail')) {
+
             $manager = new ImageManager(new Driver());
+
             $image = $manager->read($request->file('news_thumbnail'));
+
             $webp = $image->toWebp(80);
 
-            $filename = (string) Str::uuid() . '.webp';
+            $filename = Str::uuid() . '.webp';
+
             $path = 'news-thumbnails/' . $filename;
 
             Storage::disk('public')->put($path, (string) $webp);
+
             $validated['news_thumbnail'] = $path;
         }
 
-        // ❗ remove non-columns
-        unset($validated['categories'], $validated['subcategories'], $validated['tags'], $validated['unions'], $validated['primary_union_id']);
+        /**
+         * Remove Non Columns
+         */
+        unset(
+            $validated['categories'],
+            $validated['subcategories'],
+            $validated['tags'],
+            $validated['new_tags'],
+            $validated['unions'],
+            $validated['primary_union_id']
+        );
 
+        /**
+         * Create News
+         */
         $newsPost = NewsPost::create($validated);
 
-        // ✅ sync taxonomy
-        $newsPost->categories()->sync($request->input('categories', []));
-        $newsPost->subCategories()->sync($request->input('subcategories', []));
-        $newsPost->tags()->sync($request->input('tags', []));
+        /**
+         * Categories
+         */
+        $newsPost->categories()->sync(
+            $request->input('categories', [])
+        );
+
+        /**
+         * Sub Categories
+         */
+        $newsPost->subCategories()->sync(
+            $request->input('subcategories', [])
+        );
+
+        /**
+         * Tags
+         */
         $tagIds = $request->input('tags', []);
+
         $newNames = $request->input('new_tags', []);
 
         if (is_array($newNames) && count($newNames)) {
+
             foreach ($newNames as $name) {
+
                 $name = trim(preg_replace('/\s+/', ' ', $name));
-                if ($name === '') continue;
+
+                if ($name === '') {
+                    continue;
+                }
 
                 $tag = Tag::firstOrCreate(
                     ['name' => $name],
@@ -150,11 +235,23 @@ class NewsPostController extends Controller
             }
         }
 
-        $tagIds = array_values(array_unique(array_map('intval', $tagIds)));
+        $tagIds = array_values(
+            array_unique(
+                array_map('intval', $tagIds)
+            )
+        );
+
         $newsPost->tags()->sync($tagIds);
 
-        // ✅ sync location pivots from unions[]
-        [$divisionIds, $districtIds, $upazilaIds, $unionIds] = $this->resolveLocationPivotIdsFromUnionArray(
+        /**
+         * Locations
+         */
+        [
+            $divisionIds,
+            $districtIds,
+            $upazilaIds,
+            $unionIds
+        ] = $this->resolveLocationPivotIdsFromUnionArray(
             $request->input('unions', [])
         );
 
@@ -187,6 +284,14 @@ class NewsPostController extends Controller
         return Inertia::render('Admin/News/Edit', [
             'newsPost' => [
                 ...$newsPost->toArray(),
+
+                'published_at' => $newsPost->published_at
+                ? $newsPost->published_at->format('Y-m-d\TH:i')
+                : '',
+
+                'scheduled_at' => $newsPost->scheduled_at
+                    ? $newsPost->scheduled_at->format('Y-m-d\TH:i')
+                    : '',
 
                 'categories'    => $newsPost->categories->pluck('id')->values(),
                 'subcategories' => $newsPost->subCategories->pluck('id')->values(),
@@ -244,6 +349,7 @@ class NewsPostController extends Controller
             'is_sub_lead'        => 'nullable|boolean',
             'status'             => 'required|in:published,draft,scheduled',
             'scheduled_at'       => 'nullable|date',
+            'published_at'       => 'nullable|date',
 
             'categories'         => 'nullable|array',
             'categories.*'       => 'integer|exists:categories,id',
@@ -267,9 +373,41 @@ class NewsPostController extends Controller
             $validated['slug'] = Str::slug($validated['news_title']);
         }
 
-        // ✅ keep existing author if not sent
+        // Keep existing author
         if (!$request->filled('user_id')) {
             unset($validated['user_id']);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Publishing Logic
+        |--------------------------------------------------------------------------
+        */
+
+        if ($validated['status'] === 'published') {
+
+            // Backdated publish date OR current datetime
+            $validated['published_at'] = !empty($validated['published_at'])
+                ? Carbon::parse($validated['published_at'])
+                : ($newsPost->published_at ?? now());
+
+            $validated['scheduled_at'] = null;
+
+        } elseif ($validated['status'] === 'scheduled') {
+
+            $validated['scheduled_at'] = !empty($validated['scheduled_at'])
+                ? Carbon::parse($validated['scheduled_at'])
+                : null;
+
+            // Keep existing archive date if available
+            $validated['published_at'] = $newsPost->published_at;
+
+        } else { // draft
+
+            // Preserve archive date
+            $validated['published_at'] = $newsPost->published_at;
+
+            $validated['scheduled_at'] = null;
         }
 
         /**

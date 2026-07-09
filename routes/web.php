@@ -27,11 +27,15 @@ use App\Http\Controllers\Admin\MailConfigController;
 use App\Http\Controllers\Admin\FallbackImageController;
 use App\Http\Controllers\Admin\AdvertisementAssignmentController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\FrontendSettingController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Frontend\SectionController;
-
+use App\Http\Controllers\Frontend\SearchController;
+use App\Http\Controllers\Frontend\ArchiveController;
+use FontLib\Font;
+use Dompdf\Options;
 
 use App\Models\Page;
 
@@ -52,7 +56,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('role:Admin')->prefix('admin/')->name('admin.')->group(function () {
         Route::get('users', [UserController::class, 'index'])->name('users.index');
         Route::post('users', [UserController::class, 'store'])->name('users.store');
-        Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::post('users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
         Route::patch('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
         Route::get('users/{id}/view', [UserController::class, 'userProfileView'])->name('users.view');
@@ -165,6 +169,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('settings', [SettingController::class,'index'])->name('settings.index');
         Route::post('settings', [SettingController::class,'store'])->name('settings.store');
 
+        Route::get('frontend-settings', [FrontendSettingController::class, 'edit'])->name('frontend-settings.edit');
+
+        Route::post('frontend-settings',[FrontendSettingController::class, 'update'])->name('frontend-settings.update');
+
         Route::get('office-info', [OfficeInfoController::class, 'index'])->name('office-info.index');
         Route::post('office-info', [OfficeInfoController::class, 'store'])->name('office-info.store');
 
@@ -213,24 +221,51 @@ Route::middleware(['auth'])->group(function () {
 });
 
     Route::get('/news/{newsPost:slug}', [FrontendController::class, 'show'])
-    ->name('news.show');
-
+        ->name('news.show');
 
     Route::get('/news/{slug}/download', [FrontendController::class, 'downloadPdf'])
-    ->name('news.download');
+        ->name('news.download');
 
     Route::get('/category/{slug}', [FrontendController::class, 'category'])
-    ->name('category.show');
+        ->name('category.show');
+
     Route::get('/category/{categorySlug}/{subSlug}', [FrontendController::class, 'subCategory'])
-    ->name('subcategory.show');
+        ->name('subcategory.show');
 
     Route::get('/author/{id}', [FrontendController::class, 'author'])
-    ->name('author.show');
+        ->name('author.show');
 
     Route::get('/top-writers', [FrontendController::class, 'topWriters'])
-    ->name('author.top');
+        ->name('author.top');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Search Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/search', [SearchController::class, 'index'])
+        ->name('search');
+
+    Route::get('/search/suggestions', [SearchController::class, 'suggestions'])
+        ->name('search.suggestions');
+
+    Route::get('/archive/{date}', [ArchiveController::class, 'showArchiveByDate'])
+    ->name('archive.show');
+
+    
+
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Pages (KEEP THIS LAST)
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/{slug}', [PageController::class, 'show'])
-    ->name('page.show');
+        ->name('page.show');
 
 require __DIR__.'/settings.php';

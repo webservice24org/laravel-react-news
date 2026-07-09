@@ -20,54 +20,76 @@ export default function FourCategoryBlock({ categories }: Props) {
     thumbnail ? `/storage/${thumbnail}` : "/images/fallback-news.jpg"
 
   return (
-    <section className="max-w-7xl mx-auto py-2 border-b">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {categories.map((category) => {
-          if (!category.news?.length) return null
+  <section className="max-w-7xl mx-auto py-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      {categories.map((category) => {
+        if (!category.news?.length) return null
 
-          const [featured, ...listNews] = category.news.slice(0, 6)
+        const [featured, ...listNews] = category.news.slice(0, 6)
 
-          return (
-            <div key={category.title} className="space-y-4">
-              <h2 className="text-xl font-bold">{category.title}</h2>
+        return (
+          <div
+            key={category.title}
+            className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
+          >
+            {/* Category Header */}
+            <div className="px-4 py-3 border-b bg-gray-50">
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-5 bg-red-600 rounded-full"></div>
 
-              {/* Featured News */}
+                <h2 className="font-bold text-lg text-gray-900">
+                  {category.title}
+                </h2>
+              </div>
+            </div>
+
+            <div className="p-4">
+              {/* Featured */}
               {featured && (
-                <div className="space-y-2">
+                <div className="mb-4">
                   <Link href={`/news/${featured.slug}`}>
                     <img
                       src={getImage(featured.news_thumbnail)}
                       alt={featured.news_title}
-                      className="w-full h-40 object-cover rounded-md"
                       loading="lazy"
                       decoding="async"
+                      className="w-full aspect-16/10 object-cover rounded-lg"
                     />
                   </Link>
+
                   <Link href={`/news/${featured.slug}`}>
-                    <h3 className="text-sm font-semibold line-clamp-2 hover:text-red-600 transition">
+                    <h3 className="mt-3 text-base font-bold leading-snug text-gray-900 hover:text-red-600 transition-colors line-clamp-2">
                       {featured.news_title}
                     </h3>
                   </Link>
                 </div>
               )}
 
-              {/* List News */}
-              <ul className="space-y-1 mt-2">
+              {/* News List */}
+              <div className="space-y-3">
                 {listNews.map((item) => (
-                  <li key={item.id}>
+                  <div
+                    key={item.id}
+                    className="border-t border-gray-100 pt-3"
+                  >
                     <Link
                       href={`/news/${item.slug}`}
-                      className="text-sm line-clamp-2 hover:text-red-600 transition block"
+                      className="flex items-start gap-2 group"
                     >
-                      {item.news_title}
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-600 mt-2 shrink-0"></span>
+
+                      <span className="text-sm leading-6 text-gray-700 group-hover:text-red-600 transition-colors line-clamp-2">
+                        {item.news_title}
+                      </span>
                     </Link>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
-          )
-        })}
-      </div>
-    </section>
-  )
+          </div>
+        )
+      })}
+    </div>
+  </section>
+)
 }

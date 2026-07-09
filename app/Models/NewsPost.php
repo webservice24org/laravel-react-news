@@ -35,12 +35,14 @@ class NewsPost extends Model
         'view_count',
         'status',
         'scheduled_at',
+        'published_at',
     ];
 
     protected $casts = [
         'is_lead'       => 'boolean',
         'is_sub_lead'   => 'boolean',
         'scheduled_at'  => 'datetime',
+        'published_at'  => 'datetime',
     ];
 
     protected static function booted()

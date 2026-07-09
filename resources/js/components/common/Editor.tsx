@@ -770,12 +770,30 @@ export default function Editor({ value, onChange }: EditorProps) {
 
     content: value,
 
+    /*
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
       onChange(html)
       if (viewMode === "code" && !codeDirty) {
         setCodeHtml(html)
         setCodeBaseline(html)
+      }
+    },
+    */
+   onUpdate: ({ editor }) => {
+      try {
+        if (editor.isDestroyed) return;
+
+        const html = editor.getHTML();
+
+        onChange(html);
+
+        if (viewMode === "code" && !codeDirty) {
+          setCodeHtml(html);
+          setCodeBaseline(html);
+        }
+      } catch (e) {
+        console.error("onUpdate getHTML failed", e);
       }
     },
 
@@ -872,8 +890,17 @@ export default function Editor({ value, onChange }: EditorProps) {
     if (!editor) return
 
     if (!isCode) {
+      /*
       if (editor.getHTML() !== value) {
         safeSetVisualContent(value)
+      }
+        */
+       try {
+          if (!editor.isDestroyed && editor.getHTML() !== value) {
+              safeSetVisualContent(value);
+          }
+      } catch (e) {
+          console.error(e);
       }
     } else {
       setCodeHtml(value)
@@ -905,6 +932,7 @@ export default function Editor({ value, onChange }: EditorProps) {
 
   if (!editor) return null
 
+  /*
   const switchToCode = () => {
     const html = editor.getHTML()
     setCodeHtml(html)
@@ -912,7 +940,22 @@ export default function Editor({ value, onChange }: EditorProps) {
     setCodeError("")
     setViewMode("code")
   }
+*/
+  const switchToCode = () => {
+      if (!editor || editor.isDestroyed) return;
 
+      try {
+          const html = editor.getHTML();
+
+          setCodeHtml(html);
+          setCodeBaseline(html);
+          setCodeError("");
+          setViewMode("code");
+      } catch (e) {
+          console.error(e);
+      }
+  }
+  
   const saveCodeToVisual = () => {
     const ok = safeSetVisualContent(codeHtml)
     if (!ok) return false

@@ -1,18 +1,22 @@
+import { usePage } from "@inertiajs/react"
+
 interface NewsItem {
     id: number;
     news_title: string;
     slug: string;
     news_thumbnail?: string;
-    created_at: string;
+    published_at: string;
 }
 
 export default function RelatedNews({ relatedNews }: { relatedNews: NewsItem[] }) {
+    const { frontendSettings } = usePage().props as any;
+
     if (!relatedNews.length) return null;
 
     return (
         <div className="bg-white p-4 rounded-lg shadow mt-6">
             <h3 className="text-lg font-bold mb-4 border-b pb-2">
-                Related News
+                {frontendSettings.related_news_title || "Related News"}
             </h3>
 
             <div className="grid grid-cols-3 gap-4">

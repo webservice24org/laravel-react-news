@@ -1,17 +1,20 @@
+import { usePage } from "@inertiajs/react"
+
 interface NewsItem {
     id: number;
     news_title: string;
     slug: string;
     news_thumbnail?: string;
-    created_at?: string;
+    published_at?: string;
     view_count?: number;
 }
 
 export default function MostViewedNews({ mostViewedNews }: { mostViewedNews: NewsItem[] }) {
+    const { frontendSettings } = usePage().props as any;
     return (
         <div className="bg-white p-4 rounded-lg shadow">
             <h3 className="text-lg font-bold mb-4 border-b pb-2">
-                Most Viewed
+                {frontendSettings.most_viewed_title || "Most Viewed"}
             </h3>
 
             {mostViewedNews.map((news) => (

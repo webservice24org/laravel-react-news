@@ -45,6 +45,7 @@ const SECTION_COMPONENTS = [
   { key: "category-section", label: "Category Section", preview: "/storage/sections/category-section.png" },
   { key: "four-category-block", label: "Four Category Block", preview: "/storage/sections/four-category-block.png" },
   { key: "two-column-featured-list", label: "Two Column Featured List", preview: "/storage/sections/two-column-featured-list.png" },
+  { key: "category-four-premium", label: "Category Four Premium", preview: "/storage/sections/category-four-premium.png" },
 ] as const;
 
 type SectionComponentKey = (typeof SECTION_COMPONENTS)[number]["key"];

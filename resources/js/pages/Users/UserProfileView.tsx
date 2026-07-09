@@ -27,7 +27,7 @@ export default function UserProfileView({ user }: UserProfileProps) {
     <AppLayout breadcrumbs={[{ title: "User Profile", href: `/admin/users/${user.id}/view` }]}>
       <Head title="User Profile" />
 
-      <div className="p-6 space-y-6 max-w-2xl mx-auto">
+      <div className="p-6 space-y-6 max-w-7xl">
         <div className="flex items-center gap-4">
           {profile?.profile_photo && (
             <img

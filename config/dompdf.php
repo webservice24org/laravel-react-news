@@ -15,39 +15,19 @@ return [
 
     'public_path' => null,  // Override the public path if needed
 
+    'isHtml5ParserEnabled' => true,
+    'isRemoteEnabled' => true,
+
     /*
      * Dejavu Sans font is missing glyphs for converted entities, turn it off if you need to show € and £.
      */
     'convert_entities' => true,
 
     'options' => [
-        /**
-         * The location of the DOMPDF font directory
-         *
-         * The location of the directory where DOMPDF will store fonts and font metrics
-         * Note: This directory must exist and be writable by the webserver process.
-         * *Please note the trailing slash.*
-         *
-         * Notes regarding fonts:
-         * Additional .afm font metrics can be added by executing load_font.php from command line.
-         *
-         * Only the original "Base 14 fonts" are present on all pdf viewers. Additional fonts must
-         * be embedded in the pdf file or the PDF may not display correctly. This can significantly
-         * increase file size unless font subsetting is enabled. Before embedding a font please
-         * review your rights under the font license.
-         *
-         * Any font specification in the source HTML is translated to the closest font available
-         * in the font directory.
-         *
-         * The pdf standard "Base 14 fonts" are:
-         * Courier, Courier-Bold, Courier-BoldOblique, Courier-Oblique,
-         * Helvetica, Helvetica-Bold, Helvetica-BoldOblique, Helvetica-Oblique,
-         * Times-Roman, Times-Bold, Times-BoldItalic, Times-Italic,
-         * Symbol, ZapfDingbats.
-         */
+        
         'font_dir' => storage_path('fonts/'),
         'font_cache' => storage_path('fonts/'),
-        'default_font' => 'SolaimanLipi',
+        'default_font' => 'serif',
 
         /**
          * The location of the DOMPDF font cache directory
@@ -57,7 +37,6 @@ return [
          *
          * Note: This directory must exist and be writable by the webserver process.
          */
-        'font_cache' => storage_path('fonts'),
 
         /**
          * The location of a temporary directory.
@@ -181,7 +160,7 @@ return [
          *
          * @var string
          */
-        'default_font' => 'serif',
+    
 
         /**
          * Image DPI setting

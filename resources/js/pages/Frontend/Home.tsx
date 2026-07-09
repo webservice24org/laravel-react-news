@@ -10,6 +10,7 @@ import CategoryNineSplitSection from "@/components/Frontend/CategoryNineSplitSec
 import CategoryGridSection from "@/components/Frontend/CategoryGridSection"
 import FourCategoryBlock from "@/components/Frontend/FourCategoryBlock"
 import TwoColumnFeaturedList from "@/components/Frontend/TwoColumnFeaturedList"
+import CategoryFourPremiumSection from "@/components/Frontend/CategoryFourPremiumSection"
 import { News } from "@/types/news"
 
 interface Category {
@@ -85,6 +86,7 @@ export default function Home({ leadNews, subLeadNews, sections }: Props) {
                 key={section.id}
                 title={title}
                 news={section.news}
+                categorySlug={section.category_slug}
               />
             )
 
@@ -94,6 +96,7 @@ export default function Home({ leadNews, subLeadNews, sections }: Props) {
                 key={section.id}
                 title={title}
                 news={section.news}
+                categorySlug={section.category_slug}
               />
             )
 
@@ -103,6 +106,7 @@ export default function Home({ leadNews, subLeadNews, sections }: Props) {
                 key={section.id}
                 title={title}
                 news={section.news}
+                categorySlug={section.category_slug}
               />
             )
 
@@ -112,6 +116,16 @@ export default function Home({ leadNews, subLeadNews, sections }: Props) {
                 key={section.id}
                 title={title}
                 news={section.news}
+                categorySlug={section.category_slug}
+              />
+            )
+          case "category-four-premium":
+            return (
+              <CategoryFourPremiumSection
+                key={section.id}
+                title={title}
+                news={section.news}
+                categorySlug={section.category_slug}
               />
             )
 
@@ -121,6 +135,7 @@ export default function Home({ leadNews, subLeadNews, sections }: Props) {
                 key={section.id}
                 title={title}
                 news={section.news}
+                categorySlug={section.category_slug}
               />
             )
         }

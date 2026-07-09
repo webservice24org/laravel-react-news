@@ -37,8 +37,11 @@ export function CreateUser({ roles }: any) {
     password: "",
     role: "",
     is_active: true,
+    profile_photo: null as File | null,
+
   })
 
+  /*
   const submit = (e: React.MouseEvent) => {
     e.preventDefault()
 
@@ -52,7 +55,31 @@ export function CreateUser({ roles }: any) {
         toast.error("Failed to create user. Check the form and try again.")
       },
     })
-  }
+  }*/
+
+    const submit = (e: React.MouseEvent) => {
+  e.preventDefault()
+
+  post(route("admin.users.store"), {
+    forceFormData: true,
+
+    onSuccess: () => {
+      reset()
+
+      toast.success(
+        "User created successfully!"
+      )
+
+      setOpen(false)
+    },
+
+    onError: () => {
+      toast.error(
+        "Failed to create user. Check the form and try again."
+      )
+    },
+  })
+}
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -127,6 +154,36 @@ export function CreateUser({ roles }: any) {
           </Select>
         </div>
 
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              Profile Photo
+            </label>
+
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setData(
+                  "profile_photo",
+                  e.target.files?.[0] || null
+                )
+              }
+            />
+
+            {errors.profile_photo && (
+              <div className="text-red-500 text-sm">
+                {errors.profile_photo}
+              </div>
+            )}
+
+            {data.profile_photo && (
+              <img
+                src={URL.createObjectURL(data.profile_photo)}
+                alt="Preview"
+                className="h-20 w-20 rounded-full object-cover border"
+              />
+            )}
+          </div>
         <div className="flex items-center gap-2">
           <Checkbox
             checked={data.is_active}

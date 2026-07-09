@@ -57,7 +57,7 @@ function highlightMatch(text: string, search: string) {
   )
 }
 
-export default function Users({ users, roles }: any) {
+export default function Users({ users, roles, profile }: any) {
   const [search, setSearch] = useState("")
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -70,21 +70,46 @@ export default function Users({ users, roles }: any) {
       cell: ({ row }) => row.original.id,
     },
     {
-      accessorKey: "name",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          className="px-0 font-semibold"
-          onClick={() =>
-            column.toggleSorting(column.getIsSorted() === "asc")
+  accessorKey: "name",
+  header: ({ column }) => (
+    <Button
+      variant="ghost"
+      className="px-0 font-semibold"
+      onClick={() =>
+        column.toggleSorting(column.getIsSorted() === "asc")
+      }
+    >
+      Name
+    </Button>
+  ),
+  cell: ({ row }) => {
+    const user = row.original
+
+    return (
+      <div className="flex items-center gap-3">
+        <img
+          src={
+            user.profile?.profile_photo
+              ? `/storage/${user.profile.profile_photo}`
+              : "/images/avatar-placeholder.png"
           }
-        >
-          Name
-        </Button>
-      ),
-      cell: ({ getValue }) =>
-        highlightMatch(getValue<string>(), search),
-    },
+          alt={user.name}
+          className="h-11 w-11 rounded-full border object-cover shadow-sm"
+        />
+
+        <div className="flex flex-col">
+          <span className="font-medium">
+            {highlightMatch(user.name, search)}
+          </span>
+
+          <span className="text-xs text-muted-foreground">
+            ID #{user.id}
+          </span>
+        </div>
+      </div>
+    )
+  },
+},
     {
       accessorKey: "email",
       header: ({ column }) => (
@@ -167,7 +192,13 @@ export default function Users({ users, roles }: any) {
       <div className="p-6 space-y-4">
         {/* Header Row */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <h1 className="text-2xl font-bold">User Management</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold">User Management</h1>
+
+            <div className="text-sm text-muted-foreground ml-4">
+              Total Users: {users.length}
+            </div>
+          </div>
 
           <div className="flex items-center gap-2">
             <Input

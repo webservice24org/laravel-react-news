@@ -1,5 +1,6 @@
 "use client"
 
+declare function route(name: string, params?: any): string
 import React from "react"
 import { Link } from "@inertiajs/react"
 import type { News } from "@/types/news"
@@ -8,9 +9,10 @@ import { getExcerpt } from "@/utils/text"
 interface Props {
   title: string
   news: News[]
+  categorySlug: string
 }
 
-export default function CategoryNineSplitSection({ title, news }: Props) {
+export default function CategoryNineSplitSection({ title, news, categorySlug }: Props) {
   if (!news?.length) return null
 
   const getImage = (thumbnail?: string) =>
@@ -27,15 +29,31 @@ export default function CategoryNineSplitSection({ title, news }: Props) {
   const bottomItems = sideItems.slice(4, 8)
 
   return (
-    <section className="max-w-7xl mx-auto py-2 border-b">
-      <h2 className="text-2xl font-bold mb-6">{title}</h2>
+    <section className="max-w-7xl mt-8 mx-auto py-2">
+      <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-8 bg-red-600 rounded-full" />
+              {categorySlug && (
+              <Link
+                href={route("category.show", categorySlug)}
+                className="text-sm font-medium text-red-600 hover:text-red-700"
+              >
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+                {title}
+              </h2>
+              </Link>
+            )}
+            </div>
+      
+            
+          </div>
 
       <div className="grid md:grid-cols-12 gap-6">
 
         {/* LEFT 2 */}
         <div className="md:col-span-3 space-y-6">
           {leftItems.map((item) => (
-            <div key={item.id} className="space-y-2">
+            <div key={item.id} className="space-y-2 group">
               <Link href={`/news/${item.slug}`}>
                 <img
                   src={getImage(item.news_thumbnail)}
@@ -48,7 +66,7 @@ export default function CategoryNineSplitSection({ title, news }: Props) {
                 />
               </Link>
               <Link href={`/news/${item.slug}`}>
-                <h4 className="text-sm font-semibold line-clamp-2 hover:text-red-600 transition">
+                <h4 className="mt-2 text-lg font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-red-600 transition">
                   {item.news_title}
                 </h4>
               </Link>
@@ -57,7 +75,7 @@ export default function CategoryNineSplitSection({ title, news }: Props) {
         </div>
 
         {/* MIDDLE FEATURED */}
-        <div className="md:col-span-6 space-y-4">
+        <div className="md:col-span-6 space-y-4 group">
           {featured && (
             <>
               <Link href={`/news/${featured.slug}`}>
@@ -72,9 +90,9 @@ export default function CategoryNineSplitSection({ title, news }: Props) {
                 />
               </Link>
               <Link href={`/news/${featured.slug}`}>
-                <h3 className="text-xl font-bold hover:text-red-600 transition">
+                <h4 className="text-2xl mt-2 md:text-3xl font-bold leading-tight text-gray-900 group-hover:text-red-600 transition">
                   {featured.news_title}
-                </h3>
+                </h4>
               </Link>
               <p className="text-gray-600 line-clamp-3">
                 {getExcerpt(featured.news_description, 25)}
@@ -86,7 +104,7 @@ export default function CategoryNineSplitSection({ title, news }: Props) {
         {/* RIGHT 2 */}
         <div className="md:col-span-3 space-y-6">
           {rightItems.map((item) => (
-            <div key={item.id} className="space-y-2">
+            <div key={item.id} className="space-y-2 group">
               <Link href={`/news/${item.slug}`}>
                 <img
                   src={getImage(item.news_thumbnail)}
@@ -99,7 +117,7 @@ export default function CategoryNineSplitSection({ title, news }: Props) {
                 />
               </Link>
               <Link href={`/news/${item.slug}`}>
-                <h4 className="text-sm font-semibold line-clamp-2 hover:text-red-600 transition">
+                <h4 className="mt-2 text-lg font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-red-600 transition">
                   {item.news_title}
                 </h4>
               </Link>
@@ -113,7 +131,7 @@ export default function CategoryNineSplitSection({ title, news }: Props) {
       {bottomItems.length > 0 && (
         <div className="grid grid-cols-4 gap-6 mt-6">
           {bottomItems.map((item) => (
-            <div key={item.id} className="space-y-2">
+            <div key={item.id} className="space-y-2 group">
               <Link href={`/news/${item.slug}`}>
                 <img
                   src={getImage(item.news_thumbnail)}
@@ -124,7 +142,7 @@ export default function CategoryNineSplitSection({ title, news }: Props) {
                 />
               </Link>
               <Link href={`/news/${item.slug}`}>
-                <h4 className="text-sm font-semibold line-clamp-2 hover:text-red-600 transition">
+                <h4 className="mt-2 text-lg font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-red-600 transition">
                   {item.news_title}
                 </h4>
               </Link>

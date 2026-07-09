@@ -32,17 +32,19 @@ interface EditUserProps {
 export function EditUser({ user, roles }: EditUserProps) {
   const [open, setOpen] = useState(false)
 
-  const { data, setData, put, processing, errors } = useForm({
+  const { data, setData, post, processing, errors } = useForm({
     name: user.name,
     email: user.email,
     role: user.roles[0]?.name || "", // assuming single role
     is_active: user.is_active,
+    profile_photo: null as File | null,
   })
 
   const submit = (e: React.MouseEvent) => {
     e.preventDefault()
 
-    put(route("admin.users.update", user.id), {
+    post(route("admin.users.update", user.id), {
+      forceFormData: true,
       onSuccess: () => {
         toast.success("User updated successfully!")
         setOpen(false)
@@ -100,6 +102,44 @@ export function EditUser({ user, roles }: EditUserProps) {
             </SelectContent>
           </Select>
         </div>
+
+        <div className="space-y-2">
+  <label className="text-sm font-medium">
+    Profile Photo
+  </label>
+
+  <Input
+    type="file"
+    accept="image/*"
+    onChange={(e) =>
+      setData(
+        "profile_photo",
+        e.target.files?.[0] || null
+      )
+    }
+  />
+
+  {errors.profile_photo && (
+    <div className="text-red-500 text-sm">
+      {errors.profile_photo}
+    </div>
+  )}
+
+  {/* Preview */}
+  {(data.profile_photo || user.profile?.profile_photo) && (
+    <div className="flex pt-2">
+      <img
+        src={
+          data.profile_photo
+            ? URL.createObjectURL(data.profile_photo)
+            : `/storage/${user.profile.profile_photo}`
+        }
+        alt={user.name}
+        className="h-24 w-24 rounded-full border-2 border-gray-200 object-cover"
+      />
+    </div>
+  )}
+</div>
         
         <div className="flex items-center gap-2">
           <Checkbox

@@ -100,48 +100,85 @@ export default function AuthorPage({
           </span>
         </div>
 
-        {/* Author Header */}
-        <div className="mb-8 border-b pb-6 flex items-center gap-6">
+        {/* =========================
+    Author Header
+========================= */}
 
-          {/* Profile Image */}
-          <div>
+<div className="mb-10 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+
+    <div className="flex flex-col items-center gap-6 md:flex-row">
+
+        {/* Profile Photo */}
+
+        <div className="shrink-0">
+
             {author.profile?.profile_photo ? (
-              <img
-                src={`/storage/${author.profile.profile_photo}`}
-                alt={author.name}
-                className="w-24 h-24 rounded-full object-cover border"
-              />
+
+                <img
+                    src={`/storage/${author.profile.profile_photo}`}
+                    alt={author.name}
+                    className="h-28 w-28 rounded-full border-4 border-white object-cover shadow-lg ring-2 ring-red-100"
+                />
+
             ) : (
-              <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-2xl font-bold">
-                {author.name.charAt(0)}
-              </div>
+
+                <div className="flex h-28 w-28 items-center justify-center rounded-full bg-linear-to-br from-red-500 to-red-700 text-4xl font-bold text-white shadow-lg">
+                    {author.name.charAt(0).toUpperCase()}
+                </div>
+
             )}
-          </div>
-
-          {/* Author Info */}
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              {author.name}
-              {author.is_verified && (
-                <span className="text-blue-600 font-semibold text-lg" title="Verified Journalist">
-                  ✔
-                </span>
-              )}
-            </h1>
-
-            <p className="text-gray-600 mt-1">
-              মোট প্রকাশিত সংবাদ:{" "}
-              <span className="font-semibold">{author.news_posts_count}</span>
-            </p>
-
-            {author.profile?.about && (
-              <p className="text-gray-600 mt-2">
-                {author.profile.about}
-              </p>
-            )}
-          </div>
 
         </div>
+
+        {/* Author Details */}
+
+        <div className="flex-1 text-center md:text-left">
+
+            <div className="flex flex-col items-center gap-2 md:flex-row">
+
+                <h1 className="text-3xl font-bold text-gray-900">
+                    {author.name}
+                </h1>
+
+                {author.is_verified && (
+                    <span
+                        title="Verified Journalist"
+                        className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700"
+                    >
+                        ✓ Verified
+                    </span>
+                )}
+
+            </div>
+
+            <p className="mt-2 hidden text-sm font-medium uppercase tracking-wide text-red-600">
+                Staff Reporter
+            </p>
+
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-3 md:justify-start">
+
+                <span className="rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700">
+                    📰 প্রকাশিত লেখার সংখ্যা:
+                    <span className="ml-2 font-bold text-red-600">
+                        {author.news_posts_count}
+                    </span>
+                </span>
+
+            </div>
+
+            {author.profile?.about && (
+
+                <p className="mt-5 max-w-3xl leading-8 text-gray-600">
+                    {author.profile.about}
+                </p>
+
+            )}
+
+        </div>
+
+    </div>
+
+</div>
 
         <div className="grid grid-cols-12 gap-6">
 

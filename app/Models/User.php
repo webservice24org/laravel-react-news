@@ -65,12 +65,12 @@ class User extends Authenticatable
 
     
 
-    protected static function booted()
+    /*protected static function booted()
     {
         static::created(function ($user) {
             $user->profile()->create();
         });
-    }
+    }*/
 
     public function newsPosts()
     {
