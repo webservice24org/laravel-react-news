@@ -64,6 +64,12 @@ type Paginator<T> = {
   links: PaginatorLink[]
 }
 
+import { type BreadcrumbItem } from "@/types";
+
+const breadcrumbs: BreadcrumbItem[] = [
+  { title: "News Posts", href: "/admin/news-posts" },
+];
+
 export default function Index({ newsPosts }: { newsPosts: Paginator<NewsPostRow> }) {
   const [q, setQ] = useState("")
   const [selected, setSelected] = useState<number[]>([])
@@ -117,10 +123,11 @@ export default function Index({ newsPosts }: { newsPosts: Paginator<NewsPostRow>
     })
   }
 
+
   const allChecked = rows.length > 0 && rows.every((r) => selected.includes(r.id))
 
   return (
-    <AppLayout>
+    <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="News Posts" />
 
       <div className="p-4 md:p-6 space-y-4">

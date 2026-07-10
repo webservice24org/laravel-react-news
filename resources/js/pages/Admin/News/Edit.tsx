@@ -1,9 +1,10 @@
 "use client"
 
-import { Head } from "@inertiajs/react"
+import { Head, Link, router } from "@inertiajs/react"
 import { useForm } from "@inertiajs/react"
 import toast from "react-hot-toast"
 import AppLayout from "@/layouts/app-layout"
+import { Button } from "@/components/ui/button"
 
 import NewsTitles from "@/components/Admin/News/NewsTitles"
 import NewsDescription from "@/components/Admin/News/NewsDescription"
@@ -16,6 +17,7 @@ import CategoryTreeWp from "@/components/Admin/News/CategoryTree"
 import UserSelect from "@/components/Admin/News/UserSelector"
 import LocationSelector from "@/components/Admin/News/LocationSelector"
 import DeleteNewsButton from "@/components/Admin/News/DeleteNewsButton"
+import { ArrowLeft, FilePenLine } from "lucide-react";
 
 declare function route(name: string, params?: any): string
 
@@ -95,6 +97,39 @@ export default function EditNews({
   return (
     <AppLayout>
       <Head title={`Edit: ${newsPost.news_title}`} />
+      {/* ================= Header ================= */}
+            <div className="mb-8 flex flex-col gap-5 border m-2 border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 md:flex-row md:items-center md:justify-between">
+      
+              <div className="flex items-start gap-4">
+      
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                  <FilePenLine className="h-6 w-6" />
+                </div>
+      
+                <div>
+                  <h1 className="text-sm font-bold text-gray-900 dark:text-white">
+                    Edit: {newsPost.news_title}
+                  </h1>
+      
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Modify your article, manage media, SEO, categories and publishing settings.
+                  </p>
+                </div>
+      
+              </div>
+      
+              <div className="flex items-center gap-3">
+      
+                <Link href={route("admin.news-posts.index")}>
+                  <Button variant="outline" className="gap-2">
+                    <ArrowLeft className="h-4 w-4" />
+                    All Posts
+                  </Button>
+                </Link>
+      
+              </div>
+      
+            </div>
 
       <form onSubmit={submit} className="p-4 md:p-6">
         {/* Header */}

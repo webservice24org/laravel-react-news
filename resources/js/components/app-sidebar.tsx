@@ -3,7 +3,7 @@ declare function route(
   params?: any
 ): string
 import { Link } from '@inertiajs/react';
-import { Megaphone, ChartColumnDecreasing,ChartNoAxesCombined,ChartNetwork, Settings, RadioTower, Mails, Wrench, SquareMenu, MapPinCheckInside, MapPinCheck, MapPinHouse, UserRoundPlus, ChartColumnStacked, UserRound, BookOpen, Folder, LayoutGrid, Users, Projector, BookText, BookAudio, BrickWall, Tag, Mail, Image, BetweenHorizontalStart   } from 'lucide-react'; // added Users icon
+import { FilePlus, Megaphone, ChartColumnDecreasing,ChartNoAxesCombined,ChartNetwork, Settings, RadioTower, Mails, Wrench, SquareMenu, MapPinCheckInside, MapPinCheck, MapPinHouse, UserRoundPlus, ChartColumnStacked, UserRound, BookOpen, Folder, LayoutGrid, Users, Projector, BookText, BookAudio, BrickWall, Tag, Mail, Image, BetweenHorizontalStart   } from 'lucide-react'; // added Users icon
 
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -57,6 +57,11 @@ const mainNavItems: NavItem[] = [
                 title: "News Posts",
                 icon: LayoutGrid,
                 href: route("admin.news-posts.index"),
+            },
+            {
+                title: "Add News Post",
+                icon: FilePlus,
+                href: route("admin.news-posts.create"),
             },
             {
                 title: "Categories",
