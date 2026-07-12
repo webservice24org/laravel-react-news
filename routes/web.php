@@ -168,7 +168,6 @@ Route::middleware(['auth'])->group(function () {
        
         Route::get('settings', [SettingController::class,'index'])->name('settings.index');
         Route::post('settings', [SettingController::class,'store'])->name('settings.store');
-
         Route::get('frontend-settings', [FrontendSettingController::class, 'edit'])->name('frontend-settings.edit');
 
         Route::post('frontend-settings',[FrontendSettingController::class, 'update'])->name('frontend-settings.update');
@@ -254,8 +253,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/archive/{date}', [ArchiveController::class, 'showArchiveByDate'])
     ->name('archive.show');
-
-    
 
     
 

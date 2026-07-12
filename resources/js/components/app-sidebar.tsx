@@ -128,6 +128,11 @@ const mainNavItems: NavItem[] = [
                 href: route("admin.settings.index"),
             },
             {
+                title: "Frontend Settings",
+                icon: Wrench,
+                href: route("admin.frontend-settings.edit"),
+            },
+            {
                 title: "Fallback Image",
                 icon: Image,
                 href: route("admin.fallback-image.index"),
