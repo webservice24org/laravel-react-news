@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\FallbackImageController;
 use App\Http\Controllers\Admin\AdvertisementAssignmentController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\FrontendSettingController;
+use App\Http\Controllers\Admin\SeoSettingController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\FrontendController;
@@ -204,6 +205,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pages/{page}/edit', [PageController::class, 'edit'])->name('pages.edit');
         Route::post('pages/{page}', [PageController::class, 'update'])->name('pages.update');
         Route::delete('pages/{page}', [PageController::class, 'destroy'])->name('pages.destroy');
+
+        Route::get('settings/seo', [SeoSettingController::class, 'index'])->name('settings.seo');
+
+        Route::post('settings/seo', [SeoSettingController::class, 'store'])->name('settings.seo.store');
 
     });
 

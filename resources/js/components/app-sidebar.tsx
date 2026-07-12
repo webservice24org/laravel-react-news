@@ -190,6 +190,18 @@ const mainNavItems: NavItem[] = [
         icon: BookAudio,
         href: route("admin.office-info.index"),
     },
+
+    {
+        title: "Pages",
+        icon: BookOpen,
+        href: route("admin.pages.index"),
+    },
+
+    {
+        title: "SEO Settings",
+        icon: BetweenHorizontalStart,
+        href: route("admin.settings.seo"),
+    },
 ];
 
 
