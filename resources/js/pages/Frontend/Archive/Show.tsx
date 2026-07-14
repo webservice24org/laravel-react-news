@@ -1,9 +1,10 @@
 import FrontendLayout from "@/layouts/frontend-layout";
-import { Head, Link } from "@inertiajs/react";
+import { usePage, Link } from "@inertiajs/react";
 
 import LatestNews from "@/components/Frontend/Sidebar/LatestNews";
 import MostViewedNews from "@/components/Frontend/Sidebar/MostViewedNews";
 import Pagination from "@/components/Frontend/Pagination";
+import SeoHead from "@/components/SeoHead";
 
 interface ArchiveProps {
     date: string;
@@ -25,10 +26,16 @@ export default function Show({
         year: "numeric",
     });
 
+    const { seo } = usePage().props as any;
+
     return (
         <FrontendLayout>
 
-            <Head title={`News Archive - ${formattedDate}`} />
+            <SeoHead
+                seo={seo}
+                title={`Archive - ${date}`}
+                description={`News archive for ${date}`}
+            />
 
             <div className="mx-auto max-w-7xl px-4 py-8">
 

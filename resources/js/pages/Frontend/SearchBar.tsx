@@ -108,7 +108,7 @@ export default function SearchBar() {
             {/* Search Panel */}
 
             <div
-                className={`absolute right-0 top-12 w-[650px] rounded-xl border bg-white shadow-2xl transition-all duration-300 ${
+                className={`absolute right-0 top-12 w-162.5 rounded-xl border bg-white shadow-2xl transition-all duration-300 ${
                     searchOpen
                         ? "visible translate-y-0 opacity-100"
                         : "invisible -translate-y-2 opacity-0"

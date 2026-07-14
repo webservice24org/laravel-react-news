@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Head, Link, usePage } from "@inertiajs/react"
+import { Link, usePage } from "@inertiajs/react"
 import FrontendLayout from "@/layouts/frontend-layout"
 import LatestNews from "@/components/Frontend/Sidebar/LatestNews"
 import RelatedNews from "@/components/Frontend/Sidebar/RelatedNews"
@@ -9,6 +9,8 @@ import MostViewedNews from "@/components/Frontend/Sidebar/MostViewedNews"
 import toast from "react-hot-toast"
 import { getExcerpt } from "@/utils/text";
 import { formatBanglaDateTime } from "@/utils/date";
+import SeoHead from "@/components/SeoHead";
+import ShareNews from "@/components/Frontend/ShareNews";
 
 declare function route(name: string, params?: any): string
 
@@ -24,6 +26,7 @@ export interface Author {
 
   profile?: {
     profile_photo?: string | null
+    about?: string | null
   } | null
 }
 interface Tag {
@@ -71,11 +74,13 @@ export default function Show({
 }: Props) {
 
 
-const { seo, frontendSettings, advertisements } = usePage().props as any;
+const { seo, frontendSettings, advertisements, logos } = usePage().props as any;
+console.log("seo", seo);
 
 const category = news.categories?.[0];
 
 const settings = frontendSettings;
+const favicon = logos.favicon;
 
 const currentUrl = seo?.url;
 const siteUrl = seo?.site_url;
@@ -88,9 +93,6 @@ const description =
     news.meta_description ||
     getExcerpt(news.news_description, 35);
 
-const title =
-    news.meta_title ||
-    news.news_title;
 
 const publishedDate = new Date(news.published_at).toISOString();
 
@@ -135,13 +137,13 @@ const structuredData = {
     publisher: {
         "@type": "Organization",
 
-        name: settings.website_name,
+        name: seo.site_name,
 
         logo: {
             "@type": "ImageObject",
 
             url:
-                settings.logo ??
+                favicon ??
                 `${siteUrl}/logo.png`,
         },
     },
@@ -162,208 +164,12 @@ const archiveDate = new Date(news.published_at)
 
   return (
     <FrontendLayout>
-      <Head>
-    {/* ===========================
-        Basic SEO
-    ============================ */}
-
-    <title>{title}</title>
-
-    <meta
-        name="description"
-        content={description}
-    />
-
-    <meta
-        name="keywords"
-        content={news.meta_keywords || ""}
-    />
-
-    <meta
-        name="author"
-        content={news.author?.name || "নিজস্ব প্রতিবেদক"}
-    />
-
-    <meta
-        name="robots"
-        content="index,follow,max-image-preview:large"
-    />
-
-    <link
-        rel="canonical"
-        href={currentUrl}
-    />
-
-    {/* ===========================
-        Open Graph (Facebook)
-    ============================ */}
-
-    <meta
-        property="og:locale"
-        content="bn_BD"
-    />
-
-    <meta
-        property="og:type"
-        content="article"
-    />
-
-    <meta
-        property="og:site_name"
-        content={settings.website_name}
-    />
-
-    <meta
-        property="og:title"
-        content={title}
-    />
-
-    <meta
-        property="og:description"
-        content={description}
-    />
-
-    <meta
-        property="og:url"
-        content={currentUrl}
-    />
-
-    <meta
-        property="og:image"
-        content={imageUrl}
-    />
-
-    <meta
-        property="og:image:secure_url"
-        content={imageUrl}
-    />
-
-    <meta
-        property="og:image:alt"
-        content={news.news_title}
-    />
-
-    <meta
-        property="og:image:type"
-        content="image/webp"
-    />
-
-    <meta
-        property="og:image:width"
-        content="1200"
-    />
-
-    <meta
-        property="og:image:height"
-        content="630"
-    />
-
-    {/* ===========================
-        Article
-    ============================ */}
-
-    <meta
-        property="article:published_time"
-        content={publishedDate}
-    />
-
-    <meta
-        property="article:modified_time"
-        content={updatedDate}
-    />
-
-    <meta
-        property="article:author"
-        content={news.author?.name || ""}
-    />
-
-    {category && (
-        <meta
-            property="article:section"
-            content={category.name}
-        />
-    )}
-
-    {news.tags?.map((tag: any) => (
-        <meta
-            key={tag.id}
-            property="article:tag"
-            content={tag.name}
-        />
-    ))}
-
-    {/* ===========================
-        Twitter / X
-    ============================ */}
-
-    <meta
-        name="twitter:card"
-        content="summary_large_image"
-    />
-
-    <meta
-        name="twitter:title"
-        content={title}
-    />
-
-    <meta
-        name="twitter:description"
-        content={description}
-    />
-
-    <meta
-        name="twitter:image"
-        content={imageUrl}
-    />
-
-    <meta
-        name="twitter:image:alt"
-        content={news.news_title}
-    />
-
-    <meta
-        name="twitter:url"
-        content={currentUrl}
-    />
-
-    {/* ===========================
-        Mobile
-    ============================ */}
-
-    <meta
-        name="theme-color"
-        content="#dc2626"
-    />
-
-    <meta
-        name="apple-mobile-web-app-capable"
-        content="yes"
-    />
-
-    <meta
-        name="apple-mobile-web-app-status-bar-style"
-        content="default"
-    />
-
-    {/* ===========================
-        AMP
-    ============================ */}
-
-    <link
-        rel="amphtml"
-        href={`${siteUrl}/amp/news/${news.slug}`}
-    />
-
-    {/* ===========================
-        JSON-LD
-    ============================ */}
-
-    <script
-        type="application/ld+json"
-    >
-        {JSON.stringify(structuredData)}
-    </script>
-</Head>
+      <SeoHead
+          news={news}
+          author={news.author?.name}
+          publishedTime={news.published_at}
+          modifiedTime={news.updated_at}
+      />
 
       {/* Floating Share */}
       <div className="hidden lg:flex flex-col gap-3 fixed top-1/3 right-6 z-50 no-print">
@@ -514,7 +320,7 @@ const archiveDate = new Date(news.published_at)
                   </p>
               )}
 
-          </div>
+            </div>
 
             {news.news_thumbnail && (
               <div className="mb-6">
@@ -532,12 +338,28 @@ const archiveDate = new Date(news.published_at)
             )}
 
             <div
-              className="prose max-w-none text-lg leading-relaxed"
+              className="prose max-w-none text-lg leading-relaxed article-details"
               dangerouslySetInnerHTML={{
                 __html: news.news_description,
               }}
             />
-            {/* Previous / Next */} <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6 mt-10"> {previousNews && ( <Link href={`/news/${previousNews.slug}`} className="p-4 border rounded hover:bg-gray-50 transition" > <p className="text-sm text-gray-500">← {frontendSettings.previous_news_text || "Previous"}</p> <h4 className="font-semibold"> {previousNews.news_title} </h4> </Link> )} {nextNews && ( <Link href={`/news/${nextNews.slug}`} className="p-4 border rounded hover:bg-gray-50 transition text-right" > <p className="text-sm text-gray-500">{frontendSettings.next_news_text || "Next"} →</p> <h4 className="font-semibold"> {nextNews.news_title} </h4> </Link> )} </div>
+            <ShareNews
+                title={news.news_title}
+                url={window.location.href}
+            />
+            {/* Previous / Next */} 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6 mt-10"> 
+                {previousNews && ( 
+                  <Link href={`/news/${previousNews.slug}`} className="p-4 border rounded hover:bg-gray-50 transition" >
+                    <p className="text-sm text-gray-500">← {frontendSettings.previous_news_text || "Previous"}</p> 
+                    <h4 className="font-semibold"> {previousNews.news_title} </h4> 
+                  </Link> 
+                )} 
+              {nextNews && ( 
+                <Link href={`/news/${nextNews.slug}`} className="p-4 border rounded hover:bg-gray-50 transition text-right" > 
+                  <p className="text-sm text-gray-500">{frontendSettings.next_news_text || "Next"} →</p> 
+                  <h4 className="font-semibold"> {nextNews.news_title} </h4> </Link> )} 
+            </div>
             <RelatedNews relatedNews={relatedNews} />
           </div>
 

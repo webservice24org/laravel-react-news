@@ -39,6 +39,9 @@ class SeoSettingController extends Controller
             'twitter_image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
 
             'index_site'          => 'required|boolean',
+            'google_verification_code' => 'nullable|string|max:255',
+            'bing_verification_code' => 'nullable|string|max:255',
+            'copyright_credit' => 'nullable|string|max:255',
         ]);
 
         $seo = SeoSetting::first();

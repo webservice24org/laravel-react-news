@@ -1,10 +1,11 @@
 "use client"
 
 import React, { useState } from "react"
-import { Head, Link, router } from "@inertiajs/react"
+import { usePage, Link, router } from "@inertiajs/react"
 import FrontendLayout from "@/layouts/frontend-layout"
 import LatestNews from "@/components/Frontend/Sidebar/LatestNews"
 import MostViewedNews from "@/components/Frontend/Sidebar/MostViewedNews"
+import SeoHead from "@/components/SeoHead"
 
 declare function route(name: string, params?: any): string
 
@@ -41,12 +42,11 @@ export default function AuthorPage({
 }: Props) {
   const [items, setItems] = useState(news.data)
   const [page, setPage] = useState(news.current_page)
+  const { seo } = usePage().props as any;
 
   const currentUrl =
     typeof window !== "undefined" ? window.location.href : ""
 
-  const metaTitle = `${author.name} এর সকল সংবাদ | আপনার নিউজ পোর্টাল`
-  const metaDescription = `${author.name} এর লেখা সর্বশেষ সংবাদ ও প্রতিবেদন পড়ুন।`
 
   // Structured Data
   const structuredData = {
@@ -73,22 +73,10 @@ export default function AuthorPage({
 
   return (
     <FrontendLayout>
-      <Head>
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={currentUrl} />
-
-        {/* OpenGraph */}
-        <meta property="og:type" content="profile" />
-        <meta property="og:title" content={metaTitle} />
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:url" content={currentUrl} />
-
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
-      </Head>
+      <SeoHead
+        seo={seo}
+        authorPage={author}
+      />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
 

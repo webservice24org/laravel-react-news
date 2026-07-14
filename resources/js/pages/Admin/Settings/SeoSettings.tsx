@@ -29,6 +29,12 @@ interface SeoSettingsProps {
         twitter_image?: string;
 
         index_site?: boolean;
+        
+        google_verification_code?: string;
+        bing_verification_code?: string;
+
+        copyright_credit?: string;
+
     } | null;
 }
 
@@ -49,6 +55,10 @@ export default function SeoSettings({ seo }: SeoSettingsProps) {
             twitter_image: null as File | null,
 
             index_site: seo?.index_site ?? true,
+
+            google_verification_code: seo?.google_verification_code ?? "",
+            bing_verification_code: seo?.bing_verification_code ?? "",
+            copyright_credit: seo?.copyright_credit ?? "",
         });
 
     useEffect(() => {
@@ -207,6 +217,46 @@ export default function SeoSettings({ seo }: SeoSettingsProps) {
 
                     </div>
 
+                    {/* Verification Codes */}
+
+                    <div className="rounded-xl border bg-white p-6 shadow-sm">
+
+                        <h2 className="mb-6 text-xl font-semibold">
+                            Search Engine Verification Codes
+                        </h2>
+
+                        <div className="space-y-5">
+                            <label className="mb-2 block font-medium">
+                                Google Verification Code
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Google Verification Code"
+                                value={data.google_verification_code}
+                                onChange={(e) =>
+                                    setData("google_verification_code", e.target.value)
+                                }
+                                className="w-full rounded-lg border p-3"
+                            />
+
+                            <label className="mb-2 block font-medium">
+                                Bing Verification Code
+                            </label>
+
+                            <input
+                                type="text"
+                                placeholder="Bing Verification Code"
+                                value={data.bing_verification_code}
+                                onChange={(e) =>
+                                    setData("bing_verification_code", e.target.value)
+                                }
+                                className="w-full rounded-lg border p-3"
+                            />
+
+                        </div>
+
+                    </div>
+
                     {/* Open Graph */}
 
                     <div className="rounded-xl border bg-white p-6 shadow-sm">
@@ -317,6 +367,27 @@ export default function SeoSettings({ seo }: SeoSettingsProps) {
                             />
 
                         </div>
+
+                    </div>
+
+                    <div className="rounded-xl border bg-white p-6 shadow-sm">
+
+                        <h2 className="mb-6 text-xl font-semibold">
+                            Copyright Credit
+                        </h2>
+
+                        <input
+                            type="text"
+                            placeholder="Copyright Credit"
+                            value={data.copyright_credit}
+                            onChange={(e) =>
+                                setData(
+                                    "copyright_credit",
+                                    e.target.value
+                                )
+                            }
+                            className="w-full rounded-lg border p-3"
+                        />
 
                     </div>
 

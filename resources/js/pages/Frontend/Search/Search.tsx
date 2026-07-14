@@ -1,17 +1,24 @@
 import FrontendLayout from "@/layouts/frontend-layout";
-import { Head, Link } from "@inertiajs/react";
+import { usePage, Link } from "@inertiajs/react";
 import Pagination from "@/components/Frontend/Pagination";
 import LatestNews from "@/components/Frontend/Sidebar/LatestNews"
 import MostViewedNews from "@/components/Frontend/Sidebar/MostViewedNews"
-
+import SeoHead from "@/components/SeoHead"
 
 
 export default function Search({ news, search, latestNews, mostViewedNews }: any) {
 
+    const { seo } = usePage().props as any;
+    const query = search || "";
+    
     return (
         <FrontendLayout>
 
-            <Head title={`Search: ${search}`} />
+            <SeoHead
+                seo={seo}
+                title={`Search: ${query}`}
+                description={`Search results for ${query}`}
+            />
 
             <div className="max-w-7xl mx-auto py-8 px-4">
 

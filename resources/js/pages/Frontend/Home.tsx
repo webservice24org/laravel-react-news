@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Head } from "@inertiajs/react"
+import SeoHead from "@/components/SeoHead"
 import FrontendLayout from "@/layouts/frontend-layout"
 import LeadSection from "@/components/Frontend/LeadSection"
 import CategorySection from "@/components/Frontend/CategorySection"
@@ -12,6 +12,7 @@ import FourCategoryBlock from "@/components/Frontend/FourCategoryBlock"
 import TwoColumnFeaturedList from "@/components/Frontend/TwoColumnFeaturedList"
 import CategoryFourPremiumSection from "@/components/Frontend/CategoryFourPremiumSection"
 import { News } from "@/types/news"
+import { Head, usePage } from "@inertiajs/react";
 
 interface Category {
   id: number
@@ -34,6 +35,7 @@ interface Props {
 }
 
 export default function Home({ leadNews, subLeadNews, sections }: Props) {
+  const { seo } = usePage().props as any;
   /*
     ===============================
     GROUP FOUR-CATEGORY BLOCKS
@@ -60,7 +62,7 @@ export default function Home({ leadNews, subLeadNews, sections }: Props) {
 
   return (
     <FrontendLayout>
-      <Head title="Home" />
+         <SeoHead seo={seo} />
 
       {/* ================= Lead Section ================= */}
       <LeadSection

@@ -1,10 +1,11 @@
 "use client"
 
 import React, { useState } from "react"
-import { Head, Link, router } from "@inertiajs/react"
+import { usePage, Link, router } from "@inertiajs/react"
 import FrontendLayout from "@/layouts/frontend-layout"
 import LatestNews from "@/components/Frontend/Sidebar/LatestNews"
 import MostViewedNews from "@/components/Frontend/Sidebar/MostViewedNews"
+import SeoHead from "@/components/SeoHead"
 
 declare function route(name: string, params?: any): string
 
@@ -48,15 +49,13 @@ export default function CategoryPage({
 
   const [items, setItems] = useState(news.data)
   const [page, setPage] = useState(news.current_page)
+  const { seo } = usePage().props as any;
 
   const siteUrl =
     typeof window !== "undefined" ? window.location.origin : ""
 
   const currentUrl =
     typeof window !== "undefined" ? window.location.href : ""
-
-  const metaTitle = `${category?.name} সংবাদ | আপনার নিউজ পোর্টাল`
-  const metaDescription = `${category?.name} সম্পর্কিত সর্বশেষ আপডেট, ব্রেকিং নিউজ এবং গুরুত্বপূর্ণ প্রতিবেদন পড়ুন।`
 
   // ===============================
   // Structured Data (CollectionPage)
@@ -108,31 +107,10 @@ export default function CategoryPage({
   return (
     <FrontendLayout>
 
-      <Head>
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={currentUrl} />
-
-        {/* OpenGraph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={metaTitle} />
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:url" content={currentUrl} />
-
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={metaTitle} />
-        <meta name="twitter:description" content={metaDescription} />
-
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
-
-        <script type="application/ld+json">
-          {JSON.stringify(breadcrumbData)}
-        </script>
-      </Head>
+      <SeoHead
+          seo={seo}
+          category={category}
+      />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
 

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\MailConfig;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Logo;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -58,6 +60,11 @@ class AppServiceProvider extends ServiceProvider
                 ]);
             }
         }
+
+        $logos = Logo::all()->keyBy('type');
+
+        View::share('logos', $logos);
+
     }
 
     /**

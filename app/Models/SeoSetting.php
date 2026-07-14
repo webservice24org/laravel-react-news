@@ -18,6 +18,9 @@ class SeoSetting extends Model
         'twitter_description',
         'twitter_image',
         'index_site',
+        'google_verification_code',
+        'bing_verification_code',
+        'copyright_credit'
     ];
 
 }

@@ -1,10 +1,11 @@
 "use client"
 
 import React, { useState } from "react"
-import { Head, Link, router } from "@inertiajs/react"
+import { usePage, Link, router } from "@inertiajs/react"
 import FrontendLayout from "@/layouts/frontend-layout"
 import LatestNews from "@/components/Frontend/Sidebar/LatestNews"
 import MostViewedNews from "@/components/Frontend/Sidebar/MostViewedNews"
+import SeoHead from "@/components/SeoHead"
 
 declare function route(name: string, params?: any): string
 
@@ -45,6 +46,7 @@ export default function SubCategoryPage({
 
   const [items, setItems] = useState(news.data)
   const [page, setPage] = useState(news.current_page)
+  const { seo } = usePage().props as any;
 
   const currentUrl =
     typeof window !== "undefined" ? window.location.href : ""
@@ -52,8 +54,6 @@ export default function SubCategoryPage({
   const siteUrl =
     typeof window !== "undefined" ? window.location.origin : ""
 
-  const metaTitle = `${category.name} >> ${subCategory.name} | আপনার নিউজ পোর্টাল`
-  const metaDescription = `${subCategory.name} সম্পর্কিত সর্বশেষ সংবাদ পড়ুন।`
 
   // Structured Data
   const structuredData = {
@@ -81,22 +81,7 @@ export default function SubCategoryPage({
   return (
     <FrontendLayout>
 
-      <Head>
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={currentUrl} />
-
-        {/* OpenGraph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={metaTitle} />
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:url" content={currentUrl} />
-
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
-      </Head>
+      <SeoHead seo={seo} subCategory={subCategory} />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
 

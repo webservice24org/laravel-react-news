@@ -20,7 +20,7 @@ export default function FrontendFooter() {
   const { socials } = usePage().props as any;
   const { officeInfo } = usePage().props as any;
   const { pages } = usePage().props as any;
-  const { settings } = usePage().props as any;
+  const { seo } = usePage().props as any;
   
 
   const footerLogo = logos?.footer;
@@ -44,7 +44,7 @@ export default function FrontendFooter() {
                     />
                 ) : (
                     <span className="text-2xl font-bold">
-                        {settings.website_name}
+                        {seo?.site_name}
                     </span>
                 )}
             </Link>
@@ -174,7 +174,7 @@ export default function FrontendFooter() {
             <div className="text-sm text-gray-600">
 
                 © {new Date().getFullYear()}{" "}
-                {settings?.copyright_credit}
+                {seo?.copyright_credit || "বাজারজাতকরণ কর্তৃক সর্বস্বত্ব স্বত্বাধিকার সংরক্ষিত"}
 
             </div>
 

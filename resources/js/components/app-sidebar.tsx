@@ -122,11 +122,7 @@ const mainNavItems: NavItem[] = [
                 icon: Image,
                 href: route("admin.logos.index"),
             },
-            {
-                title: "Website Settings",
-                icon: Wrench,
-                href: route("admin.settings.index"),
-            },
+            
             {
                 title: "Frontend Settings",
                 icon: Wrench,

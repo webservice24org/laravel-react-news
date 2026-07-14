@@ -9,10 +9,10 @@ use App\Models\NewsPost;
 use App\Models\Logo;
 use App\Models\OfficeInfo;
 use App\Models\Page;
-use App\Models\Setting;
 use App\Models\FrontendSetting;
 use App\Models\Advertisement;
 use App\Models\SocialConnection;
+use App\Models\SeoSetting;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -109,6 +109,7 @@ class HandleInertiaRequests extends Middleware
                 ]),
 
             // ✅ Settings (GLOBAL)
+            /*
             'settings' => fn () => optional(Setting::first(), function ($setting) {
                 return [
                     'website_name' => $setting->website_name,
@@ -118,6 +119,7 @@ class HandleInertiaRequests extends Middleware
                     'copyright_credit' => $setting->copyright_credit,
                 ];
             }),
+            */
 
             // ✅ Frontend Settings (GLOBAL)
             'frontendSettings' => fn () => optional(FrontendSetting::first(), function ($setting) {
@@ -141,6 +143,25 @@ class HandleInertiaRequests extends Middleware
                     'tiktok' => $s->tiktok_url,
                     'pinterest' => $s->pinterest_url,
                     'whatsapp' => $s->whatsapp_url,
+                ];
+            }),
+
+            'seo' => fn () => optional(SeoSetting::first(), function ($seo) {
+                return [
+                    'site_name' => $seo->site_name,
+                    'meta_title' => $seo->meta_title,
+                    'meta_description' => $seo->meta_description,
+                    'meta_keywords' => $seo->meta_keywords,
+                    'og_title' => $seo->og_title,
+                    'og_description' => $seo->og_description,
+                    'og_image' => $seo->og_image ? asset('storage/' . $seo->og_image) : null,
+                    'twitter_title' => $seo->twitter_title,
+                    'twitter_description' => $seo->twitter_description,
+                    'twitter_image' => $seo->twitter_image ? asset('storage/' . $seo->twitter_image) : null,
+                    'index_site' => $seo->index_site,
+                    'google_verification_code' => $seo->google_verification_code,
+                    'bing_verification_code' => $seo->bing_verification_code,
+                    'copyright_credit' => $seo->copyright_credit,
                 ];
             }),
 
