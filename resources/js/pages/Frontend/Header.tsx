@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
 
 import { DesktopMenuItem } from "@/pages/Frontend/DesktopMenuItem";
@@ -26,8 +26,30 @@ export default function FrontendHeader() {
 
     const [mobileOpen, setMobileOpen] = useState(false);
 
+    const [sticky, setSticky] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setSticky(window.scrollY > 100);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
     return (
-        <header className="relative z-50 border-b bg-white shadow-sm">
+        <header
+            className={`
+                z-50 border-b bg-white transition-all duration-300 w-full
+                ${
+                    sticky
+                        ? "fixed inset-x-0 top-0 shadow-xl animate-[slideDown_.35s_ease]"
+                        : "relative shadow-sm"
+                }
+            `}
+        >            
+        {sticky && <div />}
 
             <div className="mx-auto max-w-7xl px-4">
 

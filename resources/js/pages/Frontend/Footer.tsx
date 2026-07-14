@@ -10,7 +10,7 @@ import {
     Mail
 } from "lucide-react";
 import ArchiveDatePicker from "@/components/Frontend/ArchiveDatePicker";
-
+import GoTop from "@/components/Frontend/GoTop";
 
 
 
@@ -25,6 +25,7 @@ export default function FrontendFooter() {
 
   const footerLogo = logos?.footer;
   return (
+    <>
     <footer className="mt-12 border-t border-gray-200 bg-white">
 
       {/* Top Footer */}
@@ -167,122 +168,124 @@ export default function FrontendFooter() {
 
       <div className="border-t">
 
-    <div className="mx-auto max-w-7xl px-4 py-5">
+        <div className="mx-auto max-w-7xl px-4 py-5">
 
-        <div className="flex flex-col items-center gap-5 lg:flex-row lg:justify-between">
+            <div className="flex flex-col items-center gap-5 lg:flex-row lg:justify-between">
 
-            <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600">
 
-                © {new Date().getFullYear()}{" "}
-                {seo?.copyright_credit || "বাজারজাতকরণ কর্তৃক সর্বস্বত্ব স্বত্বাধিকার সংরক্ষিত"}
-
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-3">
-
-                {/* All social icons here */}
-
-                    
-              <div className="flex flex-wrap gap-3">
-
-                  {socials?.facebook && (
-                    <a
-                      href={socials.facebook}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Facebook"
-                      className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-blue-600 hover:bg-blue-600 hover:text-white"
-                    >
-                      <FaFacebookF size={16} />
-                    </a>
-                  )}
-
-                  {socials?.twitter && (
-                    <a
-                      href={socials.twitter}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Twitter"
-                      className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-sky-500 hover:bg-sky-500 hover:text-white"
-                    >
-                      <FaTwitter size={16} />
-                    </a>
-                  )}
-
-                  {socials?.instagram && (
-                    <a
-                      href={socials.instagram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Instagram"
-                      className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-pink-500 hover:bg-pink-500 hover:text-white"
-                    >
-                      <FaInstagram size={16} />
-                    </a>
-                  )}
-
-                  {socials?.youtube && (
-                    <a
-                      href={socials.youtube}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="YouTube"
-                      className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-red-600 hover:bg-red-600 hover:text-white"
-                    >
-                      <FaYoutube size={16} />
-                    </a>
-                  )}
-
-                  {socials?.tiktok && (
-                    <a
-                      href={socials.tiktok}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="TikTok"
-                      className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-black hover:bg-black hover:text-white"
-                    >
-                      <FaTiktok size={16} />
-                    </a>
-                  )}
-
-                  {socials?.pinterest && (
-                    <a
-                      href={socials.pinterest}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Pinterest"
-                      className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-red-500 hover:bg-red-500 hover:text-white"
-                    >
-                      <FaPinterestP size={16} />
-                    </a>
-                  )}
-
-                  {socials?.whatsapp && (
-                    <a
-                      href={socials.whatsapp}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="WhatsApp"
-                      className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-green-500 hover:bg-green-500 hover:text-white"
-                    >
-                      <FaWhatsapp size={16} />
-                    </a>
-                  )}
+                    © {new Date().getFullYear()}{" "}
+                    {seo?.copyright_credit || "বাজারজাতকরণ কর্তৃক সর্বস্বত্ব স্বত্বাধিকার সংরক্ষিত"}
 
                 </div>
-            </div>
 
-            <div className="text-sm text-gray-600">
+                <div className="flex flex-wrap justify-center gap-3">
 
-                Developed by
+                    {/* All social icons here */}
 
-                <a
-                    href="https://webservicebd.org"
-                    target="_blank"
-                    className="ml-1 font-semibold text-red-600 hover:underline"
-                >
-                    MicroWeb Technology
-                </a>
+                        
+                  <div className="flex flex-wrap gap-3">
+
+                      {socials?.facebook && (
+                        <a
+                          href={socials.facebook}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Facebook"
+                          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-blue-600 hover:bg-blue-600 hover:text-white"
+                        >
+                          <FaFacebookF size={16} />
+                        </a>
+                      )}
+
+                      {socials?.twitter && (
+                        <a
+                          href={socials.twitter}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Twitter"
+                          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-sky-500 hover:bg-sky-500 hover:text-white"
+                        >
+                          <FaTwitter size={16} />
+                        </a>
+                      )}
+
+                      {socials?.instagram && (
+                        <a
+                          href={socials.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Instagram"
+                          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-pink-500 hover:bg-pink-500 hover:text-white"
+                        >
+                          <FaInstagram size={16} />
+                        </a>
+                      )}
+
+                      {socials?.youtube && (
+                        <a
+                          href={socials.youtube}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="YouTube"
+                          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-red-600 hover:bg-red-600 hover:text-white"
+                        >
+                          <FaYoutube size={16} />
+                        </a>
+                      )}
+
+                      {socials?.tiktok && (
+                        <a
+                          href={socials.tiktok}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="TikTok"
+                          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-black hover:bg-black hover:text-white"
+                        >
+                          <FaTiktok size={16} />
+                        </a>
+                      )}
+
+                      {socials?.pinterest && (
+                        <a
+                          href={socials.pinterest}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Pinterest"
+                          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-red-500 hover:bg-red-500 hover:text-white"
+                        >
+                          <FaPinterestP size={16} />
+                        </a>
+                      )}
+
+                      {socials?.whatsapp && (
+                        <a
+                          href={socials.whatsapp}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="WhatsApp"
+                          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-all duration-300 hover:border-green-500 hover:bg-green-500 hover:text-white"
+                        >
+                          <FaWhatsapp size={16} />
+                        </a>
+                      )}
+
+                    </div>
+                </div>
+
+                <div className="text-sm text-gray-600">
+
+                    Developed by
+
+                    <a
+                        href="https://webservicebd.org"
+                        target="_blank"
+                        className="ml-1 font-semibold text-red-600 hover:underline"
+                    >
+                        MicroWeb Technology
+                    </a>
+
+                </div>
 
             </div>
 
@@ -290,9 +293,9 @@ export default function FrontendFooter() {
 
     </div>
 
-</div>
-
     </footer>
+    <GoTop />
+    </>
   )
 }
 
